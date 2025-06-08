@@ -1,58 +1,76 @@
 package main
 
 import (
-	"fmt"
+	"encoding/json"
+	"log"
+	"net/http"
 	"os"
 
-	"github.com/gin-contrib/sessions"
-	"github.com/gin-contrib/sessions/cookie"
-	"github.com/gin-gonic/gin"
+	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 )
 
+func corsMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		allowedOrigin := os.Getenv("CLIENT_ORIGIN")
+
+		w.Header().Set("Access-Control-Allow-Origin", allowedOrigin)
+		w.Header().Set("Access-Contol-Allow-Methods", "GET, POST, PATCH, DELETE, OPTIONS")
+		w.Header().Set("Access-Control-Max-Age", "86400")
+		w.Header().Set("Access-Control-Allow-Credentials", "true")
+
+		if r.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusNoContent)
+			return
+		}
+		next.ServeHTTP(w, r)
+	})
+}
+
 func main() {
-	err := godotenv.Load()
-	if err != nil {
-		// log.Fatal("Error loading .env file")
-		fmt.Println("error loading .env files")
+	environment := os.Getenv("ENVIRONMENT")
+
+	router := mux.NewRouter()
+
+	apiRouter := router.PathPrefix("/api").Subrouter()
+
+	if environment != "PRODUCTION" {
+		err := godotenv.Load()
+		if err != nil {
+			log.Fatal("Error loading .env file")
+		}
 	}
-	router := gin.Default()
-	store := cookie.NewStore([]byte("secret"))
-	router.Use(sessions.Sessions("mysession", store))
 
-	allowedOrigin := os.Getenv("CLIENT_ORIGIN")
-	fmt.Println(allowedOrigin)
-	// router.Use(cors.New(cors.Config{
-	// 	AllowOrigins:     []string{allowedOrigin},
-	// 	AllowMethods:     []string{"GET", "POST", "PATCH", "DELETE"},
-	// 	AllowCredentials: true,
-	// 	MaxAge:           1 * time.Hour,
-	// }))
+	apiRouter.HandleFunc("/hello", func(w http.ResponseWriter, r *http.Request) {
 
-	router.GET("/session", func(c *gin.Context) {
-		session := sessions.Default(c)
+		type Response struct {
+			Message string `json:"message"`
+		}
 
-		sessionId := session.Get("sessionId")
+		response := Response{
+			Message: "Hello world!",
+		}
 
-		fmt.Println(sessionId)
-
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(response)
 	})
 
-	router.POST("/sessions", func(c *gin.Context) {
-		session := sessions.Default(c)
-		session.Set("sessionId", "myId")
-		session.Save()
+	apiRouter.HandleFunc("/session", func(w http.ResponseWriter, r *http.Request) {
 
-		c.JSON(201, gin.H{"sessionId": "myId"})
-	})
+	}).Methods("GET")
 
-	router.DELETE("/sessions", func(c *gin.Context) {
-		session := sessions.Default(c)
-		session.Delete("sessionId")
-		session.Save()
+	apiRouter.HandleFunc("/session", func(w http.ResponseWriter, r *http.Request) {
 
-		c.JSON(200, gin.H{"sessionId": false})
-	})
+	}).Methods("POST")
 
-	router.Run()
+	apiRouter.HandleFunc("/session", func(w http.ResponseWriter, r *http.Request) {
+
+	}).Methods("DELETE")
+
+	if environment == "PRODUCTION" {
+		http.ListenAndServe(":8080", apiRouter)
+	} else {
+		corsRouter := corsMiddleware(router)
+		http.ListenAndServe(":8080", corsRouter)
+	}
 }
