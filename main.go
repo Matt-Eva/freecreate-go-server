@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -68,6 +69,7 @@ func main() {
 	}).Methods("DELETE")
 
 	if environment == "PRODUCTION" {
+		fmt.Println("running router with no cors")
 		http.ListenAndServe(":8080", router)
 	} else {
 		corsRouter := corsMiddleware(router)
