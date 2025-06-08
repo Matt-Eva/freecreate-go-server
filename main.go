@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"log"
+	"os"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
@@ -13,13 +13,15 @@ import (
 func main() {
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		// log.Fatal("Error loading .env file")
+		fmt.Println("error loading .env files")
 	}
 	router := gin.Default()
 	store := cookie.NewStore([]byte("secret"))
 	router.Use(sessions.Sessions("mysession", store))
 
-	// allowedOrigin := os.Getenv("CLIENT_ORIGIN")
+	allowedOrigin := os.Getenv("CLIENT_ORIGIN")
+	fmt.Println(allowedOrigin)
 	// router.Use(cors.New(cors.Config{
 	// 	AllowOrigins:     []string{allowedOrigin},
 	// 	AllowMethods:     []string{"GET", "POST", "PATCH", "DELETE"},
