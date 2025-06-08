@@ -32,7 +32,7 @@ func main() {
 
 	router := mux.NewRouter()
 
-	apiRouter := router.PathPrefix("/api").Subrouter()
+	// apiRouter := router.PathPrefix("/api").Subrouter()
 
 	if environment != "PRODUCTION" {
 		err := godotenv.Load()
@@ -41,7 +41,7 @@ func main() {
 		}
 	}
 
-	apiRouter.HandleFunc("/hello", func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/hello", func(w http.ResponseWriter, r *http.Request) {
 
 		type Response struct {
 			Message string `json:"message"`
@@ -55,20 +55,20 @@ func main() {
 		json.NewEncoder(w).Encode(response)
 	})
 
-	apiRouter.HandleFunc("/session", func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/session", func(w http.ResponseWriter, r *http.Request) {
 
 	}).Methods("GET")
 
-	apiRouter.HandleFunc("/session", func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/session", func(w http.ResponseWriter, r *http.Request) {
 
 	}).Methods("POST")
 
-	apiRouter.HandleFunc("/session", func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/session", func(w http.ResponseWriter, r *http.Request) {
 
 	}).Methods("DELETE")
 
 	if environment == "PRODUCTION" {
-		http.ListenAndServe(":8080", apiRouter)
+		http.ListenAndServe(":8080", router)
 	} else {
 		corsRouter := corsMiddleware(router)
 		http.ListenAndServe(":8080", corsRouter)
