@@ -11,29 +11,27 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func corsMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		allowedOrigin := os.Getenv("CLIENT_ORIGIN")
+// func corsMiddleware(next http.Handler) http.Handler {
+// 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+// 		allowedOrigin := os.Getenv("CLIENT_ORIGIN")
 
-		w.Header().Set("Access-Control-Allow-Origin", allowedOrigin)
-		w.Header().Set("Access-Contol-Allow-Methods", "GET, POST, PATCH, DELETE, OPTIONS")
-		w.Header().Set("Access-Control-Max-Age", "86400")
-		w.Header().Set("Access-Control-Allow-Credentials", "true")
+// 		w.Header().Set("Access-Control-Allow-Origin", allowedOrigin)
+// 		w.Header().Set("Access-Contol-Allow-Methods", "GET, POST, PATCH, DELETE, OPTIONS")
+// 		w.Header().Set("Access-Control-Max-Age", "86400")
+// 		w.Header().Set("Access-Control-Allow-Credentials", "true")
 
-		if r.Method == http.MethodOptions {
-			w.WriteHeader(http.StatusNoContent)
-			return
-		}
-		next.ServeHTTP(w, r)
-	})
-}
+// 		if r.Method == http.MethodOptions {
+// 			w.WriteHeader(http.StatusNoContent)
+// 			return
+// 		}
+// 		next.ServeHTTP(w, r)
+// 	})
+// }
 
 func main() {
 	environment := os.Getenv("ENVIRONMENT")
 
 	router := mux.NewRouter()
-
-	// apiRouter := router.PathPrefix("/api").Subrouter()
 
 	if environment != "PRODUCTION" {
 		err := godotenv.Load()
@@ -43,6 +41,7 @@ func main() {
 	}
 
 	router.HandleFunc("/hello", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("hit route")
 
 		type Response struct {
 			Message string `json:"message"`
@@ -54,7 +53,7 @@ func main() {
 
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(response)
-	})
+	}).Methods("GET")
 
 	router.HandleFunc("/session", func(w http.ResponseWriter, r *http.Request) {
 
@@ -68,11 +67,6 @@ func main() {
 
 	}).Methods("DELETE")
 
-	if environment == "PRODUCTION" {
-		fmt.Println("running router with no cors")
-		http.ListenAndServe(":8080", router)
-	} else {
-		corsRouter := corsMiddleware(router)
-		http.ListenAndServe(":8080", corsRouter)
-	}
+	port := os.Getenv("PORT")
+	http.ListenAndServe(port, router)
 }
