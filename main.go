@@ -50,6 +50,6 @@ func main() {
 
 	}).Methods("DELETE")
 
-	port := os.Getenv("PORT")
-	http.ListenAndServe(port, router)
+	// port := os.Getenv("PORT")
+	http.ListenAndServe(":8080", router)
 }
