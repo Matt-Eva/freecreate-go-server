@@ -38,10 +38,8 @@ func main() {
 		if err != nil {
 			log.Fatal("Error loading .env file")
 		}
-		router = devCorsMiddleware(router)
-	}
 
-	
+	}
 
 	router.HandleFunc("/hello", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("hit route")
@@ -70,6 +68,13 @@ func main() {
 
 	}).Methods("DELETE")
 
+	if environment != "PRODUCTION" {
+		corsRouter := devCorsMiddleware(router)
+		http.ListenAndServe(":8080", corsRouter)
+	} else {
+		http.ListenAndServe(":8080", router)
+	}
+
 	// port := os.Getenv("PORT")
-	http.ListenAndServe(":8080", router)
+
 }
