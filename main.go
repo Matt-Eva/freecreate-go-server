@@ -1,11 +1,15 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
@@ -81,11 +85,55 @@ func main() {
 
 	}).Methods("DELETE")
 
+	var srv *http.Server
+
 	if environment != "PRODUCTION" {
 		corsRouter := devCorsMiddleware(router)
-		http.ListenAndServe(":8080", corsRouter)
+		srv = &http.Server{
+			Addr:         ":8080",
+			Handler:      corsRouter,
+			ReadTimeout:  15 * time.Second,
+			WriteTimeout: 15 * time.Second,
+			IdleTimeout:  60 * time.Second,
+		}
 	} else {
-		http.ListenAndServe(":8080", router)
+		srv = &http.Server{
+			Addr:         ":8080",
+			Handler:      router,
+			ReadTimeout:  15 * time.Second,
+			WriteTimeout: 15 * time.Second,
+			IdleTimeout:  60 * time.Second,
+		}
 	}
+
+	go func() {
+		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatalf("Server failed: %v", err)
+		}
+	}()
+
+	sigChan := make(chan os.Signal, 1)
+
+	signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
+
+	<-sigChan
+	log.Println("Shutdown signal received, gracefully shutting down...")
+
+	shutdownCtx, shutdownCancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer shutdownCancel()
+
+	if err = srv.Shutdown(shutdownCtx); err != nil {
+		log.Fatalf("server failed to shutdown: %v", err)
+	}
+	log.Println("http server shutdown")
+
+	gormPGDB, err := gormPG.DB()
+	if err != nil {
+		log.Fatalf("could not access gorm pg db: %v", err)
+	}
+	gormPGDB.Close()
+	log.Println("pg db connection shutdown")
+
+	log.Println("main function closing gracefully. Goodbye!")
 
 }
