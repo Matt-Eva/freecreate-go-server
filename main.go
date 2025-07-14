@@ -13,6 +13,9 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
+	"go.mongodb.org/mongo-driver/v2/mongo"
+	"go.mongodb.org/mongo-driver/v2/mongo/options"
+	"go.mongodb.org/mongo-driver/v2/mongo/readpref"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -55,6 +58,24 @@ func main() {
 	} else {
 		fmt.Println("gorm connect to pg successful!", gormPG)
 	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 30 * time.Second)
+	defer cancel()
+
+	mongoURI := os.Getenv("MONGO_URI")
+
+	mongoOptions := options.Client().ApplyURI(mongoURI)
+
+	mongoClient, err := mongo.Connect( mongoOptions)
+	if err != nil {
+		log.Fatalf("error connecting to mongo: %v", err)
+	}
+
+	err = mongoClient.Ping(ctx, readpref.Primary())
+	if err != nil {
+		log.Fatalf("error pinging mongo: %v", err)
+	}
+	log.Println("connection to mongo successful!", mongoClient)
 
 	router := mux.NewRouter()
 
