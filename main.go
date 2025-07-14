@@ -9,6 +9,9 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
+
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 func devCorsMiddleware(next http.Handler) http.Handler {
@@ -31,15 +34,25 @@ func devCorsMiddleware(next http.Handler) http.Handler {
 func main() {
 	environment := os.Getenv("ENVIRONMENT")
 
-	router := mux.NewRouter()
-
 	if environment != "PRODUCTION" {
 		err := godotenv.Load()
 		if err != nil {
 			log.Fatal("Error loading .env file")
 		}
-
 	}
+
+	host, user, pwd, db, ssl, port := os.Getenv("PG_HOST"), os.Getenv("PG_USER"), os.Getenv("PG_PASSWORD"), os.Getenv("PG_DB"), os.Getenv("PG_SSL"), os.Getenv("PG_PORT")
+
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s sslmode=%s port=%s", host, user, pwd, db, ssl, port)
+
+	gormPG, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	if err != nil {
+		log.Fatal("error connecting gorm to postgres")
+	} else {
+		fmt.Println("gorm connect to pg successful!", gormPG)
+	}
+
+	router := mux.NewRouter()
 
 	router.HandleFunc("/hello", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("hit route")
@@ -74,7 +87,5 @@ func main() {
 	} else {
 		http.ListenAndServe(":8080", router)
 	}
-
-	// port := os.Getenv("PORT")
 
 }
