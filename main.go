@@ -114,5 +114,4 @@ func main() {
 	log.Println("pg db connection shutdown")
 
 	log.Println("main function closing gracefully. Goodbye!")
-
 }
