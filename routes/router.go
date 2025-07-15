@@ -3,13 +3,17 @@ package routes
 import (
 	"encoding/json"
 	"fmt"
+	"freecreate/handlers"
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/resend/resend-go/v2"
 )
 
-func CreateRouter() *mux.Router {
+func CreateRouter(resendClient *resend.Client) *mux.Router {
 	router := mux.NewRouter()
+
+	router.HandleFunc("/email", handlers.EmailHandler(resendClient)).Methods("POST")
 
 	router.HandleFunc("/hello", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("hit route")

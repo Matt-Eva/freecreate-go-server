@@ -7,8 +7,7 @@ import (
 	"strconv"
 )
 
-
-func Log(err error){
+func Log(err error) {
 	pc := make([]uintptr, 50)
 	callers := runtime.Callers(1, pc)
 	callStrs := ""
@@ -17,8 +16,8 @@ func Log(err error){
 		callStr := file + ": " + "line " + strconv.Itoa(line) + "\n"
 		callStrs = callStrs + callStr
 	}
-	
-	msg := fmt.Errorf("ERROR: %w\n" + callStrs, err )
+
+	msg := fmt.Errorf("ERROR: %w\n"+callStrs, err)
 
 	log.Println(msg)
 }

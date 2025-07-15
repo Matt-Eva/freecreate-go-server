@@ -46,9 +46,11 @@ func main() {
 	if err != nil {
 		log.Fatalf("error pinging mongo: %v", err)
 	}
-	log.Println("connection to mongo successful!", mongoClient)
+	log.Println("connection to mongo successful!")
 
-	router := routes.CreateRouter()
+	resendClient := config.InitResend()
+
+	router := routes.CreateRouter(resendClient)
 
 	var srv *http.Server
 
