@@ -8,8 +8,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-
-func CreateRouter() *mux.Router{
+func CreateRouter() *mux.Router {
 	router := mux.NewRouter()
 
 	router.HandleFunc("/hello", func(w http.ResponseWriter, r *http.Request) {

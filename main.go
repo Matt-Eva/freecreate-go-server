@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"fmt"
+	"freecreate/config"
 	"freecreate/middleware"
 	"freecreate/routes"
 	"log"
@@ -16,12 +16,7 @@ import (
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
 	"go.mongodb.org/mongo-driver/v2/mongo/readpref"
-
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
 )
-
-
 
 func main() {
 	environment := os.Getenv("ENVIRONMENT")
@@ -33,25 +28,16 @@ func main() {
 		}
 	}
 
-	host, user, pwd, db, ssl, port := os.Getenv("PG_HOST"), os.Getenv("PG_USER"), os.Getenv("PG_PASSWORD"), os.Getenv("PG_DB"), os.Getenv("PG_SSL"), os.Getenv("PG_PORT")
+	gormPGClient := config.ConfigPG()
 
-	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s sslmode=%s port=%s", host, user, pwd, db, ssl, port)
-
-	gormPG, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
-	if err != nil {
-		log.Fatal("error connecting gorm to postgres")
-	} else {
-		fmt.Println("gorm connect to pg successful!", gormPG)
-	}
-
-	ctx, cancel := context.WithTimeout(context.Background(), 30 * time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
 	mongoURI := os.Getenv("MONGO_URI")
 
 	mongoOptions := options.Client().ApplyURI(mongoURI)
 
-	mongoClient, err := mongo.Connect( mongoOptions)
+	mongoClient, err := mongo.Connect(mongoOptions)
 	if err != nil {
 		log.Fatalf("error connecting to mongo: %v", err)
 	}
@@ -106,7 +92,7 @@ func main() {
 	}
 	log.Println("http server shutdown")
 
-	gormPGDB, err := gormPG.DB()
+	gormPGDB, err := gormPGClient.DB()
 	if err != nil {
 		log.Fatalf("could not access gorm pg db: %v", err)
 	}
