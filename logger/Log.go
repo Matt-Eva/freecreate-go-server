@@ -10,15 +10,15 @@ import (
 
 func Log(err error){
 	pc := make([]uintptr, 50)
-	callers := runtime.Callers(2, pc)
+	callers := runtime.Callers(1, pc)
 	callStrs := ""
-	for i := 2; i <= callers; i++ {
+	for i := 1; i <= callers; i++ {
 		_, file, line, _ := runtime.Caller(i)
 		callStr := file + ": " + "line " + strconv.Itoa(line) + "\n"
 		callStrs = callStrs + callStr
 	}
 	
-	msg := fmt.Sprintf("ERROR: %w\n" + callStrs, err )
+	msg := fmt.Errorf("ERROR: %w\n" + callStrs, err )
 
 	log.Println(msg)
 }

@@ -1,7 +1,9 @@
 package config
 
 import (
+	"errors"
 	"fmt"
+	"freecreate/logger"
 	"log"
 	"os"
 
@@ -20,6 +22,10 @@ func ConfigPG() *gorm.DB {
 	} else {
 		fmt.Println("gorm connect to pg successful!", gormPGClient)
 	}
+
+	errorTest := errors.New("testing")
+
+	logger.Log(errorTest)
 
 	return gormPGClient
 }
