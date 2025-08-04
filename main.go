@@ -13,9 +13,6 @@ import (
 	"time"
 
 	"github.com/joho/godotenv"
-	"go.mongodb.org/mongo-driver/v2/mongo"
-	"go.mongodb.org/mongo-driver/v2/mongo/options"
-	"go.mongodb.org/mongo-driver/v2/mongo/readpref"
 )
 
 func main() {
@@ -30,27 +27,11 @@ func main() {
 
 	gormPGClient := config.ConfigPG()
 
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-	defer cancel()
-
-	mongoURI := os.Getenv("MONGO_URI")
-
-	mongoOptions := options.Client().ApplyURI(mongoURI)
-
-	mongoClient, err := mongo.Connect(mongoOptions)
-	if err != nil {
-		log.Fatalf("error connecting to mongo: %v", err)
-	}
-
-	err = mongoClient.Ping(ctx, readpref.Primary())
-	if err != nil {
-		log.Fatalf("error pinging mongo: %v", err)
-	}
-	log.Println("connection to mongo successful!")
+	mongoClient := config.ConfigMongo()
 
 	resendClient := config.InitResend()
 
-	router := routes.CreateRouter(resendClient)
+	router := routes.CreateRouter(gormPGClient, mongoClient, resendClient)
 
 	var srv *http.Server
 
@@ -89,7 +70,7 @@ func main() {
 	shutdownCtx, shutdownCancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer shutdownCancel()
 
-	if err = srv.Shutdown(shutdownCtx); err != nil {
+	if err := srv.Shutdown(shutdownCtx); err != nil {
 		log.Fatalf("server failed to shutdown: %v", err)
 	}
 	log.Println("http server shutdown")

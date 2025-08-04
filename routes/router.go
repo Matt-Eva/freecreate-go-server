@@ -8,9 +8,11 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/resend/resend-go/v2"
+	"go.mongodb.org/mongo-driver/v2/mongo"
+	"gorm.io/gorm"
 )
 
-func CreateRouter(resendClient *resend.Client) *mux.Router {
+func CreateRouter(gormPGClient *gorm.DB, mongoClient *mongo.Client, resendClient *resend.Client) *mux.Router {
 	router := mux.NewRouter()
 
 	router.HandleFunc("/email", handlers.EmailHandler(resendClient)).Methods("POST")
