@@ -29,9 +29,11 @@ func main() {
 
 	mongoClient := config.ConfigMongo()
 
+	valkeyClient := config.ConfigValkey()
+
 	resendClient := config.InitResend()
 
-	router := routes.CreateRouter(gormPGClient, mongoClient, resendClient)
+	router := routes.CreateRouter(gormPGClient, mongoClient, valkeyClient, resendClient)
 
 	var srv *http.Server
 
