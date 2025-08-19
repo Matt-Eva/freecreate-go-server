@@ -12,6 +12,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/gorilla/sessions"
 	"github.com/joho/godotenv"
 )
 
@@ -25,6 +26,10 @@ func main() {
 		}
 	}
 
+	sessionSecret := os.Getenv("SESSION_SECRET")
+
+	sessionStore := sessions.NewCookieStore([]byte(sessionSecret))
+
 	gormPGClient := config.ConfigPG()
 
 	mongoClient := config.ConfigMongo()
@@ -33,7 +38,7 @@ func main() {
 
 	resendClient := config.InitResend()
 
-	router := routes.CreateRouter(gormPGClient, mongoClient, valkeyClient, resendClient)
+	router := routes.CreateRouter(sessionStore, gormPGClient, mongoClient, valkeyClient, resendClient)
 
 	var srv *http.Server
 
