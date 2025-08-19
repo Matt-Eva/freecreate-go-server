@@ -10,7 +10,7 @@ import (
 	"github.com/resend/resend-go/v2"
 )
 
-func OTPEmailHandler(resendClient *resend.Client) http.HandlerFunc{
+func CreateOTPHandler(resendClient *resend.Client) http.HandlerFunc{
 	return func (w http.ResponseWriter, r *http.Request){
 
 	var otp string;
