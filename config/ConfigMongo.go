@@ -10,8 +10,9 @@ import (
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
 	"go.mongodb.org/mongo-driver/v2/mongo/readpref"
 )
-func ConfigMongo() *mongo.Client{
-ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+
+func ConfigMongo() *mongo.Client {
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
 	mongoURI := os.Getenv("MONGO_URI")

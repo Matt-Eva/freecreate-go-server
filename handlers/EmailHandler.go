@@ -27,9 +27,9 @@ func EmailHandler(resendClient *resend.Client) http.HandlerFunc {
 		email := body.Email
 
 		params := &resend.SendEmailRequest{
-			From: "test@email.freecreate.net",
-			To: []string{email},
-			Html: "<p>Hello from FreeCreate!</p>",
+			From:    "test@email.freecreate.net",
+			To:      []string{email},
+			Html:    "<p>Hello from FreeCreate!</p>",
 			Subject: "Hello from FreeCreate!",
 		}
 
