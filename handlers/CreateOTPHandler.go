@@ -16,6 +16,8 @@ import (
 func CreateOTPHandler(resendClient *resend.Client, valkeyClient valkey.Client) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
+		// context := r.Context()
+
 		type Body struct {
 			Email string `json:"email"`
 		}
@@ -43,6 +45,11 @@ func CreateOTPHandler(resendClient *resend.Client, valkeyClient valkey.Client) h
 		}
 
 		email := body.Email
+
+		// valkeyKey := fmt.Sprintf("record:%s:%s",email, otp)
+		// expiration := 5 * time.Minute
+
+		// vErr := valkeyClient.Do(context,)
 
 		html := fmt.Sprintf("<p>Here is your FreeCreate One Time Password: %s</p><p>This password will expire after 5 minutes</p><p>DO NOT share this with anyone. WE WILL NEVER ASK YOU FOR YOUR ONE TIME PASSWORD </p>", otp)
 
