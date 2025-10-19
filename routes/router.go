@@ -37,7 +37,7 @@ func CreateRouter(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB, mon
 		json.NewEncoder(w).Encode(response)
 	})
 
-	router.Get("/login", func(w http.ResponseWriter, r *http.Request){
+	router.Get("/login", func(w http.ResponseWriter, r *http.Request) {
 		session, _ := sessionStore.Get(r, "user-session")
 		session.Values["userId"] = true
 		err := session.Save(r, w)
@@ -48,7 +48,7 @@ func CreateRouter(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB, mon
 		}
 	})
 
-	router.Get("/logout", func(w http.ResponseWriter, r *http.Request){
+	router.Get("/logout", func(w http.ResponseWriter, r *http.Request) {
 		session, _ := sessionStore.Get(r, "user-session")
 		session.Values = make(map[interface{}]interface{})
 		session.Options.MaxAge = -1
@@ -60,7 +60,6 @@ func CreateRouter(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB, mon
 			return
 		}
 	})
-
 
 	return router
 }

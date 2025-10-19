@@ -54,7 +54,7 @@ func CreateOTPHandler(resendClient *resend.Client, valkeyClient valkey.Client) h
 		html := fmt.Sprintf("<p>Here is your FreeCreate One Time Password: %s</p><p>This password will expire after 5 minutes</p><p>DO NOT share this with anyone. WE WILL NEVER ASK YOU FOR YOUR ONE TIME PASSWORD </p>", otp)
 
 		fmt.Println(html)
- 
+
 		params := &resend.SendEmailRequest{
 			From:    "test@email.freecreate.net",
 			To:      []string{email},
@@ -66,15 +66,14 @@ func CreateOTPHandler(resendClient *resend.Client, valkeyClient valkey.Client) h
 		if rErr != nil {
 			logger.Log(rErr)
 
-			errorResponse := ErrorResponse {
-				Message : rErr.Error(),
-			}	
+			errorResponse := ErrorResponse{
+				Message: rErr.Error(),
+			}
 
 			w.WriteHeader(http.StatusInternalServerError)
 			json.NewEncoder(w).Encode(errorResponse)
 			return
 		}
-
 
 		type Response struct {
 			Data string `json:"data"`

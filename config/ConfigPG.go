@@ -14,12 +14,14 @@ func ConfigPG() *gorm.DB {
 
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s sslmode=%s port=%s", host, user, pwd, db, ssl, port)
 
-	gormPGClient, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	gormPGClient, err := gorm.Open(postgres.Open(dsn), &gorm.Config{DisableForeignKeyConstraintWhenMigrating: true})
 	if err != nil {
 		log.Fatal("error connecting gorm to postgres")
 	} else {
 		fmt.Println("gorm connect to pg successful!")
 	}
+
+	gormPGClient.AutoMigrate(&User{})
 
 	return gormPGClient
 }
