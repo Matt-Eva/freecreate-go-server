@@ -1,9 +1,13 @@
 package routes
 
 import (
+	"encoding/json"
+	"fmt"
 	"freecreate/handlers"
+	"freecreate/logger"
+	"net/http"
 
-	"github.com/gorilla/mux"
+	"github.com/go-chi/chi/v5"
 	"github.com/gorilla/sessions"
 	"github.com/resend/resend-go/v2"
 	"github.com/valkey-io/valkey-go"
@@ -11,12 +15,52 @@ import (
 	"gorm.io/gorm"
 )
 
-func CreateRouter(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB, mongoClient *mongo.Client, valkeyClient valkey.Client, resendClient *resend.Client) *mux.Router {
-	router := mux.NewRouter()
+func CreateRouter(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB, mongoClient *mongo.Client, valkeyClient valkey.Client, resendClient *resend.Client) *chi.Mux {
+	router := chi.NewRouter()
 
-	router.HandleFunc("/createOTP", handlers.CreateOTPHandler(resendClient, valkeyClient)).Methods("POST")
+	router.Post("/createOTP", handlers.CreateOTPHandler(resendClient, valkeyClient))
 
-	router.HandleFunc("/email", handlers.EmailHandler(resendClient)).Methods("POST")
+	router.Post("/email", handlers.EmailHandler(resendClient))
+
+	router.Get("/hello", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("hit route hello")
+
+		type Response struct {
+			Message string `json:"message"`
+		}
+
+		response := Response{
+			Message: "Hello world!",
+		}
+
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(response)
+	})
+
+	router.Get("/login", func(w http.ResponseWriter, r *http.Request){
+		session, _ := sessionStore.Get(r, "user-session")
+		session.Values["userId"] = true
+		err := session.Save(r, w)
+		if err != nil {
+			logger.Log(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+	})
+
+	router.Get("/logout", func(w http.ResponseWriter, r *http.Request){
+		session, _ := sessionStore.Get(r, "user-session")
+		session.Values = make(map[interface{}]interface{})
+		session.Options.MaxAge = -1
+
+		err := session.Save(r, w)
+		if err != nil {
+			logger.Log(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+	})
+
 
 	return router
 }
