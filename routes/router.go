@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"freecreate/handlers"
-	"freecreate/logger"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -22,6 +21,12 @@ func CreateRouter(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB, mon
 
 	router.Post("/email", handlers.EmailHandler(resendClient))
 
+	router.Post("/login", handlers.LoginHandler(sessionStore, gormPGClient))
+
+	router.Post("/signup", handlers.SignupHandler(sessionStore, gormPGClient))
+
+	router.Delete("/logout", handlers.LogoutHandler(sessionStore, gormPGClient))
+
 	router.Get("/hello", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("hit route hello")
 
@@ -37,24 +42,7 @@ func CreateRouter(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB, mon
 		json.NewEncoder(w).Encode(response)
 	})
 
-	router.Post("/login", handlers.LoginHandler(sessionStore, gormPGClient))
 
-	router.Post("/signup", func(w http.ResponseWriter, r *http.Request){
-
-	})
-
-	router.Delete("/logout", func(w http.ResponseWriter, r *http.Request) {
-		session, _ := sessionStore.Get(r, "user-session")
-		session.Values = make(map[interface{}]interface{})
-		session.Options.MaxAge = -1
-
-		err := session.Save(r, w)
-		if err != nil {
-			logger.Log(err)
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-	})
 
 	return router
 }
