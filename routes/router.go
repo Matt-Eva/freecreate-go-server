@@ -37,16 +37,7 @@ func CreateRouter(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB, mon
 		json.NewEncoder(w).Encode(response)
 	})
 
-	router.Post("/login", func(w http.ResponseWriter, r *http.Request) {
-		session, _ := sessionStore.Get(r, "user-session")
-		session.Values["userId"] = true
-		err := session.Save(r, w)
-		if err != nil {
-			logger.Log(err)
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-	})
+	router.Post("/login", handlers.LoginHandler(sessionStore, gormPGClient))
 
 	router.Post("/signup", func(w http.ResponseWriter, r *http.Request){
 
