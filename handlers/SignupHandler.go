@@ -9,9 +9,8 @@ import (
 	"gorm.io/gorm"
 )
 
-
-func SignupHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB) http.HandlerFunc{
-	return func (w http.ResponseWriter, r *http.Request){
+func SignupHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
 		type Body struct {
 			Email string `json:"email"`
 		}
@@ -25,7 +24,6 @@ func SignupHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB) ht
 		}
 
 		// email := body.Email
-
 
 		// need to check for valid email address before creating user
 
@@ -45,12 +43,10 @@ func SignupHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB) ht
 		// 	err := errors.New("email address already in use")
 		// 	logger.Log(err)
 		// 	http.Error(w, err.Error(), http.StatusUnprocessableEntity)
-		// 	return 
+		// 	return
 		// }
 
-		// session, _ := sessionStore.Get(r, "user-session")
-		// session.Values["userId"] = newUser.ID
-		// err := session.Save(r, w)
+		// err := auth.CreateSession(sessionStore, w, r, newUser.ID)
 		// if err != nil {
 		// 	logger.Log(err)
 		// 	http.Error(w, err.Error(), http.StatusInternalServerError)

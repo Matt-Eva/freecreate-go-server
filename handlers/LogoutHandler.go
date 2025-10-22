@@ -8,8 +8,8 @@ import (
 	"gorm.io/gorm"
 )
 
-func LogoutHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB) http.HandlerFunc{
-return func(w http.ResponseWriter, r *http.Request) {
+func LogoutHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
 		session, _ := sessionStore.Get(r, "user-session")
 		session.Values = make(map[interface{}]interface{})
 		session.Options.MaxAge = -1

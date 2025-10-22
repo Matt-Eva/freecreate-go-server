@@ -42,8 +42,6 @@ func CreateRouter(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB, mon
 		json.NewEncoder(w).Encode(response)
 	})
 
-
-
 	return router
 }
 
