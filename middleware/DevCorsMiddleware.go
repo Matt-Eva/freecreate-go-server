@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"fmt"
 	"net/http"
 	"os"
 )
@@ -21,9 +20,9 @@ func DevCorsMiddleware(next http.Handler) http.Handler {
 			return
 		}
 
-		if r.Method == http.MethodPost {
-			fmt.Println("received post request")
-		}
+		// if r.Method == http.MethodPost {
+		// 	fmt.Println("received post request")
+		// }
 		next.ServeHTTP(w, r)
 	})
 }

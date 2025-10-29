@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"freecreate/pgModels"
 	"log"
 	"os"
 
@@ -21,7 +22,7 @@ func ConfigPG() *gorm.DB {
 		fmt.Println("gorm connect to pg successful!")
 	}
 
-	gormPGClient.AutoMigrate(&User{})
+	gormPGClient.AutoMigrate(&pgModels.User{})
 	fmt.Println("all models successfully migrated!")
 
 	return gormPGClient

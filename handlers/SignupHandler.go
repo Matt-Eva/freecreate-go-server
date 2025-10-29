@@ -2,9 +2,15 @@ package handlers
 
 import (
 	"encoding/json"
+	"errors"
+	"fmt"
+	"freecreate/auth"
 	"freecreate/logger"
+	"freecreate/pgModels"
 	"net/http"
+	"time"
 
+	"github.com/google/uuid"
 	"github.com/gorilla/sessions"
 	"gorm.io/gorm"
 )
@@ -13,6 +19,9 @@ func SignupHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB) ht
 	return func(w http.ResponseWriter, r *http.Request) {
 		type Body struct {
 			Email string `json:"email"`
+			BirthDay int `json:"birthDay"`
+			BirthMonth int `json:"birthMonth"`
+			BirthYear int `json:"birthYear"`
 		}
 
 		var body Body
@@ -23,34 +32,40 @@ func SignupHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB) ht
 			http.Error(w, jErr.Error(), http.StatusUnprocessableEntity)
 		}
 
-		// email := body.Email
+		fmt.Println(body.BirthDay)
 
-		// need to check for valid email address before creating user
+		birthDate := time.Date(body.BirthYear, time.Month(body.BirthMonth), body.BirthDay, 0, 0, 0, 0, time.UTC)
+		fmt.Println(birthDate)
 
-		// var currentUser config.User;
-		// var newUser config.User;
+		email := body.Email
 
-		// result := gormPGClient.Where("email = ?", email).First(&currentUser)
-		// if result.Error != nil && result.Error == gorm.ErrRecordNotFound{
-		// 	newUser.Email = email;
-		// 	result := gormPGClient.Create(&newUser);
-		// 	if result.Error != nil {
-		// 		logger.Log(result.Error)
-		// 		http.Error(w, result.Error.Error(), http.StatusUnprocessableEntity)
-		// 		return
-		// 	}
-		// } else {
-		// 	err := errors.New("email address already in use")
-		// 	logger.Log(err)
-		// 	http.Error(w, err.Error(), http.StatusUnprocessableEntity)
-		// 	return
-		// }
+		var currentUser pgModels.User;
+		var newUser pgModels.User;
 
-		// err := auth.CreateSession(sessionStore, w, r, newUser.ID)
-		// if err != nil {
-		// 	logger.Log(err)
-		// 	http.Error(w, err.Error(), http.StatusInternalServerError)
-		// 	return
-		// }
+		result := gormPGClient.Where("email = ?", email).First(&currentUser)
+		if result.Error != nil && result.Error == gorm.ErrRecordNotFound{
+			newUser.Email = email;
+			newUser.Birthday = birthDate
+			newUser.SessionUUID = uuid.New()
+			result := gormPGClient.Create(&newUser);
+
+			if result.Error != nil {
+				logger.Log(result.Error)
+				http.Error(w, result.Error.Error(), http.StatusUnprocessableEntity)
+				return
+			}
+		} else {
+			err := errors.New("email address already in use")
+			logger.Log(err)
+			http.Error(w, err.Error(), http.StatusUnprocessableEntity)
+			return
+		}
+
+		err := auth.CreateSession(sessionStore, w, r, newUser.SessionUUID)
+		if err != nil {
+			logger.Log(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 	}
 }

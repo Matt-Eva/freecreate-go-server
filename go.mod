@@ -23,6 +23,7 @@ require (
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/klauspost/compress v1.16.7 // indirect
+	github.com/lib/pq v1.10.9 // indirect
 	github.com/resend/resend-go/v2 v2.21.0 // indirect
 	github.com/valkey-io/valkey-go v1.0.63 // indirect
 	github.com/xdg-go/pbkdf2 v1.0.0 // indirect
