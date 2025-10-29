@@ -2,9 +2,13 @@ package handlers
 
 import (
 	"encoding/json"
+	"errors"
+	"freecreate/auth"
 	"freecreate/logger"
+	"freecreate/pgModels"
 	"net/http"
 
+	"github.com/google/uuid"
 	"github.com/gorilla/sessions"
 	"gorm.io/gorm"
 )
@@ -24,9 +28,23 @@ func LoginHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB) htt
 			return
 		}
 
-		session, _ := sessionStore.Get(r, "user-session")
-		session.Values["userId"] = true
-		err := session.Save(r, w)
+		email := body.Email
+
+		var user pgModels.User
+
+		result := gormPGClient.Where("email = ?", email).First(&user)
+
+		if errors.Is(result.Error, gorm.ErrRecordNotFound){
+			err := errors.New("we could not find a user with that email address")
+			logger.Log(err)
+			http.Error(w, err.Error(), http.StatusNotFound)
+			return
+		}
+
+		user.SessionUUID = uuid.New()
+		gormPGClient.Save(&user)
+
+		err := auth.CreateSession(sessionStore, w, r, user.SessionUUID)
 		if err != nil {
 			logger.Log(err)
 			http.Error(w, err.Error(), http.StatusInternalServerError)

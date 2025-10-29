@@ -32,28 +32,28 @@ func SignupHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB) ht
 			http.Error(w, jErr.Error(), http.StatusUnprocessableEntity)
 		}
 
-		fmt.Println(body.BirthDay)
-
 		birthDate := time.Date(body.BirthYear, time.Month(body.BirthMonth), body.BirthDay, 0, 0, 0, 0, time.UTC)
-		fmt.Println(birthDate)
-
+	
 		email := body.Email
 
 		var currentUser pgModels.User;
 		var newUser pgModels.User;
 
+		// see if current user exists
 		result := gormPGClient.Where("email = ?", email).First(&currentUser)
 		if result.Error != nil && result.Error == gorm.ErrRecordNotFound{
+			// if they don't exist, create a new user
 			newUser.Email = email;
 			newUser.Birthday = birthDate
 			newUser.SessionUUID = uuid.New()
-			result := gormPGClient.Create(&newUser);
 
+			result := gormPGClient.Create(&newUser);
 			if result.Error != nil {
 				logger.Log(result.Error)
 				http.Error(w, result.Error.Error(), http.StatusUnprocessableEntity)
 				return
 			}
+			fmt.Println(newUser)
 		} else {
 			err := errors.New("email address already in use")
 			logger.Log(err)

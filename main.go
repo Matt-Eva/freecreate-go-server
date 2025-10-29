@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/gob"
 	"freecreate/config"
 	"freecreate/middleware"
 	"freecreate/routes"
@@ -11,6 +12,8 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/google/uuid"
 
 	"github.com/gorilla/sessions"
 	"github.com/joho/godotenv"
@@ -25,6 +28,8 @@ func main() {
 			log.Fatal("Error loading .env file")
 		}
 	}
+
+	gob.Register(uuid.UUID{})
 
 	sessionSecret := os.Getenv("SESSION_SECRET")
 
