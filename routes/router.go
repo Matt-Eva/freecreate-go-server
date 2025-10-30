@@ -27,6 +27,8 @@ func CreateRouter(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB, mon
 
 	router.Delete("/logout", handlers.LogoutHandler(sessionStore, gormPGClient))
 
+	router.Get("/reauth", handlers.ReAuthHandler(sessionStore, gormPGClient))
+
 	router.Get("/hello", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("hit route hello")
 

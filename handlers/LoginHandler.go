@@ -34,7 +34,7 @@ func LoginHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB) htt
 
 		result := gormPGClient.Where("email = ?", email).First(&user)
 
-		if errors.Is(result.Error, gorm.ErrRecordNotFound){
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			err := errors.New("we could not find a user with that email address")
 			logger.Log(err)
 			http.Error(w, err.Error(), http.StatusNotFound)
