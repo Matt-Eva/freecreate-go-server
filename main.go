@@ -31,9 +31,11 @@ func main() {
 
 	gob.Register(uuid.UUID{})
 
-	sessionSecret := os.Getenv("SESSION_SECRET")
+	sessionAuthKey := os.Getenv("SESSION_AUTH_KEY")
 
-	sessionStore := sessions.NewCookieStore([]byte(sessionSecret))
+	sessionEncryptionKey := os.Getenv("SESSION_ENCRYPTION_KEY")
+
+	sessionStore := sessions.NewCookieStore([]byte(sessionAuthKey), []byte(sessionEncryptionKey))
 
 	gormPGClient := config.ConfigPG()
 
