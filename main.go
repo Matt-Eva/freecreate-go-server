@@ -33,9 +33,9 @@ func main() {
 
 	sessionAuthKey := os.Getenv("SESSION_AUTH_KEY")
 
-	sessionEncryptionKey := os.Getenv("SESSION_ENCRYPTION_KEY")
+	// sessionEncryptionKey := os.Getenv("SESSION_ENCRYPTION_KEY")
 
-	sessionStore := sessions.NewCookieStore([]byte(sessionAuthKey), []byte(sessionEncryptionKey))
+	sessionStore := sessions.NewCookieStore([]byte(sessionAuthKey))
 
 	gormPGClient := config.ConfigPG()
 
