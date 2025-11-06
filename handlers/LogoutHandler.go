@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"freecreate/auth"
 	"freecreate/logger"
 	"net/http"
 
@@ -10,11 +11,7 @@ import (
 
 func LogoutHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		session, _ := sessionStore.Get(r, "user-session")
-		session.Values = make(map[interface{}]interface{})
-		session.Options.MaxAge = -1
-
-		err := session.Save(r, w)
+		err := auth.DestroySession(*sessionStore, w, r)
 		if err != nil {
 			logger.Log(err)
 			http.Error(w, err.Error(), http.StatusInternalServerError)
