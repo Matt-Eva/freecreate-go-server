@@ -4,11 +4,12 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"gorm.io/gorm"
 )
 
 type User struct {
-	gorm.Model
+	ID        uint           `gorm:"primaryKey"`
+  	CreatedAt time.Time
+  	UpdatedAt time.Time
 	Email    string    `gorm:"not_null;uniqueIndex"`
 	Birthday time.Time `gorm:"not_null"`
 	// we reset this uuid each time a user logs in to help protect user security from

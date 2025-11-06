@@ -17,10 +17,6 @@ import (
 func CreateRouter(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB, mongoClient *mongo.Client, valkeyClient valkey.Client, resendClient *resend.Client) *chi.Mux {
 	router := chi.NewRouter()
 
-	router.Post("/createOTP", handlers.CreateOTPHandler(resendClient, valkeyClient))
-
-	router.Post("/email", handlers.EmailHandler(resendClient))
-
 	router.Post("/login", handlers.LoginHandler(sessionStore, gormPGClient))
 
 	router.Post("/signup", handlers.SignupHandler(sessionStore, gormPGClient))
@@ -28,6 +24,12 @@ func CreateRouter(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB, mon
 	router.Delete("/logout", handlers.LogoutHandler(sessionStore, gormPGClient))
 
 	router.Get("/reauth", handlers.ReAuthHandler(sessionStore, gormPGClient))
+
+	router.Delete("/delete-account", handlers.DeleteAccountHandler(sessionStore, gormPGClient))
+
+	router.Post("/createOTP", handlers.CreateOTPHandler(resendClient, valkeyClient))
+
+	router.Post("/email", handlers.EmailHandler(resendClient))
 
 	router.Get("/hello", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("hit route hello")
