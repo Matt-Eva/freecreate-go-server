@@ -19,7 +19,7 @@ func DeleteAccountHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm
 			return
 		}
 
-		var user pgModels.User;
+		var user pgModels.User
 
 		result := gormPGClient.Where("session_uuid = ?", userId).Delete(&user)
 		if result.Error != nil {

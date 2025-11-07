@@ -46,7 +46,6 @@ func main() {
 		log.Fatal(err.Error())
 		return
 	}
-	
 
 	// sessionAuthKey := securecookie.GenerateRandomKey(32)
 
