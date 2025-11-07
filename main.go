@@ -2,8 +2,10 @@ package main
 
 import (
 	"context"
+	"encoding/base64"
 	"encoding/gob"
 	"freecreate/config"
+	"freecreate/logger"
 	"freecreate/middleware"
 	"freecreate/routes"
 	"log"
@@ -31,11 +33,26 @@ func main() {
 
 	gob.Register(uuid.UUID{})
 
-	sessionAuthKey := os.Getenv("SESSION_AUTH_KEY")
+	sessionAuthKey, err := base64.StdEncoding.DecodeString(os.Getenv("SESSION_AUTH_KEY"))
+	if err != nil {
+		logger.Log(err)
+		log.Fatal(err.Error())
+		return
+	}
 
-	// sessionEncryptionKey := os.Getenv("SESSION_ENCRYPTION_KEY")
+	sessionEncryptionKey, err := base64.StdEncoding.DecodeString(os.Getenv("SESSION_ENCRYPTION_KEY"))
+	if err != nil {
+		logger.Log(err)
+		log.Fatal(err.Error())
+		return
+	}
+	
 
-	sessionStore := sessions.NewCookieStore([]byte(sessionAuthKey))
+	// sessionAuthKey := securecookie.GenerateRandomKey(32)
+
+	// sessionEncryptionKey := securecookie.GenerateRandomKey(32)
+
+	sessionStore := sessions.NewCookieStore(sessionAuthKey, sessionEncryptionKey)
 
 	gormPGClient := config.ConfigPG()
 
