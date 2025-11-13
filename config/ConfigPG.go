@@ -18,11 +18,15 @@ func ConfigPG() *gorm.DB {
 	gormPGClient, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal("error connecting gorm to postgres")
-	} else {
-		fmt.Println("gorm connect to pg successful!")
+		return nil
 	}
+	fmt.Println("gorm connect to pg successful!")
 
-	gormPGClient.AutoMigrate(&pgModels.User{}, &pgModels.Creator{}, &pgModels.Writing{}, &pgModels.Content{})
+	mErr := gormPGClient.AutoMigrate(&pgModels.User{}, &pgModels.Creator{}, &pgModels.Writing{}, &pgModels.Content{})
+	if mErr != nil {
+		log.Fatal(mErr.Error())
+		return nil
+	}
 	fmt.Println("all models successfully migrated!")
 
 	return gormPGClient

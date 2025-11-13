@@ -20,33 +20,33 @@ type User struct {
 }
 
 type Creator struct {
-	ID uint `gorm:"primaryKey"`
+	ID        uint `gorm:"primaryKey"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	UUID uuid.UUID `gorm:"index:idx_creator_uuid"`
-	Name string `gorm:"not_null"`
-	UserID uint
-	User User
+	UUID      uuid.UUID `gorm:"index:idx_creator_uuid"`
+	Name      string    `gorm:"not_null"`
+	UserID    uint
+	User      User
 }
 
 type Writing struct {
-	ID uint `gorm:"primaryKey"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID          uint `gorm:"primaryKey"`
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
 	WritingType string
-	UUID uuid.UUID `gorm:"index:idx_writing_uuid"`
-	Title string
-	Tags pq.StringArray `gorm:"type:text[];index:idx_writing_tags"`
-	UserID uint
-	User User
-	CreatorID uint
-	Creator Creator
+	UUID        uuid.UUID `gorm:"index:idx_writing_uuid"`
+	Title       string
+	Tags        pq.StringArray `gorm:"type:text[];index:idx_writing_tags"`
+	UserID      uint
+	User        User
+	CreatorID   uint
+	Creator     Creator
 }
 
 type Content struct {
-	ID uint `gorm:"primaryKey"`
-	UUID uuid.UUID `gorm:"index:idx_content_uuid"`
-	Title string
+	ID        uint      `gorm:"primaryKey"`
+	UUID      uuid.UUID `gorm:"index:idx_content_uuid"`
+	Title     string
 	WritingID uint
-	Writing Writing
+	Writing   Writing
 }
