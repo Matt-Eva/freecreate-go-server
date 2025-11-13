@@ -22,7 +22,7 @@ func ConfigPG() *gorm.DB {
 		fmt.Println("gorm connect to pg successful!")
 	}
 
-	gormPGClient.AutoMigrate(&pgModels.User{})
+	gormPGClient.AutoMigrate(&pgModels.User{}, &pgModels.Creator{}, &pgModels.Writing{}, &pgModels.Content{})
 	fmt.Println("all models successfully migrated!")
 
 	return gormPGClient
