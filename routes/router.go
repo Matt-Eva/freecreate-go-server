@@ -1,10 +1,7 @@
 package routes
 
 import (
-	"encoding/json"
-	"fmt"
 	"freecreate/handlers"
-	"net/http"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/gorilla/sessions"
@@ -27,24 +24,28 @@ func CreateRouter(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB, mon
 
 	router.Delete("/delete-account", handlers.DeleteAccountHandler(sessionStore, gormPGClient))
 
-	router.Post("/createOTP", handlers.CreateOTPHandler(resendClient, valkeyClient))
+	router.Post("/writing", handlers.CreateWritingHandler(sessionStore, gormPGClient))
 
-	router.Post("/email", handlers.EmailHandler(resendClient))
+	router.Post("/creator", handlers.CreateCreatorHandler(sessionStore, gormPGClient))
 
-	router.Get("/hello", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Println("hit route hello")
+	// router.Post("/createOTP", handlers.CreateOTPHandler(resendClient, valkeyClient))
 
-		type Response struct {
-			Message string `json:"message"`
-		}
+	// router.Post("/email", handlers.EmailHandler(resendClient))
 
-		response := Response{
-			Message: "Hello world!",
-		}
+	// router.Get("/hello", func(w http.ResponseWriter, r *http.Request) {
+	// 	fmt.Println("hit route hello")
 
-		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(response)
-	})
+	// 	type Response struct {
+	// 		Message string `json:"message"`
+	// 	}
+
+	// 	response := Response{
+	// 		Message: "Hello world!",
+	// 	}
+
+	// 	w.WriteHeader(http.StatusOK)
+	// 	json.NewEncoder(w).Encode(response)
+	// })
 
 	return router
 }

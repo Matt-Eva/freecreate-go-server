@@ -1,0 +1,80 @@
+package handlers
+
+import (
+	"encoding/json"
+	"freecreate/auth"
+	"freecreate/logger"
+	"freecreate/pgModels"
+	"net/http"
+
+	"github.com/google/uuid"
+	"github.com/gorilla/sessions"
+	"gorm.io/gorm"
+)
+
+func CreateCreatorHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		userId, aErr := auth.CheckSession(sessionStore, w, r)
+		if aErr != nil {
+			logger.Log(aErr)
+			http.Error(w, aErr.Error(), http.StatusUnauthorized)
+			return
+		}
+
+		type Body struct {
+			CreatorName string `json:"creatorName"`
+		}
+
+		var body Body;
+
+		jErr := json.NewDecoder(r.Body).Decode(&body)
+		if jErr != nil {
+			logger.Log(jErr)
+			http.Error(w, jErr.Error(), http.StatusUnprocessableEntity)
+			return
+		}
+
+		var user pgModels.User;
+
+		uErr := gormPGClient.Where("session_uuid = ?", userId).First(&user).Error
+		if uErr != nil {
+			logger.Log(uErr)
+			http.Error(w, uErr.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		creatorUUID := uuid.New()
+
+		newCreator := pgModels.Creator{
+			UserID: user.ID,
+			UUID: creatorUUID,
+			Name: body.CreatorName,
+		}
+
+		cErr := gormPGClient.Create(&newCreator).Error
+		if cErr != nil {
+			logger.Log(cErr)
+			http.Error(w, cErr.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		type Response struct {
+			CreatorName string
+		}
+
+		response := Response {
+			CreatorName: newCreator.Name,
+		}
+
+		res, eErr := json.Marshal(response)
+		if eErr != nil {
+			logger.Log(eErr)
+			http.Error(w, eErr.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusCreated)
+		w.Write(res)
+	}
+}

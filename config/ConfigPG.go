@@ -22,12 +22,25 @@ func ConfigPG() *gorm.DB {
 	}
 	fmt.Println("gorm connect to pg successful!")
 
-	mErr := gormPGClient.AutoMigrate(&pgModels.User{}, &pgModels.Creator{}, &pgModels.Writing{}, &pgModels.Content{})
+	mErr := gormPGClient.AutoMigrate(&pgModels.User{}, &pgModels.Creator{}, &pgModels.Tag{}, &pgModels.Writing{}, &pgModels.Content{}, pgModels.Bookshelf{}, pgModels.ContentTag{}, pgModels.Donation{}, pgModels.FreecreateDonation{}, pgModels.ReadWriting{}, pgModels.LikedWriting{}, pgModels.ReadingListWriting{}, pgModels.LibraryWriting{}, pgModels.BookshelfWriting{})
 	if mErr != nil {
 		log.Fatal(mErr.Error())
 		return nil
 	}
 	fmt.Println("all models successfully migrated!")
+
+	type Table struct {
+		TableName string
+	}
+
+	var tables []Table
+
+	tErr := gormPGClient.Table("information_schema.tables").Select("table_name").Where("table_schema = ?", "public").Find(&tables).Error
+	if tErr != nil {
+		log.Fatal(tErr.Error())
+		return nil
+	}
+	fmt.Println("tables", tables)
 
 	return gormPGClient
 }
