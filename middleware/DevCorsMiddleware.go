@@ -11,6 +11,8 @@ func DevCorsMiddleware(next http.Handler) http.Handler {
 		allowedOrigin := os.Getenv("CLIENT_ORIGIN")
 
 		w.Header().Set("Access-Control-Allow-Origin", allowedOrigin)
+
+		// w.Header().Set("Access-Control-Allow-Origin", "http://localhost:4173")
 		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE, OPTIONS")
 		w.Header().Set("Access-Control-Max-Age", "86400")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")

@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"freecreate/auth"
 	"freecreate/logger"
 	"freecreate/pgModels"
@@ -38,7 +37,6 @@ func GetUserCreatorHandlers(sessionStore *sessions.CookieStore, gormPGClient *go
 			http.Error(w, cErr.Error(), http.StatusInternalServerError)
 			return
 		}
-		fmt.Println(creators)
 
 		type Response struct {
 			Creators []pgModels.Creator `json:"creators"`
