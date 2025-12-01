@@ -7,6 +7,7 @@ import (
 	"freecreate/pgModels"
 	"net/http"
 
+	"github.com/google/uuid"
 	"github.com/gorilla/sessions"
 	"gorm.io/gorm"
 )
@@ -29,9 +30,15 @@ func GetUserCreatorHandlers(sessionStore *sessions.CookieStore, gormPGClient *go
 			return
 		}
 
-		var creators []pgModels.Creator;
+		type ResponseCreators struct {
+			Name string `json:"name"`
+			ID uint `json:"id"`
+			UUID uuid.UUID `json:"uuid"`
+		}
 
-		cErr := gormPGClient.Where("user_id = ?", user.ID).Find(&creators).Error
+		var responseCreators []ResponseCreators;
+
+		cErr := gormPGClient.Model(&pgModels.Creator{}).Where("user_id = ?", user.ID).Find(&responseCreators).Error
 		if cErr != nil {
 			logger.Log(cErr)
 			http.Error(w, cErr.Error(), http.StatusInternalServerError)
@@ -39,11 +46,11 @@ func GetUserCreatorHandlers(sessionStore *sessions.CookieStore, gormPGClient *go
 		}
 
 		type Response struct {
-			Creators []pgModels.Creator `json:"creators"`
+			Creators []ResponseCreators `json:"creators"`
 		}
 
 		response := Response {
-			Creators: creators,
+			Creators: responseCreators,
 		}
 
 		res, mErr := json.Marshal(response)

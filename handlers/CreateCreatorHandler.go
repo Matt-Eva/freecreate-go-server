@@ -59,11 +59,15 @@ func CreateCreatorHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm
 		}
 
 		type Response struct {
-			CreatorName string
+			Name string `json:"name"`
+			ID uint `json:"id"`
+			UUID uuid.UUID `json:"uuid"`
 		}
 
 		response := Response {
-			CreatorName: newCreator.Name,
+			Name: newCreator.Name,
+			ID: newCreator.ID,
+			UUID: newCreator.UUID,
 		}
 
 		res, eErr := json.Marshal(response)
