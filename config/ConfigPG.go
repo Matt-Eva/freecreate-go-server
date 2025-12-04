@@ -22,7 +22,7 @@ func ConfigPG() *gorm.DB {
 	}
 	fmt.Println("gorm connect to pg successful!")
 
-	mErr := gormPGClient.AutoMigrate(&pgModels.User{}, &pgModels.Creator{}, &pgModels.Tag{}, &pgModels.Writing{}, &pgModels.Content{}, pgModels.Bookshelf{}, pgModels.ContentTag{}, pgModels.Donation{}, pgModels.FreecreateDonation{}, pgModels.ReadWriting{}, pgModels.LikedWriting{}, pgModels.ReadingListWriting{}, pgModels.LibraryWriting{}, pgModels.BookshelfWriting{})
+	mErr := gormPGClient.AutoMigrate(&pgModels.User{}, &pgModels.Creator{}, &pgModels.Tag{}, &pgModels.Writing{}, &pgModels.Content{}, &pgModels.Bookshelf{}, &pgModels.ContentTag{}, &pgModels.Donation{}, &pgModels.FreecreateDonation{}, &pgModels.ReadWriting{}, &pgModels.LikedWriting{}, &pgModels.ReadingListWriting{}, &pgModels.LibraryWriting{}, &pgModels.BookshelfWriting{})
 	if mErr != nil {
 		log.Fatal(mErr.Error())
 		return nil

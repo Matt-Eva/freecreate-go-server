@@ -12,8 +12,8 @@ import (
 	"gorm.io/gorm"
 )
 
-func GetUserCreatorHandlers(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB) http.HandlerFunc{
-	return func (w http.ResponseWriter, r *http.Request){
+func GetUserCreatorHandlers(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
 		userId, aErr := auth.CheckSession(sessionStore, w, r)
 		if aErr != nil {
 			logger.Log(aErr)
@@ -21,7 +21,7 @@ func GetUserCreatorHandlers(sessionStore *sessions.CookieStore, gormPGClient *go
 			return
 		}
 
-		var user pgModels.User;
+		var user pgModels.User
 
 		uErr := gormPGClient.Where("session_uuid = ?", userId).First(&user).Error
 		if uErr != nil {
@@ -31,12 +31,12 @@ func GetUserCreatorHandlers(sessionStore *sessions.CookieStore, gormPGClient *go
 		}
 
 		type ResponseCreators struct {
-			Name string `json:"name"`
-			ID uint `json:"id"`
+			Name string    `json:"name"`
+			ID   uint      `json:"id"`
 			UUID uuid.UUID `json:"uuid"`
 		}
 
-		var responseCreators []ResponseCreators;
+		var responseCreators []ResponseCreators
 
 		cErr := gormPGClient.Model(&pgModels.Creator{}).Where("user_id = ?", user.ID).Find(&responseCreators).Error
 		if cErr != nil {
@@ -49,7 +49,7 @@ func GetUserCreatorHandlers(sessionStore *sessions.CookieStore, gormPGClient *go
 			Creators []ResponseCreators `json:"creators"`
 		}
 
-		response := Response {
+		response := Response{
 			Creators: responseCreators,
 		}
 

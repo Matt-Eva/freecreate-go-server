@@ -25,7 +25,7 @@ func CreateCreatorHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm
 			CreatorName string `json:"creatorName"`
 		}
 
-		var body Body;
+		var body Body
 
 		jErr := json.NewDecoder(r.Body).Decode(&body)
 		if jErr != nil {
@@ -34,7 +34,7 @@ func CreateCreatorHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm
 			return
 		}
 
-		var user pgModels.User;
+		var user pgModels.User
 
 		uErr := gormPGClient.Where("session_uuid = ?", userId).First(&user).Error
 		if uErr != nil {
@@ -47,8 +47,8 @@ func CreateCreatorHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm
 
 		newCreator := pgModels.Creator{
 			UserID: user.ID,
-			UUID: creatorUUID,
-			Name: body.CreatorName,
+			UUID:   creatorUUID,
+			Name:   body.CreatorName,
 		}
 
 		cErr := gormPGClient.Create(&newCreator).Error
@@ -59,14 +59,14 @@ func CreateCreatorHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm
 		}
 
 		type Response struct {
-			Name string `json:"name"`
-			ID uint `json:"id"`
+			Name string    `json:"name"`
+			ID   uint      `json:"id"`
 			UUID uuid.UUID `json:"uuid"`
 		}
 
-		response := Response {
+		response := Response{
 			Name: newCreator.Name,
-			ID: newCreator.ID,
+			ID:   newCreator.ID,
 			UUID: newCreator.UUID,
 		}
 

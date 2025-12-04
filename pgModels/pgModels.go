@@ -26,20 +26,20 @@ type Bookshelf struct {
 }
 
 type Creator struct {
-	ID        uint `gorm:"primaryKey"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	UUID      uuid.UUID `gorm:"index:idx_creator_uuid"`
-	Name      string    `gorm:"not_null"`
-	UserID    uint
-	User      User
-	Tags pq.StringArray `gorm:"type:text[];index:idx_creator_tags"`
-	Followers uint
-	Subscribers uint
+	ID                 uint `gorm:"primaryKey"`
+	CreatedAt          time.Time
+	UpdatedAt          time.Time
+	UUID               uuid.UUID `gorm:"index:idx_creator_uuid"`
+	Name               string    `gorm:"not_null"`
+	UserID             uint
+	User               User           `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Tags               pq.StringArray `gorm:"type:text[];index:idx_creator_tags"`
+	Followers          uint
+	Subscribers        uint
 	RecurringDonations uint
-	Donations uint
-	Views uint
-	Likes uint
+	Donations          uint
+	Views              uint
+	Likes              uint
 }
 
 type Tag struct {
@@ -47,36 +47,38 @@ type Tag struct {
 	Name string `gorm:"not_null;uniqueIndex"`
 }
 
+// use composite primary key to avoid data redundancy
 type ContentTag struct {
-	TagID     uint `gorm:"primaryKey"`
-	Tag       Tag
-	WritingID uint `gorm:"primaryKey"`
-	Writing   Writing
-	CreatorID uint `gorm:"primaryKey"`
-	Creator Creator
+	ID        uint    `gorm:"primaryKey"`
+	TagID     uint    `gorm:"index"`
+	Tag       Tag     `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	WritingID uint    `gorm:"index"`
+	Writing   Writing `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	CreatorID uint    `gorm:"index"`
+	Creator   Creator
 	CreatedAt time.Time
 }
 
 type Writing struct {
-	ID             uint `gorm:"primaryKey"`
-	CreatedAt      time.Time
-	UpdatedAt      time.Time
-	WritingType    string    `gorm:"not_null"`
-	UUID           uuid.UUID `gorm:"index:idx_writing_uuid"`
-	Title          string
-	Tags           pq.StringArray `gorm:"type:text[];index:idx_writing_tags"`
-	UserID         uint
-	User           User
-	CreatorID      uint
-	Creator        Creator
-	Rank           uint
-	RelRank        uint
-	Views          uint // weight 1
-	Likes          uint // weight 50
-	ListAdds       uint // weight 50
-	LibAdds        uint // weight 200
-	Donations      uint // weight 1000
-	Flags          uint // weight -50
+	ID          uint `gorm:"primaryKey"`
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+	WritingType string    `gorm:"not_null"`
+	UUID        uuid.UUID `gorm:"index:idx_writing_uuid"`
+	Title       string
+	Tags        pq.StringArray `gorm:"type:text[];index:idx_writing_tags"`
+	UserID      uint
+	User        User
+	CreatorID   uint
+	Creator     Creator
+	Rank        uint
+	RelRank     uint
+	Views       uint // weight 1
+	Likes       uint // weight 50
+	ListAdds    uint // weight 50
+	LibAdds     uint // weight 200
+	Donations   uint // weight 1000
+	Flags       uint // weight -50
 }
 
 type Content struct {
@@ -101,23 +103,24 @@ type Donation struct {
 	WritingID   uint
 	Writing     Writing
 	Message     string
-	Value uint
+	Value       uint
 }
 
 type FreecreateDonation struct {
-	ID uint `gorm:"primaryKey"`
+	ID        uint `gorm:"primaryKey"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	UserID uint
-	User User
-	Message string
-	Value uint
+	UserID    uint
+	User      User
+	Message   string
+	Value     uint
 }
 
 type ReadWriting struct {
-	UserID    uint `gorm:"primaryKey"`
+	ID        uint `gorm:"primaryKey"`
+	UserID    uint `gorm:"index"`
 	User      User
-	WritingID uint `gorm:"primaryKey"`
+	WritingID uint `gorm:"index"`
 	Writing   Writing
 	CreatedAt time.Time
 	UpdatedAt time.Time
@@ -125,33 +128,37 @@ type ReadWriting struct {
 }
 
 type LikedWriting struct {
-	UserID    uint `gorm:"primaryKey"`
+	ID        uint `gorm:"primaryKey"`
+	UserID    uint `gorm:"index"`
 	User      User
-	WritingID uint `gorm:"primaryKey"`
+	WritingID uint `gorm:"index"`
 	Writing   Writing
 	CreatedAt time.Time
 }
 
 type ReadingListWriting struct {
-	UserID    uint `gorm:"primaryKey"`
+	ID        uint `gorm:"primaryKey"`
+	UserID    uint `gorm:"index"`
 	User      User
-	WritingID uint `gorm:"primaryKey"`
+	WritingID uint `gorm:"index"`
 	Writing   Writing
 	CreatedAt time.Time
 }
 
 type LibraryWriting struct {
-	UserID    uint `gorm:"primaryKey"`
+	ID        uint `gorm:"primaryKey"`
+	UserID    uint `gorm:"index"`
 	User      User
-	WritingID uint `gorm:"primaryKey"`
+	WritingID uint `gorm:"index"`
 	Writing   Writing
 	CreatedAt time.Time
 }
 
 type BookshelfWriting struct {
-	BookshelfID uint `gorm:"primaryKey"`
+	ID          uint `gorm:"primaryKey"`
+	BookshelfID uint `gorm:"index"`
 	Bookshelf   Bookshelf
-	WritingID   uint `gorm:"primaryKey"`
+	WritingID   uint `gorm:"index"`
 	Writing     Writing
 	CreatedAt   time.Time
 	Position    int
