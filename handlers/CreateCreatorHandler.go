@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"freecreate/auth"
 	"freecreate/logger"
 	"freecreate/pgModels"
@@ -44,17 +45,18 @@ func CreateCreatorHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm
 			return
 		}
 
-		//ensure no duplicate creator names
-		fErr := gormPGClient.Where("user_id = ? AND name = ?", user.ID, body.CreatorName).Error
-		if fErr != nil && fErr != gorm.ErrRecordNotFound {
+		var existingCreator []pgModels.Creator;
+
+		fErr := gormPGClient.Where("user_id = ? AND name = ?", user.ID, body.CreatorName).Find(&existingCreator).Error
+		fmt.Println(fErr)
+		if fErr != nil {
 			logger.Log(fErr)
 			http.Error(w, fErr.Error(), http.StatusInternalServerError)
 			return
-		} else if fErr == nil {
-			err := errors.New("cannot create a creator with a duplicate name")
+		} else if len(existingCreator) != 0{
+			err := errors.New("cannot create creator with duplicate name")
 			logger.Log(err)
-			http.Error(w, err.Error(), http.StatusUnprocessableEntity)
-			return
+			http.Error(w, err.Error(), http.StatusConflict)
 		}
 
 		creatorUUID := uuid.New()
