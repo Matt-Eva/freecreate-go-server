@@ -11,6 +11,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/gorilla/sessions"
+	"github.com/jackc/pgx/v5/pgconn"
 	"gorm.io/gorm"
 )
 
@@ -45,19 +46,20 @@ func CreateCreatorHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm
 			return
 		}
 
-		var existingCreator []pgModels.Creator;
+		// var existingCreator []pgModels.Creator;
 
-		fErr := gormPGClient.Where("user_id = ? AND name = ?", user.ID, body.CreatorName).Find(&existingCreator).Error
-		fmt.Println(fErr)
-		if fErr != nil {
-			logger.Log(fErr)
-			http.Error(w, fErr.Error(), http.StatusInternalServerError)
-			return
-		} else if len(existingCreator) != 0{
-			err := errors.New("cannot create creator with duplicate name")
-			logger.Log(err)
-			http.Error(w, err.Error(), http.StatusConflict)
-		}
+		// result := gormPGClient.Where("user_id = ? AND name = ?", user.ID, body.CreatorName).Find(&existingCreator)
+		// fmt.Println(result.Error)
+		// fmt.Println(result.Error == gorm.ErrDuplicatedKey)
+		// if result.Error != nil {
+		// 	logger.Log(result.Error)
+		// 	http.Error(w, result.Error.Error(), http.StatusInternalServerError)
+		// 	return
+		// } else if len(existingCreator) != 0{
+		// 	err := errors.New("cannot create creator with duplicate name")
+		// 	logger.Log(err)
+		// 	http.Error(w, err.Error(), http.StatusConflict)
+		// }
 
 		creatorUUID := uuid.New()
 
@@ -67,11 +69,16 @@ func CreateCreatorHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm
 			Name:   body.CreatorName,
 		}
 
-		cErr := gormPGClient.Create(&newCreator).Error
+		result := gormPGClient.Create(&newCreator)
 	
-		if cErr != nil {
-			// logger.Log(cErr)
-			http.Error(w, cErr.Error(), http.StatusInternalServerError)
+		var pgErr *pgconn.PgError
+		fmt.Println(errors.As(result.Error, &pgErr))
+		fmt.Println(pgErr)
+		fmt.Println(pgErr.Code)
+	
+		if result.Error != nil {
+			// logger.Log(result.Error)
+			http.Error(w, result.Error.Error(), http.StatusInternalServerError)
 			return
 		}
 

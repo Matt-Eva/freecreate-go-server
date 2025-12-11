@@ -41,6 +41,8 @@ func SignupHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB) ht
 
 		// see if current user exists
 		result := gormPGClient.Where("email = ?", email).First(&currentUser)
+		fmt.Println(result.Error)
+		fmt.Println(result.Error == gorm.ErrRecordNotFound)
 		if result.Error != nil && result.Error == gorm.ErrRecordNotFound {
 			// if they don't exist, create a new user
 			newUser.Email = email
