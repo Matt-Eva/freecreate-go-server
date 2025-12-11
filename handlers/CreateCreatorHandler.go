@@ -70,15 +70,17 @@ func CreateCreatorHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm
 		}
 
 		result := gormPGClient.Create(&newCreator)
+		fmt.Println(result.Error)
 	
-		var pgErr *pgconn.PgError
+		
+	
+		if result.Error != nil {
+			var pgErr *pgconn.PgError
 		fmt.Println(errors.As(result.Error, &pgErr))
 		fmt.Println(pgErr)
 		fmt.Println(pgErr.Code)
-	
-		if result.Error != nil {
-			// logger.Log(result.Error)
-			http.Error(w, result.Error.Error(), http.StatusInternalServerError)
+			logger.Log(pgErr)
+			http.Error(w, "you cannot create two creators with the same name", http.StatusConflict)
 			return
 		}
 
