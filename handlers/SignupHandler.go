@@ -3,7 +3,6 @@ package handlers
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"freecreate/auth"
 	"freecreate/logger"
 	"freecreate/pgModels"
@@ -12,6 +11,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/gorilla/sessions"
+	"github.com/jackc/pgx/v5/pgconn"
 	"gorm.io/gorm"
 )
 
@@ -36,31 +36,25 @@ func SignupHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB) ht
 
 		email := body.Email
 
-		var currentUser pgModels.User
-		var newUser pgModels.User
-
-		// see if current user exists
-		result := gormPGClient.Where("email = ?", email).First(&currentUser)
-		fmt.Println(result.Error)
-		fmt.Println(result.Error == gorm.ErrRecordNotFound)
-		if result.Error != nil && result.Error == gorm.ErrRecordNotFound {
-			// if they don't exist, create a new user
-			newUser.Email = email
-			newUser.Birthday = birthDate
-			newUser.SessionUUID = uuid.New()
-
-			result := gormPGClient.Create(&newUser)
-			if result.Error != nil {
+		newUser := pgModels.User{
+			Email: email,
+			Birthday: birthDate,
+			SessionUUID: uuid.New(),
+		}
+		
+		result := gormPGClient.Create(&newUser)
+		
+		if result.Error != nil {
+			var pgErr *pgconn.PgError
+			errors.As(result.Error, &pgErr)
+			if pgErr.Code == "23505" {
+				http.Error(w, "email address already in use with another account", http.StatusConflict)
+				return
+			} else {
 				logger.Log(result.Error)
-				http.Error(w, result.Error.Error(), http.StatusUnprocessableEntity)
+				http.Error(w, result.Error.Error(), http.StatusInternalServerError)
 				return
 			}
-			fmt.Println(newUser)
-		} else {
-			err := errors.New("email address already in use")
-			logger.Log(err)
-			http.Error(w, err.Error(), http.StatusUnprocessableEntity)
-			return
 		}
 
 		err := auth.CreateSession(sessionStore, w, r, newUser.SessionUUID)

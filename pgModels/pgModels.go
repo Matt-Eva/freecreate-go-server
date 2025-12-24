@@ -29,10 +29,10 @@ type Creator struct {
 	ID                 uint `gorm:"primaryKey"`
 	CreatedAt          time.Time
 	UpdatedAt          time.Time
-	UUID               uuid.UUID `gorm:"index:idx_creator_uuid"`
-	UserID             uint			`gorm:"index:idx_creator_name_user_id,unique"`
+	UUID               uuid.UUID      `gorm:"index:idx_creator_uuid"`
+	UserID             uint           `gorm:"index:idx_creator_name_user_id,unique"`
 	User               User           `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	Name               string    `gorm:"not_null;index:idx_creator_name_user_id,unique"`
+	Name               string         `gorm:"not_null;index:idx_creator_name_user_id,unique"`
 	Tags               pq.StringArray `gorm:"type:text[];index:idx_creator_tags"`
 	Followers          uint
 	Subscribers        uint

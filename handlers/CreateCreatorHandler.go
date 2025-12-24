@@ -3,7 +3,6 @@ package handlers
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"freecreate/auth"
 	"freecreate/logger"
 	"freecreate/pgModels"
@@ -40,26 +39,23 @@ func CreateCreatorHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm
 		var user pgModels.User
 
 		uErr := gormPGClient.Where("session_uuid = ?", userId).First(&user).Error
-		if uErr != nil {
+		if uErr != nil && uErr == gorm.ErrRecordNotFound {
+			logger.Log(uErr)
+
+			aErr := auth.DestroySession(sessionStore, w, r)
+			if aErr != nil {
+				logger.Log(aErr)
+				http.Error(w, aErr.Error(), http.StatusInternalServerError)
+				return
+			}
+			
+			http.Error(w, "Looks like your session expired! Logging you out - please log back in and try again.", http.StatusNotFound)
+			return
+		} else if uErr != nil {
 			logger.Log(uErr)
 			http.Error(w, uErr.Error(), http.StatusInternalServerError)
 			return
 		}
-
-		// var existingCreator []pgModels.Creator;
-
-		// result := gormPGClient.Where("user_id = ? AND name = ?", user.ID, body.CreatorName).Find(&existingCreator)
-		// fmt.Println(result.Error)
-		// fmt.Println(result.Error == gorm.ErrDuplicatedKey)
-		// if result.Error != nil {
-		// 	logger.Log(result.Error)
-		// 	http.Error(w, result.Error.Error(), http.StatusInternalServerError)
-		// 	return
-		// } else if len(existingCreator) != 0{
-		// 	err := errors.New("cannot create creator with duplicate name")
-		// 	logger.Log(err)
-		// 	http.Error(w, err.Error(), http.StatusConflict)
-		// }
 
 		creatorUUID := uuid.New()
 
@@ -70,18 +66,19 @@ func CreateCreatorHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm
 		}
 
 		result := gormPGClient.Create(&newCreator)
-		fmt.Println(result.Error)
-	
-		
-	
+
 		if result.Error != nil {
 			var pgErr *pgconn.PgError
-		fmt.Println(errors.As(result.Error, &pgErr))
-		fmt.Println(pgErr)
-		fmt.Println(pgErr.Code)
-			logger.Log(pgErr)
-			http.Error(w, "you cannot create two creators with the same name", http.StatusConflict)
-			return
+			errors.As(result.Error, &pgErr)
+
+			if pgErr.Code == "23505" {
+				http.Error(w, "you cannot create two creators with the same name", http.StatusConflict)
+				return
+			} else {
+				logger.Log(result.Error)
+				http.Error(w, result.Error.Error(), http.StatusInternalServerError)
+				return
+			}
 		}
 
 		type Response struct {
