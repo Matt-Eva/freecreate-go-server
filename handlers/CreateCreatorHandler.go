@@ -48,7 +48,7 @@ func CreateCreatorHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm
 				http.Error(w, aErr.Error(), http.StatusInternalServerError)
 				return
 			}
-			
+
 			http.Error(w, "Looks like your session expired! Logging you out - please log back in and try again.", http.StatusNotFound)
 			return
 		} else if uErr != nil {
