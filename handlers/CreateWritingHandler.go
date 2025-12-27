@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"freecreate/auth"
 	"freecreate/logger"
 	"net/http"
@@ -11,14 +12,16 @@ import (
 
 func CreateWritingHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		_, aErr := auth.CheckSession(sessionStore, w, r)
-		if aErr != nil {
-			logger.Log(aErr)
-			http.Error(w, aErr.Error(), http.StatusUnauthorized)
+		userId, uErr := auth.GetUser(sessionStore, gormPGClient, w, r)
+		if uErr != nil {
+			logger.Log(uErr)
+			http.Error(w, "failed to fetch authorized user", http.StatusInternalServerError)
 			return
 		}
 
-		//gormPGClient.Raw(`INSERT INTO `)
+		fmt.Println(userId)
+
+		
 
 	}
 }
