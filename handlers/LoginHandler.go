@@ -46,6 +46,7 @@ func LoginHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB) htt
 		}
 
 		user.SessionUUID = uuid.New()
+
 		sResult := gormPGClient.Save(&user)
 		if sResult.Error != nil {
 			logger.Log(sResult.Error)
@@ -59,5 +60,7 @@ func LoginHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB) htt
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+		
+		w.WriteHeader(http.StatusAccepted)
 	}
 }
