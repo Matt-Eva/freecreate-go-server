@@ -64,6 +64,7 @@ type Writing struct {
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
 	LastPublished time.Time `gorm:"index"`
+	IsPublished   bool
 	WritingType   string    `gorm:"not_null"`
 	UUID          uuid.UUID `gorm:"index:idx_writing_uuid"`
 	Title         string

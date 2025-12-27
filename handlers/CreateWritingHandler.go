@@ -18,8 +18,12 @@ func CreateWritingHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm
 			http.Error(w, "failed to fetch authorized user", http.StatusInternalServerError)
 			return
 		}
-
 		fmt.Println(userId)
+
+		type Body struct {
+			CreatorId uint
+			
+		}
 
 	}
 }
