@@ -21,7 +21,5 @@ func CreateWritingHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm
 
 		fmt.Println(userId)
 
-		
-
 	}
 }

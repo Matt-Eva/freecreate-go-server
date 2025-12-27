@@ -37,13 +37,13 @@ func SignupHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB) ht
 		email := body.Email
 
 		newUser := pgModels.User{
-			Email: email,
-			Birthday: birthDate,
+			Email:       email,
+			Birthday:    birthDate,
 			SessionUUID: uuid.New(),
 		}
-		
+
 		result := gormPGClient.Create(&newUser)
-		
+
 		if result.Error != nil {
 			var pgErr *pgconn.PgError
 			errors.As(result.Error, &pgErr)
