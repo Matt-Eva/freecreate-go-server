@@ -21,9 +21,13 @@ func CreateWritingHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm
 		fmt.Println(userId)
 
 		type Body struct {
-			CreatorId uint
-			
+			CreatorId uint `json:"creatorId"`
+			Title string `json:"title"`
+			Description string `json:"description"`
+			Tags []string `json:"tags"`
 		}
+
+		
 
 	}
 }
