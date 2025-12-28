@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"encoding/json"
 	"fmt"
 	"freecreate/auth"
 	"freecreate/logger"
@@ -26,6 +27,17 @@ func CreateWritingHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm
 			Description string `json:"description"`
 			Tags []string `json:"tags"`
 		}
+
+		var body Body
+
+		jErr := json.NewDecoder(r.Body).Decode(&body)
+		if jErr != nil {
+			logger.Log(jErr)
+			http.Error(w, jErr.Error(), http.StatusUnprocessableEntity)
+			return
+		}
+
+		fmt.Println(body)
 
 		
 
