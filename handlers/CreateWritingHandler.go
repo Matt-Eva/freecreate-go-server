@@ -5,8 +5,11 @@ import (
 	"fmt"
 	"freecreate/auth"
 	"freecreate/logger"
+	"freecreate/pgModels"
 	"net/http"
+	"time"
 
+	"github.com/google/uuid"
 	"github.com/gorilla/sessions"
 	"gorm.io/gorm"
 )
@@ -37,7 +40,23 @@ func CreateWritingHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm
 			return
 		}
 
-		fmt.Println(body)
+		if body.CreatorId == 0 || body.Title == ""{
+			http.Error(w, "must have a valid creator and a title", http.StatusUnprocessableEntity)
+			return
+		}
+
+		newWriting := pgModels.Writing{
+			UserID: userId,
+			CreatorID: body.CreatorId,
+			Tags: body.Tags,
+			Description: body.Description,
+			UUID: uuid.New(),
+			IsPublished: false,
+			LastPublished: time.Now(),
+		}
+
+		fmt.Println(newWriting)
+		
 
 		
 

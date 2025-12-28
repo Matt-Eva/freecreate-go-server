@@ -66,8 +66,9 @@ type Writing struct {
 	LastPublished time.Time `gorm:"index"`
 	IsPublished   bool
 	WritingType   string    `gorm:"not_null"`
-	UUID          uuid.UUID `gorm:"index:idx_writing_uuid"`
+	UUID          uuid.UUID `gorm:"index:idx_writing_uuid:not_null"`
 	Title         string
+	Description   string
 	Tags          pq.StringArray `gorm:"type:text[];index:idx_writing_tags"`
 	UserID        uint
 	User          User `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
