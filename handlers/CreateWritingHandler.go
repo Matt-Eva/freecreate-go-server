@@ -29,6 +29,7 @@ func CreateWritingHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm
 			Title string `json:"title"`
 			Description string `json:"description"`
 			Tags []string `json:"tags"`
+			WritingType string `json:"writingType"`
 		}
 
 		var body Body
@@ -53,9 +54,22 @@ func CreateWritingHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm
 			UUID: uuid.New(),
 			IsPublished: false,
 			LastPublished: time.Now(),
+			// WritingType: body.WritingType,
 		}
 
-		fmt.Println(newWriting)
+		if newWriting.UserID == 0 || newWriting.CreatorID == 0 || newWriting.WritingType == ""{
+			http.Error(w, "must have a valid user id, creator id, and writing type", http.StatusUnprocessableEntity)
+			return
+		}
+		
+
+		cErr := gormPGClient.Create(&newWriting).Error
+		if cErr != nil {
+			logger.Log(cErr)
+			http.Error(w, cErr.Error(), http.StatusInternalServerError)
+			return
+		}
+		
 		
 
 		
