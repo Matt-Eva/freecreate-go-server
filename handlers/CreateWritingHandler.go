@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"freecreate/auth"
 	"freecreate/logger"
 	"freecreate/pgModels"
@@ -22,7 +21,7 @@ func CreateWritingHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm
 			http.Error(w, "failed to fetch authorized user", http.StatusInternalServerError)
 			return
 		}
-		fmt.Println(userId)
+		
 
 		type Body struct {
 			CreatorId uint `json:"creatorId"`
@@ -54,7 +53,7 @@ func CreateWritingHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm
 			UUID: uuid.New(),
 			IsPublished: false,
 			LastPublished: time.Now(),
-			// WritingType: body.WritingType,
+			WritingType: body.WritingType,
 		}
 
 		if newWriting.UserID == 0 || newWriting.CreatorID == 0 || newWriting.WritingType == ""{
@@ -70,9 +69,23 @@ func CreateWritingHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm
 			return
 		}
 		
-		
+		type Response struct {
+			WritingUUID uuid.UUID `json:"writingUUID"`
+		}
 
-		
+		response := Response {
+			WritingUUID: newWriting.UUID,
+		}
 
+		res, mErr := json.Marshal(response)
+		if mErr != nil {
+			logger.Log(mErr)
+			http.Error(w, mErr.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusAccepted)
+		w.Write(res)
 	}
 }
