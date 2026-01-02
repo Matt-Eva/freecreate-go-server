@@ -12,6 +12,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
 	"github.com/gorilla/sessions"
+	"github.com/lib/pq"
 	"gorm.io/gorm"
 )
 
@@ -37,7 +38,7 @@ func GetEditWritingHandler(sessionStore *sessions.CookieStore, gormPGClient *gor
 			Title string `json:"title"`
 			Description string `json:"description"`
 			WritingType string `json:"writingType"`
-			Tags string `json:"tags"`
+			Tags pq.StringArray `json:"tags" gorm:"type:text[]"`
 			UUID uuid.UUID `json:"writingUUID"`
 			CreatorID uint `json:"creatorId"`
 			IsPublished bool `json:"isPublished"`
@@ -51,6 +52,8 @@ func GetEditWritingHandler(sessionStore *sessions.CookieStore, gormPGClient *gor
 			http.Error(w, wErr.Error(), http.StatusInternalServerError)
 			return
 		}
+
+		fmt.Println(editWriting)
 
 		res, mErr := json.Marshal(editWriting)
 		if mErr != nil {
