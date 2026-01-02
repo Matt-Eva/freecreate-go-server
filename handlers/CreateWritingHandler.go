@@ -26,8 +26,6 @@ func CreateWritingHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm
 		type Body struct {
 			CreatorId uint `json:"creatorId"`
 			Title string `json:"title"`
-			Description string `json:"description"`
-			Tags []string `json:"tags"`
 			WritingType string `json:"writingType"`
 		}
 
@@ -48,8 +46,6 @@ func CreateWritingHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm
 		newWriting := pgModels.Writing{
 			UserID: userId,
 			CreatorID: body.CreatorId,
-			Tags: body.Tags,
-			Description: body.Description,
 			UUID: uuid.New(),
 			IsPublished: false,
 			LastPublished: time.Now(),
