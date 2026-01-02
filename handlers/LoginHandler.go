@@ -60,7 +60,7 @@ func LoginHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB) htt
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		
+
 		w.WriteHeader(http.StatusAccepted)
 	}
 }

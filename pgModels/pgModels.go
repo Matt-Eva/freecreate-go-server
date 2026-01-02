@@ -64,10 +64,10 @@ type Writing struct {
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
 	LastPublished time.Time `gorm:"not_null;index"`
-	IsPublished   bool	`gorm:"not_null"`
+	IsPublished   bool      `gorm:"not_null"`
 	WritingType   string    `gorm:"not_null"`
 	UUID          uuid.UUID `gorm:"not_null;index:idx_writing_uuid"`
-	Title         string
+	Title         string    `gorm:"not_null"`
 	Description   string
 	Tags          pq.StringArray `gorm:"type:text[];index:idx_writing_tags"`
 	UserID        uint

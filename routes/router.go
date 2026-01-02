@@ -32,6 +32,8 @@ func CreateRouter(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB, mon
 
 	router.Get("/user-creators", handlers.GetUserCreatorHandlers(sessionStore, gormPGClient))
 
+	router.Get("/my-writing", handlers.GetMyWritingHandler(sessionStore, gormPGClient))
+
 	// router.Post("/createOTP", handlers.CreateOTPHandler(resendClient, valkeyClient))
 
 	// router.Post("/email", handlers.EmailHandler(resendClient))

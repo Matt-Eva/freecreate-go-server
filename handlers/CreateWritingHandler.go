@@ -21,11 +21,10 @@ func CreateWritingHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm
 			http.Error(w, "failed to fetch authorized user", http.StatusInternalServerError)
 			return
 		}
-		
 
 		type Body struct {
-			CreatorId uint `json:"creatorId"`
-			Title string `json:"title"`
+			CreatorId   uint   `json:"creatorId"`
+			Title       string `json:"title"`
 			WritingType string `json:"writingType"`
 		}
 
@@ -38,25 +37,20 @@ func CreateWritingHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm
 			return
 		}
 
-		if body.CreatorId == 0 || body.Title == ""{
-			http.Error(w, "must have a valid creator and a title", http.StatusUnprocessableEntity)
-			return
-		}
-
 		newWriting := pgModels.Writing{
-			UserID: userId,
-			CreatorID: body.CreatorId,
-			UUID: uuid.New(),
-			IsPublished: false,
+			UserID:        userId,
+			CreatorID:     body.CreatorId,
+			Title:         body.Title,
+			UUID:          uuid.New(),
+			IsPublished:   false,
 			LastPublished: time.Now(),
-			WritingType: body.WritingType,
+			WritingType:   body.WritingType,
 		}
 
-		if newWriting.UserID == 0 || newWriting.CreatorID == 0 || newWriting.WritingType == ""{
+		if newWriting.UserID == 0 || newWriting.CreatorID == 0 || newWriting.WritingType == "" || newWriting.Title == "" {
 			http.Error(w, "must have a valid user id, creator id, and writing type", http.StatusUnprocessableEntity)
 			return
 		}
-		
 
 		cErr := gormPGClient.Create(&newWriting).Error
 		if cErr != nil {
@@ -64,12 +58,12 @@ func CreateWritingHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm
 			http.Error(w, cErr.Error(), http.StatusInternalServerError)
 			return
 		}
-		
+
 		type Response struct {
 			WritingUUID uuid.UUID `json:"writingUUID"`
 		}
 
-		response := Response {
+		response := Response{
 			WritingUUID: newWriting.UUID,
 		}
 
