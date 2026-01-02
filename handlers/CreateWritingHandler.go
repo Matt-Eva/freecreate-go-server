@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"errors"
 	"freecreate/auth"
 	"freecreate/logger"
 	"freecreate/pgModels"
@@ -45,6 +46,17 @@ func CreateWritingHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm
 			IsPublished:   false,
 			LastPublished: time.Now(),
 			WritingType:   body.WritingType,
+		}
+
+		if newWriting.WritingType == "Essay" || newWriting.WritingType == "Blog"{
+			newWriting.Tags = []string{"no-topic"}
+		} else if newWriting.WritingType == "Short Story" || newWriting.WritingType == "Novellette" || newWriting.WritingType == "Novella" || newWriting.WritingType == "Novel"{
+			newWriting.Tags = []string{"no-genre"}
+		} else if newWriting.WritingType != "Poetry"{
+			err := errors.New("invalid writing type")
+			logger.Log(err)
+			http.Error(w, err.Error(), http.StatusUnprocessableEntity)
+			return
 		}
 
 		if newWriting.UserID == 0 || newWriting.CreatorID == 0 || newWriting.WritingType == "" || newWriting.Title == "" {
