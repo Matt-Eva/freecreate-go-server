@@ -23,17 +23,19 @@ func CreateRouter(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB, mon
 	router.Get("/reauth", handlers.ReAuthHandler(sessionStore, gormPGClient))
 
 	router.Delete("/delete-account", handlers.DeleteAccountHandler(sessionStore, gormPGClient))
-
-	router.Post("/writing", handlers.CreateWritingHandler(sessionStore, gormPGClient))
-
+	
 	router.Post("/creator", handlers.CreateCreatorHandler(sessionStore, gormPGClient))
-
+	
 	router.Delete("/creator/{creatorId}", handlers.DeleteCreatorHandler(sessionStore, gormPGClient))
-
+	
 	router.Get("/user-creators", handlers.GetUserCreatorHandlers(sessionStore, gormPGClient))
-
+	
+	router.Post("/writing", handlers.CreateWritingHandler(sessionStore, gormPGClient))
+	
 	router.Get("/my-writing", handlers.GetMyWritingHandler(sessionStore, gormPGClient))
-
+	
+	router.Get("/edit-writing/{writingUUID}", handlers.GetEditWritingHandler(sessionStore, gormPGClient))
+	
 	// router.Post("/createOTP", handlers.CreateOTPHandler(resendClient, valkeyClient))
 
 	// router.Post("/email", handlers.EmailHandler(resendClient))

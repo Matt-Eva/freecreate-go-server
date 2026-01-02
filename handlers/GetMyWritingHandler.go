@@ -21,9 +21,9 @@ func GetMyWritingHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm.
 		}
 
 		type Writing struct {
-			Title       string
-			UUID        string
-			IsPublished bool
+			Title       string `json:"title"`
+			UUID        string	`json:"writingUUID"`
+			IsPublished bool	`json:"isPublished"`
 		}
 
 		var writing []Writing

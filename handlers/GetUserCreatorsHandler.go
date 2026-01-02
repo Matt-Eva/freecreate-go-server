@@ -14,19 +14,10 @@ import (
 
 func GetUserCreatorHandlers(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		userId, aErr := auth.CheckSession(sessionStore, w, r)
+		userId, aErr := auth.GetUser(sessionStore, gormPGClient, w, r)
 		if aErr != nil {
 			logger.Log(aErr)
 			http.Error(w, aErr.Error(), http.StatusUnauthorized)
-			return
-		}
-
-		var user pgModels.User
-
-		uErr := gormPGClient.Where("session_uuid = ?", userId).First(&user).Error
-		if uErr != nil {
-			logger.Log(uErr)
-			http.Error(w, uErr.Error(), http.StatusInternalServerError)
 			return
 		}
 
@@ -38,7 +29,7 @@ func GetUserCreatorHandlers(sessionStore *sessions.CookieStore, gormPGClient *go
 
 		var responseCreators []ResponseCreators
 
-		cErr := gormPGClient.Model(&pgModels.Creator{}).Where("user_id = ?", user.ID).Find(&responseCreators).Error
+		cErr := gormPGClient.Model(&pgModels.Creator{}).Where("user_id = ?", userId).Find(&responseCreators).Error
 		if cErr != nil {
 			logger.Log(cErr)
 			http.Error(w, cErr.Error(), http.StatusInternalServerError)

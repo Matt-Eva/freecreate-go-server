@@ -2,7 +2,6 @@ package auth
 
 import (
 	"errors"
-	"fmt"
 	"net/http"
 
 	"github.com/google/uuid"
@@ -11,7 +10,7 @@ import (
 
 func CheckSession(sessionStore *sessions.CookieStore, w http.ResponseWriter, r *http.Request) (uuid.UUID, error) {
 	session, _ := sessionStore.Get(r, "user-session")
-	fmt.Println(session.Values["userId"])
+	
 	if session.Values["userId"] == nil {
 		return uuid.Nil, errors.New("user not logged in")
 	}

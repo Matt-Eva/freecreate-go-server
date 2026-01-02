@@ -91,6 +91,7 @@ type Content struct {
 	WritingID   uint
 	Writing     Writing `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	ContentType string
+	IsPublished bool
 }
 
 type Donation struct {
