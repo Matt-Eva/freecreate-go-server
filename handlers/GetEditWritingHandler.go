@@ -3,7 +3,6 @@ package handlers
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"freecreate/auth"
 	"freecreate/logger"
 	"freecreate/pgModels"
@@ -32,7 +31,6 @@ func GetEditWritingHandler(sessionStore *sessions.CookieStore, gormPGClient *gor
 			http.Error(w, err.Error(), http.StatusUnprocessableEntity)
 			return
 		}
-		fmt.Println(writingUUID)
 
 		type EditWriting struct {
 			Title string `json:"title"`
@@ -52,8 +50,6 @@ func GetEditWritingHandler(sessionStore *sessions.CookieStore, gormPGClient *gor
 			http.Error(w, wErr.Error(), http.StatusInternalServerError)
 			return
 		}
-
-		fmt.Println(editWriting)
 
 		res, mErr := json.Marshal(editWriting)
 		if mErr != nil {

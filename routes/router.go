@@ -31,6 +31,8 @@ func CreateRouter(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB, mon
 	router.Get("/user-creators", handlers.GetUserCreatorHandlers(sessionStore, gormPGClient))
 	
 	router.Post("/writing", handlers.CreateWritingHandler(sessionStore, gormPGClient))
+
+	router.Patch("/writing", handlers.UpdateWritingHandler(sessionStore, gormPGClient))
 	
 	router.Get("/my-writing", handlers.GetMyWritingHandler(sessionStore, gormPGClient))
 	
