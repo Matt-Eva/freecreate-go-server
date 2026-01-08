@@ -21,3 +21,5 @@ Pros: makes it harder to accidentally insert empty values into the database.
 Cons: Can dramatically slow down creation queries by a factor of 3 or so.
 
 Decision: just go for the simpler option that works for the time being. We aren't concerned about absolute maximum performance at this point, and this can be addressed / changed with relative ease in the future when maximum performance becomes more critical.
+
+# Questions

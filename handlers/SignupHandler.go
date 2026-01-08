@@ -42,6 +42,13 @@ func SignupHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB) ht
 			SessionUUID: uuid.New(),
 		}
 
+		if newUser.Email == "" {
+			err := errors.New("email cannot be empty")
+			logger.Log(err)
+			http.Error(w, err.Error(), http.StatusUnprocessableEntity)
+			return
+		}
+
 		result := gormPGClient.Create(&newUser)
 
 		if result.Error != nil {
