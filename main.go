@@ -53,6 +53,15 @@ func main() {
 
 	sessionStore := sessions.NewCookieStore(sessionAuthKey, sessionEncryptionKey)
 
+	if environment == "PRODUCTION"{
+		sessionStore.Options = &sessions.Options{
+			Secure: true,
+			SameSite: http.SameSiteStrictMode,
+			HttpOnly: true,
+		}
+	}
+	
+
 	gormPGClient := config.ConfigPG()
 
 	mongoClient := config.ConfigMongo()

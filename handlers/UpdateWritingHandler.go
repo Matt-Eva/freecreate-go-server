@@ -6,7 +6,9 @@ import (
 	"freecreate/logger"
 	"net/http"
 
+	"github.com/google/uuid"
 	"github.com/gorilla/sessions"
+	"github.com/lib/pq"
 	"gorm.io/gorm"
 )
 
@@ -21,7 +23,10 @@ func UpdateWritingHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm
 		fmt.Println(userId)
 
 		type Body struct {
-			
+			WritingUUID uuid.UUID `json:"writingUUID"`
+			Title string `json:"title"`
+			Description string `json:"description"`
+			Tags pq.StringArray `json:"tags" gorm:"type:text[]"`
 		}
 	}
 }

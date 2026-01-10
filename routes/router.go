@@ -1,7 +1,11 @@
 package routes
 
 import (
+	"encoding/json"
+	"fmt"
 	"freecreate/handlers"
+	"freecreate/logger"
+	"net/http"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/gorilla/sessions"
@@ -42,20 +46,56 @@ func CreateRouter(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB, mon
 
 	// router.Post("/email", handlers.EmailHandler(resendClient))
 
-	// router.Get("/hello", func(w http.ResponseWriter, r *http.Request) {
-	// 	fmt.Println("hit route hello")
+	router.Get("/hello", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("hit route hello")
 
-	// 	type Response struct {
-	// 		Message string `json:"message"`
-	// 	}
+		type Response struct {
+			Message string `json:"message"`
+		}
 
-	// 	response := Response{
-	// 		Message: "Hello world!",
-	// 	}
+		response := Response{
+			Message: "Hello world!",
+		}
 
-	// 	w.WriteHeader(http.StatusOK)
-	// 	json.NewEncoder(w).Encode(response)
-	// })
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(response)
+	})
+
+	router.Post("/hello", func(w http.ResponseWriter, r*http.Request){
+		type Body struct{
+			Message string `json:"message"`
+		}
+
+		var body Body;
+
+		jErr := json.NewDecoder(r.Body).Decode(&body)
+		if jErr != nil {
+			logger.Log(jErr)
+			http.Error(w, jErr.Error(), http.StatusUnprocessableEntity)
+			return
+		}
+
+		fmt.Println(body.Message)
+
+		type Response struct {
+			Message string `json:"message"`
+		}
+
+		response := Response{
+			Message: body.Message,
+		}
+
+		res, mErr := json.Marshal(response)
+		if mErr != nil {
+			logger.Log(mErr)
+			http.Error(w, mErr.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusCreated)
+		w.Write(res)
+	})
 
 	return router
 }
