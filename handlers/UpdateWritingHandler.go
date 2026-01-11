@@ -12,8 +12,8 @@ import (
 	"gorm.io/gorm"
 )
 
-func UpdateWritingHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB) http.HandlerFunc{
-	return func (w http.ResponseWriter, r *http.Request){
+func UpdateWritingHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
 		userId, uErr := auth.GetUser(sessionStore, gormPGClient, w, r)
 		if uErr != nil {
 			logger.Log(uErr)
@@ -23,10 +23,10 @@ func UpdateWritingHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm
 		fmt.Println(userId)
 
 		type Body struct {
-			WritingUUID uuid.UUID `json:"writingUUID"`
-			Title string `json:"title"`
-			Description string `json:"description"`
-			Tags pq.StringArray `json:"tags" gorm:"type:text[]"`
+			WritingUUID uuid.UUID      `json:"writingUUID"`
+			Title       string         `json:"title"`
+			Description string         `json:"description"`
+			Tags        pq.StringArray `json:"tags" gorm:"type:text[]"`
 		}
 	}
 }

@@ -5,11 +5,15 @@ import (
 	"fmt"
 	"freecreate/handlers"
 	"freecreate/logger"
+	"log"
 	"net/http"
+	"os"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/gorilla/csrf"
 	"github.com/gorilla/sessions"
 	"github.com/resend/resend-go/v2"
+	"github.com/rs/cors"
 	"github.com/valkey-io/valkey-go"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"gorm.io/gorm"
@@ -17,6 +21,42 @@ import (
 
 func CreateRouter(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB, mongoClient *mongo.Client, valkeyClient valkey.Client, resendClient *resend.Client) *chi.Mux {
 	router := chi.NewRouter()
+
+	var csrfMiddleware func(http.Handler) http.Handler
+	var corsMiddleware *cors.Cors
+
+	environment := os.Getenv("ENVIRONMENT")
+	csrfKey := os.Getenv("CSRF_KEY")
+
+	if environment == "PRODUCTION" {
+		csrfMiddleware = csrf.Protect([]byte(csrfKey))
+	} else if environment == "DEVELOPMENT" {
+		clientOrigin := os.Getenv("CLIENT_ORIGIN")
+		
+		corsMiddleware = cors.New(cors.Options{
+			AllowedOrigins:   []string{clientOrigin},
+			AllowedHeaders:   []string{"Content-Type", "X-CSRF-Token"},
+			AllowedMethods:   []string{"POST", "PATCH", "GET", "DELETE", "OPTIONS"},
+			ExposedHeaders:   []string{"X-CSRF-Token"},
+			AllowCredentials: true,
+			MaxAge:           86400,
+		})
+		router.Use(corsMiddleware.Handler)
+		csrfMiddleware = csrf.Protect([]byte(csrfKey), csrf.TrustedOrigins([]string{clientOrigin, "localhost:3000", "localhost:8080"}), csrf.Secure(false), csrf.Path("/"))
+	} else {
+		log.Fatal("bad environment variable load")
+	}
+
+	router.Use(csrfMiddleware)
+
+	router.Get("/get-csrf", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("X-CSRF-Token", csrf.Token(r))
+		w.Header().Set("Access-Control-Expose-Headers", "X-CSRF-Token")
+	})
+
+	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "static/index.html")
+	})
 
 	router.Post("/login", handlers.LoginHandler(sessionStore, gormPGClient))
 
@@ -27,21 +67,21 @@ func CreateRouter(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB, mon
 	router.Get("/reauth", handlers.ReAuthHandler(sessionStore, gormPGClient))
 
 	router.Delete("/delete-account", handlers.DeleteAccountHandler(sessionStore, gormPGClient))
-	
+
 	router.Post("/creator", handlers.CreateCreatorHandler(sessionStore, gormPGClient))
-	
+
 	router.Delete("/creator/{creatorId}", handlers.DeleteCreatorHandler(sessionStore, gormPGClient))
-	
+
 	router.Get("/user-creators", handlers.GetUserCreatorHandlers(sessionStore, gormPGClient))
-	
+
 	router.Post("/writing", handlers.CreateWritingHandler(sessionStore, gormPGClient))
 
 	router.Patch("/writing", handlers.UpdateWritingHandler(sessionStore, gormPGClient))
-	
+
 	router.Get("/my-writing", handlers.GetMyWritingHandler(sessionStore, gormPGClient))
-	
+
 	router.Get("/edit-writing/{writingUUID}", handlers.GetEditWritingHandler(sessionStore, gormPGClient))
-	
+
 	// router.Post("/createOTP", handlers.CreateOTPHandler(resendClient, valkeyClient))
 
 	// router.Post("/email", handlers.EmailHandler(resendClient))
@@ -61,12 +101,12 @@ func CreateRouter(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB, mon
 		json.NewEncoder(w).Encode(response)
 	})
 
-	router.Post("/hello", func(w http.ResponseWriter, r*http.Request){
-		type Body struct{
+	router.Post("/hello", func(w http.ResponseWriter, r *http.Request) {
+		type Body struct {
 			Message string `json:"message"`
 		}
 
-		var body Body;
+		var body Body
 
 		jErr := json.NewDecoder(r.Body).Decode(&body)
 		if jErr != nil {

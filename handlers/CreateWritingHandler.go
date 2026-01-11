@@ -48,11 +48,11 @@ func CreateWritingHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm
 			WritingType:   body.WritingType,
 		}
 
-		if newWriting.WritingType == "Essay" || newWriting.WritingType == "Blog"{
+		if newWriting.WritingType == "Essay" || newWriting.WritingType == "Blog" {
 			newWriting.Tags = []string{"no-topic"}
-		} else if newWriting.WritingType == "Short Story" || newWriting.WritingType == "Novellette" || newWriting.WritingType == "Novella" || newWriting.WritingType == "Novel"{
+		} else if newWriting.WritingType == "Short Story" || newWriting.WritingType == "Novellette" || newWriting.WritingType == "Novella" || newWriting.WritingType == "Novel" {
 			newWriting.Tags = []string{"no-genre"}
-		} else if newWriting.WritingType != "Poetry"{
+		} else if newWriting.WritingType != "Poetry" {
 			err := errors.New("invalid writing type")
 			logger.Log(err)
 			http.Error(w, err.Error(), http.StatusUnprocessableEntity)

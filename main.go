@@ -6,7 +6,6 @@ import (
 	"encoding/gob"
 	"freecreate/config"
 	"freecreate/logger"
-	"freecreate/middleware"
 	"freecreate/routes"
 	"log"
 	"net/http"
@@ -53,14 +52,13 @@ func main() {
 
 	sessionStore := sessions.NewCookieStore(sessionAuthKey, sessionEncryptionKey)
 
-	if environment == "PRODUCTION"{
+	if environment == "PRODUCTION" {
 		sessionStore.Options = &sessions.Options{
-			Secure: true,
+			Secure:   true,
 			SameSite: http.SameSiteStrictMode,
 			HttpOnly: true,
 		}
 	}
-	
 
 	gormPGClient := config.ConfigPG()
 
@@ -75,7 +73,8 @@ func main() {
 	var srv *http.Server
 
 	if environment != "PRODUCTION" {
-		corsRouter := middleware.DevCorsMiddleware(router)
+		// corsRouter := middleware.DevCorsMiddleware(router)
+		corsRouter := router
 		srv = &http.Server{
 			Addr:         ":8080",
 			Handler:      corsRouter,

@@ -10,7 +10,7 @@ import (
 
 func CheckSession(sessionStore *sessions.CookieStore, w http.ResponseWriter, r *http.Request) (uuid.UUID, error) {
 	session, _ := sessionStore.Get(r, "user-session")
-	
+
 	if session.Values["userId"] == nil {
 		return uuid.Nil, errors.New("user not logged in")
 	}

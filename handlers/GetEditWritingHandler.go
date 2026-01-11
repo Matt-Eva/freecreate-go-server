@@ -15,8 +15,8 @@ import (
 	"gorm.io/gorm"
 )
 
-func GetEditWritingHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB) http.HandlerFunc{
-	return func (w http.ResponseWriter, r *http.Request){
+func GetEditWritingHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
 		userId, uErr := auth.GetUser(sessionStore, gormPGClient, w, r)
 		if uErr != nil {
 			logger.Log(uErr)
@@ -25,7 +25,7 @@ func GetEditWritingHandler(sessionStore *sessions.CookieStore, gormPGClient *gor
 		}
 
 		writingUUID := chi.URLParam(r, "writingUUID")
-		if writingUUID == ""{
+		if writingUUID == "" {
 			err := errors.New("writingUUID cannot be empty")
 			logger.Log(err)
 			http.Error(w, err.Error(), http.StatusUnprocessableEntity)
@@ -33,16 +33,16 @@ func GetEditWritingHandler(sessionStore *sessions.CookieStore, gormPGClient *gor
 		}
 
 		type EditWriting struct {
-			Title string `json:"title"`
-			Description string `json:"description"`
-			WritingType string `json:"writingType"`
-			Tags pq.StringArray `json:"tags" gorm:"type:text[]"`
-			UUID uuid.UUID `json:"writingUUID"`
-			CreatorID uint `json:"creatorId"`
-			IsPublished bool `json:"isPublished"`
+			Title       string         `json:"title"`
+			Description string         `json:"description"`
+			WritingType string         `json:"writingType"`
+			Tags        pq.StringArray `json:"tags" gorm:"type:text[]"`
+			UUID        uuid.UUID      `json:"writingUUID"`
+			CreatorID   uint           `json:"creatorId"`
+			IsPublished bool           `json:"isPublished"`
 		}
-		
-		var editWriting EditWriting;
+
+		var editWriting EditWriting
 
 		wErr := gormPGClient.Model(pgModels.Writing{}).Where("uuid = ? AND user_id = ?", writingUUID, userId).First(&editWriting).Error
 		if wErr != nil {
