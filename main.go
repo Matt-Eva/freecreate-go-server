@@ -46,10 +46,6 @@ func main() {
 		return
 	}
 
-	// sessionAuthKey := securecookie.GenerateRandomKey(32)
-
-	// sessionEncryptionKey := securecookie.GenerateRandomKey(32)
-
 	sessionStore := sessions.NewCookieStore(sessionAuthKey, sessionEncryptionKey)
 
 	if environment == "PRODUCTION" {
@@ -70,27 +66,14 @@ func main() {
 
 	router := routes.CreateRouter(sessionStore, gormPGClient, mongoClient, valkeyClient, resendClient)
 
-	var srv *http.Server
-
-	if environment != "PRODUCTION" {
-		// corsRouter := middleware.DevCorsMiddleware(router)
-		corsRouter := router
-		srv = &http.Server{
-			Addr:         ":8080",
-			Handler:      corsRouter,
-			ReadTimeout:  15 * time.Second,
-			WriteTimeout: 15 * time.Second,
-			IdleTimeout:  60 * time.Second,
-		}
-	} else {
-		srv = &http.Server{
+	var srv = &http.Server{
 			Addr:         ":8080",
 			Handler:      router,
 			ReadTimeout:  15 * time.Second,
 			WriteTimeout: 15 * time.Second,
 			IdleTimeout:  60 * time.Second,
 		}
-	}
+	
 
 	go func() {
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {

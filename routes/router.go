@@ -37,7 +37,6 @@ func CreateRouter(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB, mon
 			AllowedOrigins:   []string{clientOrigin},
 			AllowedHeaders:   []string{"Content-Type", "X-CSRF-Token"},
 			AllowedMethods:   []string{"POST", "PATCH", "GET", "DELETE", "OPTIONS"},
-			ExposedHeaders:   []string{"X-CSRF-Token"},
 			AllowCredentials: true,
 			MaxAge:           86400,
 		})
