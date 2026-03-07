@@ -1,4 +1,4 @@
-package handlers
+package web_api_handlers
 
 import (
 	"crypto/rand"

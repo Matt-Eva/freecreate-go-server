@@ -3,8 +3,10 @@ package routes
 import (
 	"encoding/json"
 	"fmt"
-	"freecreate/handlers"
 	"freecreate/logger"
+	"freecreate/web_api_handlers"
+	"freecreate/web_page_handlers"
+	"html/template"
 	"log"
 	"net/http"
 	"os"
@@ -32,7 +34,7 @@ func CreateRouter(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB, mon
 		csrfMiddleware = csrf.Protect([]byte(csrfKey))
 	} else if environment == "DEVELOPMENT" {
 		clientOrigin := os.Getenv("CLIENT_ORIGIN")
-		
+
 		corsMiddleware = cors.New(cors.Options{
 			AllowedOrigins:   []string{clientOrigin},
 			AllowedHeaders:   []string{"Content-Type", "X-CSRF-Token"},
@@ -53,87 +55,99 @@ func CreateRouter(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB, mon
 		w.Header().Set("Access-Control-Expose-Headers", "X-CSRF-Token")
 	})
 
-	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "static/index.html")
-	})
+	homeTmpl := template.Must(template.ParseFiles("static/pages/home/home.html", "static/components/header.html", "static/components/title.html"))
+	router.Get("/", web_page_handlers.HomeHandler(homeTmpl))
 
-	router.Post("/login", handlers.LoginHandler(sessionStore, gormPGClient))
+	aboutTmpl := template.Must(template.ParseFiles("static/pages/about/about.html", "static/components/header.html", "static/components/title.html"))
+	router.Get("/about", web_page_handlers.AboutHandler(aboutTmpl))
 
-	router.Post("/signup", handlers.SignupHandler(sessionStore, gormPGClient))
+	loginTmpl := template.Must(template.ParseFiles("static/pages/login/login.html", "static/components/title.html", "static/components/header.html"))
+	router.Get("/login", web_page_handlers.LoginHandler(loginTmpl))
 
-	router.Delete("/logout", handlers.LogoutHandler(sessionStore, gormPGClient))
+	profileTmpl := template.Must(template.ParseFiles("static/pages/profile/profile.html", "static/components/header.html", "static/components/title.html"))
+	router.Get("/profile", web_page_handlers.ProfileHandler(profileTmpl))
 
-	router.Get("/reauth", handlers.ReAuthHandler(sessionStore, gormPGClient))
+	router.Route("/web-api", func(r chi.Router) {
 
-	router.Delete("/delete-account", handlers.DeleteAccountHandler(sessionStore, gormPGClient))
+		router.Post("/login", web_api_handlers.LoginHandler(sessionStore, gormPGClient))
 
-	router.Post("/creator", handlers.CreateCreatorHandler(sessionStore, gormPGClient))
+		router.Post("/signup", web_api_handlers.SignupHandler(sessionStore, gormPGClient))
 
-	router.Delete("/creator/{creatorId}", handlers.DeleteCreatorHandler(sessionStore, gormPGClient))
+		router.Delete("/logout", web_api_handlers.LogoutHandler(sessionStore, gormPGClient))
 
-	router.Get("/user-creators", handlers.GetUserCreatorHandlers(sessionStore, gormPGClient))
+		router.Get("/reauth", web_api_handlers.ReAuthHandler(sessionStore, gormPGClient))
 
-	router.Post("/writing", handlers.CreateWritingHandler(sessionStore, gormPGClient))
+		router.Delete("/delete-account", web_api_handlers.DeleteAccountHandler(sessionStore, gormPGClient))
 
-	router.Patch("/writing", handlers.UpdateWritingHandler(sessionStore, gormPGClient))
+		router.Post("/creator", web_api_handlers.CreateCreatorHandler(sessionStore, gormPGClient))
 
-	router.Get("/my-writing", handlers.GetMyWritingHandler(sessionStore, gormPGClient))
+		router.Delete("/creator/{creatorId}", web_api_handlers.DeleteCreatorHandler(sessionStore, gormPGClient))
 
-	router.Get("/edit-writing/{writingUUID}", handlers.GetEditWritingHandler(sessionStore, gormPGClient))
+		router.Get("/user-creators", web_api_handlers.GetUserCreatorHandlers(sessionStore, gormPGClient))
 
-	// router.Post("/createOTP", handlers.CreateOTPHandler(resendClient, valkeyClient))
+		router.Post("/writing", web_api_handlers.CreateWritingHandler(sessionStore, gormPGClient))
 
-	// router.Post("/email", handlers.EmailHandler(resendClient))
+		router.Patch("/writing", web_api_handlers.UpdateWritingHandler(sessionStore, gormPGClient))
 
-	router.Get("/hello", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Println("hit route hello")
+		router.Get("/my-writing", web_api_handlers.GetMyWritingHandler(sessionStore, gormPGClient))
 
-		type Response struct {
-			Message string `json:"message"`
-		}
+		router.Get("/edit-writing/{writingUUID}", web_api_handlers.GetEditWritingHandler(sessionStore, gormPGClient))
 
-		response := Response{
-			Message: "Hello world!",
-		}
+		// router.Post("/createOTP", handlers.CreateOTPHandler(resendClient, valkeyClient))
 
-		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(response)
-	})
+		// router.Post("/email", handlers.EmailHandler(resendClient))
 
-	router.Post("/hello", func(w http.ResponseWriter, r *http.Request) {
-		type Body struct {
-			Message string `json:"message"`
-		}
+		router.Get("/hello", func(w http.ResponseWriter, r *http.Request) {
+			fmt.Println("hit route hello")
 
-		var body Body
+			type Response struct {
+				Message string `json:"message"`
+			}
 
-		jErr := json.NewDecoder(r.Body).Decode(&body)
-		if jErr != nil {
-			logger.Log(jErr)
-			http.Error(w, jErr.Error(), http.StatusUnprocessableEntity)
-			return
-		}
+			response := Response{
+				Message: "Hello world!",
+			}
 
-		fmt.Println(body.Message)
+			w.WriteHeader(http.StatusOK)
+			json.NewEncoder(w).Encode(response)
+		})
 
-		type Response struct {
-			Message string `json:"message"`
-		}
+		router.Post("/hello", func(w http.ResponseWriter, r *http.Request) {
+			type Body struct {
+				Message string `json:"message"`
+			}
 
-		response := Response{
-			Message: body.Message,
-		}
+			var body Body
 
-		res, mErr := json.Marshal(response)
-		if mErr != nil {
-			logger.Log(mErr)
-			http.Error(w, mErr.Error(), http.StatusInternalServerError)
-			return
-		}
+			jErr := json.NewDecoder(r.Body).Decode(&body)
+			if jErr != nil {
+				logger.Log(jErr)
+				http.Error(w, jErr.Error(), http.StatusUnprocessableEntity)
+				return
+			}
 
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusCreated)
-		w.Write(res)
+			fmt.Println(body.Message)
+
+			type Response struct {
+				Message string `json:"message"`
+			}
+
+			response := Response{
+				Message: body.Message,
+			}
+
+			res, mErr := json.Marshal(response)
+			if mErr != nil {
+				logger.Log(mErr)
+				http.Error(w, mErr.Error(), http.StatusInternalServerError)
+				return
+			}
+
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusCreated)
+			w.Write(res)
+		})
+
 	})
 
 	return router

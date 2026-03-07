@@ -1,4 +1,4 @@
-package handlers
+package web_api_handlers
 
 import (
 	"encoding/json"
@@ -16,6 +16,7 @@ import (
 
 func CreateCreatorHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		// Check user session
 		userId, aErr := auth.CheckSession(sessionStore, w, r)
 		if aErr != nil {
 			logger.Log(aErr)
@@ -23,6 +24,7 @@ func CreateCreatorHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm
 			return
 		}
 
+		// decode json
 		type Body struct {
 			CreatorName string `json:"creatorName"`
 		}
@@ -36,6 +38,7 @@ func CreateCreatorHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm
 			return
 		}
 
+		// get the user db record to get the user primary key id
 		var user pgModels.User
 
 		uErr := gormPGClient.Where("session_uuid = ?", userId).First(&user).Error
@@ -57,6 +60,7 @@ func CreateCreatorHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm
 			return
 		}
 
+		// create the new creator record
 		creatorUUID := uuid.New()
 
 		newCreator := pgModels.Creator{
@@ -81,6 +85,7 @@ func CreateCreatorHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm
 			}
 		}
 
+		// send back a successful response with the newly created creator
 		type Response struct {
 			Name string    `json:"name"`
 			ID   uint      `json:"id"`

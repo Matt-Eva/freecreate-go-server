@@ -1,0 +1,17 @@
+{{define "header"}}
+<style>
+  a {
+    color: turquoise;
+  }
+</style>
+<header>
+  <h1><a href="/">FreeCreate</a></h1>
+    <a href="/">browse</a>
+    <a href="/about">about</a>
+  {{if .LoggedIn}}
+    <a href="/profile">profile</a>
+  {{else}}
+    <a href="/login">login</a>
+  {{end}}
+</header>
+{{end}}
