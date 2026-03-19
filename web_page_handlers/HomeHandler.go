@@ -7,14 +7,30 @@ import (
 
 func HomeHandler(homeTmpl *template.Template) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+
+		type CardContent struct {
+			CardTitle string
+			CardDescription string
+		}
+
 		type PageData struct {
 			Title    string
 			LoggedIn bool
+			UserIsAdult bool
+			LoadedContent []CardContent
+		}
+
+		cardContent := make([]CardContent, 0, 100)
+
+		for i := 0; i < 1000; i++{
+			cardContent = append(cardContent, CardContent{CardTitle: "welcome home", CardDescription: "a heartwarming tale"})
 		}
 
 		pageData := PageData{
 			Title:    "home",
 			LoggedIn: true,
+			UserIsAdult: true,
+			LoadedContent: cardContent,
 		}
 		homeTmpl.ExecuteTemplate(w, "home", pageData)
 	}

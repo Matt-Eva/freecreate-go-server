@@ -12,14 +12,20 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    {{template "title"}}
+   
+    {{template "globals"}}
     {{template "homeStyle"}}
+    <script defer src="static/home.js"></script>
   </head>
   <body>
     {{ template "header" .}}
     <button id="post-hello">post</button>
     <p>will this reload?</p>
     <p>and what about this?</p>
+    {{template "searchBox" .}}
+    {{range .LoadedContent}}
+      {{template "contentCard" .}}
+    {{end}}
 
     {{template "homeScript" .}}
   </body>

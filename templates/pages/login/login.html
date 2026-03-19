@@ -1,0 +1,47 @@
+{{define "login"}}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {{template "globals"}}
+</head>
+<body>
+    {{template "header" .}}
+    <form>
+        <label>Email:</label>
+        <input type="text" placeholder="enter your email address" />
+        <input type="submit" />
+    </form>
+    <p>Enter your email address to receive a One Time Password via email.</p>
+    <p>This password will last for five minutes.</p>
+    <details>
+        <summary>click to see more</summary>
+        <form>
+            <input type="text" />
+            <input type="submit" />
+        </form>
+    </details>
+
+    <style>
+        #toggle {
+            display: none;
+        }
+
+        #checkbox{
+            display: none;
+        }
+
+        #checkbox:checked ~ #toggle {
+            display: block;
+        }
+    </style>
+    <label for="checkbox">check checkbox</label>
+    <input type="checkbox" name="checkbox" id="checkbox"/>
+    <p id="toggle">
+        this is hidden content
+    </p>
+</body>
+</html>
+{{end}}

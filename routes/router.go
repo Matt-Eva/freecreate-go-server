@@ -55,17 +55,25 @@ func CreateRouter(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB, mon
 		w.Header().Set("Access-Control-Expose-Headers", "X-CSRF-Token")
 	})
 
-	homeTmpl := template.Must(template.ParseFiles("static/pages/home/home.html", "static/components/header.html", "static/components/title.html"))
+	fileServer := http.FileServer(http.Dir("static"))
+	router.Handle("/static/*", http.StripPrefix("/static/", fileServer))
+
+
+
+	homeTmpl := template.Must(template.ParseFiles("templates/pages/home/home.html", "templates/pages/home/searchBox.html", "templates/pages/home/contentCard.html", "templates/components/header.html", "templates/components/globals.html"))
 	router.Get("/", web_page_handlers.HomeHandler(homeTmpl))
 
-	aboutTmpl := template.Must(template.ParseFiles("static/pages/about/about.html", "static/components/header.html", "static/components/title.html"))
+	aboutTmpl := template.Must(template.ParseFiles("templates/pages/about/about.html", "templates/components/header.html", "templates/components/globals.html"))
 	router.Get("/about", web_page_handlers.AboutHandler(aboutTmpl))
 
-	loginTmpl := template.Must(template.ParseFiles("static/pages/login/login.html", "static/components/title.html", "static/components/header.html"))
+	loginTmpl := template.Must(template.ParseFiles("templates/pages/login/login.html", "templates/components/globals.html", "templates/components/header.html"))
 	router.Get("/login", web_page_handlers.LoginHandler(loginTmpl))
 
-	profileTmpl := template.Must(template.ParseFiles("static/pages/profile/profile.html", "static/components/header.html", "static/components/title.html"))
+	profileTmpl := template.Must(template.ParseFiles("templates/pages/profile/profile.html", "templates/components/header.html", "templates/components/globals.html"))
 	router.Get("/profile", web_page_handlers.ProfileHandler(profileTmpl))
+
+	donateTmpl := template.Must(template.ParseFiles("templates/pages/donate/donate.html", "templates/components/header.html", "templates/components/globals.html"))
+	router.Get("/donate", web_page_handlers.DonateHandler(donateTmpl))
 
 	router.Route("/web-api", func(r chi.Router) {
 

@@ -3,11 +3,15 @@
   a {
     color: turquoise;
   }
+  .headerTitle{
+    font-family: Optima, sans-serif;
+  }
 </style>
 <header>
-  <h1><a href="/">FreeCreate</a></h1>
+  <h1 class="headerTitle"><a href="/">FreeCreate</a></h1>
     <a href="/">browse</a>
     <a href="/about">about</a>
+    <a href="/donate">donate</a>
   {{if .LoggedIn}}
     <a href="/profile">profile</a>
   {{else}}
