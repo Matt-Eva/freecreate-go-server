@@ -1,10 +1,4 @@
-{{define "homeStyle"}}
-<style>
-   p {
-    color: magenta
-   }
-</style>
-{{end}}
+
 
 {{define "home"}}
 <!doctype html>
@@ -14,7 +8,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
    
     {{template "globals"}}
-    {{template "homeStyle"}}
     <script defer src="static/home.js"></script>
   </head>
   <body>
@@ -26,8 +19,6 @@
     {{range .LoadedContent}}
       {{template "contentCard" .}}
     {{end}}
-
-    {{template "homeScript" .}}
   </body>
 </html>
 {{end}} 
