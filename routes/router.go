@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"freecreate/logger"
+	"freecreate/middleware"
 	"freecreate/web_api_handlers"
 	"freecreate/web_page_handlers"
 	"html/template"
@@ -20,6 +21,8 @@ import (
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"gorm.io/gorm"
 )
+
+
 
 func CreateRouter(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB, mongoClient *mongo.Client, valkeyClient valkey.Client, resendClient *resend.Client) *chi.Mux {
 	router := chi.NewRouter()
@@ -56,7 +59,9 @@ func CreateRouter(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB, mon
 	})
 
 	fileServer := http.FileServer(http.Dir("static"))
-	router.Handle("/static/*", http.StripPrefix("/static/", fileServer))
+ 	cachedFileServer := middleware.CacheControlHandler(fileServer)
+	
+	router.Handle("/static/*", http.StripPrefix("/static/", cachedFileServer))
 
 
 

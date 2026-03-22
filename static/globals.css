@@ -1,4 +1,6 @@
 body {
-    background-color: gray;
+    /* background-color: gray; */
     margin: 0;
+    height: 100vw;
+    width: 100vw;
 }

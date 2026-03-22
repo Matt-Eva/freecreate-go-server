@@ -22,13 +22,13 @@ func HomeHandler(homeTmpl *template.Template) http.HandlerFunc {
 
 		cardContent := make([]CardContent, 0, 100)
 
-		for i := 0; i < 1000; i++{
+		for i := 0; i < 100; i++{
 			cardContent = append(cardContent, CardContent{CardTitle: "welcome home", CardDescription: "a heartwarming tale"})
 		}
 
 		pageData := PageData{
 			Title:    "home",
-			LoggedIn: true,
+			LoggedIn: false,
 			UserIsAdult: true,
 			LoadedContent: cardContent,
 		}

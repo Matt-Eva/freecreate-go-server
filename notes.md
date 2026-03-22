@@ -25,3 +25,11 @@ Decision: just go for the simpler option that works for the time being. We aren'
 # CSRF
 
 Look into Gorilla CSRF more to ensure protection against CSRF attacks.
+
+# Styling
+
+It looks like the downloading of separate CSS files without preloading approximately doubles the apparent render time, as the longest wait for the page to render is usually the roundtrip to the server.
+
+This can be ammeliorated by using the preload attribute for css stylesheets, then dynamically changing their attributes once they're loaded to be regular stylesheets, which will allow the html to begin rendering immediately and also allow for caching of most of the css.
+
+However, this will likely cause some layout / appearance shift of the website. So maybe embedding styles in the head is just the way to go? Either that or enable long caching in the browser.
