@@ -47,6 +47,15 @@ func handlePost(testTmpl *template.Template, w http.ResponseWriter, r *http.Requ
 
 func handleFormPost(testTmpl *template.Template, w http.ResponseWriter, r *http.Request){
 	fmt.Println("handling form submission")
+	parseFormErr := r.ParseForm();
+	
+	if parseFormErr != nil {
+		fmt.Println(parseFormErr)
+	}
+
+	formAction := r.FormValue("form_action")
+	fmt.Println(formAction)
+	
 	type PageData struct{
 			LoggedIn bool
 			CSRFToken template.HTML
