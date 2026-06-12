@@ -37,57 +37,19 @@ func CreateRouter(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB, mon
 	
 	router.Use(csrfMiddleware)
 
-	router.Get("/get-csrf", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("X-CSRF-Token", csrf.Token(r))
-		w.Header().Set("Access-Control-Expose-Headers", "X-CSRF-Token")
-	})
-
 	fileServer := http.FileServer(http.Dir("static"))
  	cachedFileServer := middleware.CacheControlHandler(fileServer)
 	
 	router.Handle("/static/*", http.StripPrefix("/static/", cachedFileServer))
 
-	testTempl := template.Must(template.ParseFiles("templates/pages/test/test.html", "templates/components/globals.html", "templates/components/header.html"))
-
-	router.Get("/test", func (w http.ResponseWriter, r *http.Request){
-		fmt.Println(r.Method)
-		type PageData struct{
-			LoggedIn bool
-			CSRFToken template.HTML
-		}
-
-		pageData := PageData{
-			LoggedIn: true,
-			CSRFToken: csrf.TemplateField(r),
-		}
-		fmt.Println(pageData.CSRFToken)
-
-		testTempl.ExecuteTemplate(w, "test", pageData)
-	
+	router.Get("/get-csrf", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("X-CSRF-Token", csrf.Token(r))
+		w.Header().Set("Access-Control-Expose-Headers", "X-CSRF-Token")
 	})
-	router.Post("/test", func (w http.ResponseWriter, r *http.Request){
-		// fmt.Println(r.Method)
-		if err := r.ParseForm(); err != nil {
-			http.Error(w, "Inavlid Form Data", http.StatusBadRequest)
-			return
-    	}
-
-		type PageData struct{
-			LoggedIn bool
-			CSRFToken template.HTML
-		}
-
-		pageData := PageData{
-			LoggedIn: true,
-			CSRFToken: csrf.TemplateField(r),
-		}
-		fmt.Println(pageData.CSRFToken)
-
-		testTempl.ExecuteTemplate(w, "test", pageData)
 	
-	})
-	// router.Get("/test", web_page_handlers.TestHandler(testTmpl))
-	// router.Post("/test", web_page_handlers.TestHandler(testTmpl))
+	testTmpl := template.Must(template.ParseFiles("templates/pages/test/test.html", "templates/components/globals.html", "templates/components/header.html"))
+	router.Get("/test", web_page_handlers.TestHandler(testTmpl))
+	router.Post("/test", web_page_handlers.TestHandler(testTmpl))
 
 	homeTmpl := template.Must(template.ParseFiles("templates/pages/home/home.html", "templates/pages/home/searchBox.html", "templates/pages/home/contentCard.html", "templates/components/header.html", "templates/components/globals.html"))
 	router.Get("/", web_page_handlers.HomeHandler(homeTmpl))
