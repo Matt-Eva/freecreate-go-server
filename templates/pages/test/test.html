@@ -6,15 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     {{template "globals"}}
+    <script defer src="/static/test.js"></script>
   </head>
   <body>
     {{template "header"}}
     <h2>Test</h2>
-    <form method="POST" action="/test">
+    <form method="POST" action="/test" id="form-1">
       {{ .CSRFToken }}
       <input type="submit" />
     </form>
-    <form method="POST" action="/test">
+    <form method="POST" action="/test" id="form-2">
       {{.CSRFToken}}
       <input type="submit" />
     </form>
