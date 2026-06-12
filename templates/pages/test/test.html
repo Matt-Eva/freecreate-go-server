@@ -13,10 +13,12 @@
     <h2>Test</h2>
     <form method="POST" action="/test" id="form-1">
       {{ .CSRFToken }}
+      <input type="hidden" name="form_action" value="updat_profile" />
       <input type="submit" />
     </form>
     <form method="POST" action="/test" id="form-2">
       {{.CSRFToken}}
+      <input type="hidden" name="form_action" value="updat_settings" />
       <input type="submit" />
     </form>
   </body>

@@ -14,13 +14,19 @@ document.addEventListener("DOMContentLoaded", () => {
         "Content-Type": "application/json",
         "X-CSRF-Token": csrfToken,
       },
+      body: JSON.stringify({
+        formAction: formOne["form_action"].value,
+      }),
     })
       .then(async (res) => {
-        console.log(res);
+        if (!res.ok) {
+          const message = await res.text();
+          throw new Error(`status: ${res.status}. message: ${message}`);
+        }
         const data = await res.json();
         console.log(data);
       })
-      .catch((err) => {
+      .catch(async (err) => {
         console.error(err);
       });
   });
@@ -33,14 +39,18 @@ document.addEventListener("DOMContentLoaded", () => {
         "Content-Type": "application/json",
         "X-CSRF-Token": csrfToken,
       },
+      body: JSON.stringify({
+        formAction: formTwo["form_action"].value,
+      }),
     })
       .then(async (res) => {
         console.log(res);
         const data = await res.json();
         console.log(data);
       })
-      .catch((err) => {
-        console.error(err);
+      .catch(async (err) => {
+        const message = await err.text();
+        console.log(message);
       });
   });
 });

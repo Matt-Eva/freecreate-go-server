@@ -2,7 +2,9 @@ package web_page_handlers
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
+	"freecreate/logger"
 	"html/template"
 	"net/http"
 
@@ -31,7 +33,6 @@ func handleGet(testTmpl *template.Template, w http.ResponseWriter, r *http.Reque
 		CSRFToken: csrf.TemplateField(r),
 	}
 	testTmpl.ExecuteTemplate(w, "test", pageData)
-
 }
 
 func handlePost(testTmpl *template.Template, w http.ResponseWriter, r *http.Request){
@@ -59,6 +60,31 @@ func handleFormPost(testTmpl *template.Template, w http.ResponseWriter, r *http.
 
 func handleJSONPost(w http.ResponseWriter, r *http.Request){
 	fmt.Println("handling json")
+	type Body struct {
+		FormAction string `json:"formAction"`
+	}
+
+	var body Body;
+
+	bErr := json.NewDecoder(r.Body).Decode(&body)
+	if bErr != nil {
+		logger.Log(bErr)
+		http.Error(w, bErr.Error(), http.StatusUnprocessableEntity)
+		return
+	}
+
+	switch body.FormAction {
+		case "update_profile":
+			fmt.Println("updating profile")
+		case "update_settings":
+			fmt.Println("updating settings")
+		default:
+			formActionErr := errors.New("this form action is not valid for this route")
+			logger.Log(formActionErr)
+			http.Error(w, formActionErr.Error(), http.StatusBadRequest)
+			return
+	}
+
 	w.Header().Set("Content-Type", "application/json")
 	type JSONResponse struct {
 		Message string `json:"message"`
