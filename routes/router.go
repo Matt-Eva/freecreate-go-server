@@ -25,30 +25,6 @@ import (
 func CreateRouter(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB, mongoClient *mongo.Client, valkeyClient valkey.Client, resendClient *resend.Client) *chi.Mux {
 	router := chi.NewRouter()
 
-	// var csrfMiddleware func(http.Handler) http.Handler
-	// var corsMiddleware *cors.Cors
-
-	
-
-	// if environment == "PRODUCTION" {
-	// 	csrfMiddleware = csrf.Protect([]byte(csrfKey))
-	// } else if environment == "DEVELOPMENT" {
-	// 	clientOrigin := os.Getenv("CLIENT_ORIGIN")
-
-	// 	corsMiddleware = cors.New(cors.Options{
-	// 		AllowedOrigins:   []string{clientOrigin},
-	// 		AllowedHeaders:   []string{"Content-Type", "X-CSRF-Token"},
-	// 		AllowedMethods:   []string{"POST", "PATCH", "GET", "DELETE", "OPTIONS"},
-	// 		AllowCredentials: true,
-	// 		MaxAge:           86400,
-	// 	})
-	// 	router.Use(corsMiddleware.Handler)
-	// 	csrfMiddleware = csrf.Protect([]byte(csrfKey), csrf.TrustedOrigins([]string{clientOrigin, "localhost:3000", "localhost:8080"}), csrf.Secure(false), csrf.Path("/"))
-	// } else {
-	// 	log.Fatal("bad environment variable load")
-	// }
-
-
 	environment := os.Getenv("ENVIRONMENT")
 	csrfKey := os.Getenv("CSRF_KEY")	
 	var csrfMiddleware func(http.Handler) http.Handler
