@@ -54,7 +54,7 @@ func LoginHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB) htt
 			return
 		}
 
-		err := auth.CreateSession(sessionStore, w, r, user.SessionUUID)
+		err := auth.LoginUser(sessionStore, w, r, user.SessionUUID)
 		if err != nil {
 			logger.Log(err)
 			http.Error(w, err.Error(), http.StatusInternalServerError)

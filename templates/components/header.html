@@ -3,19 +3,21 @@
   a {
     color: turquoise;
   }
-  .headerTitle{
+  .headerTitle {
     font-family: Optima, sans-serif;
   }
 </style>
 <header>
   <h1 class="headerTitle"><a href="/">FreeCreate</a></h1>
-    <a href="/">browse</a>
-    <a href="/about">about</a>
-    <a href="/donate">donate</a>
+  <a href="/">browse</a>
+  <a href="/about">about</a>
+  <a href="/donate">donate</a>
+  <a href="/test">test</a>
   {{if .LoggedIn}}
-    <a href="/profile">profile</a>
+  <a href="/profile">profile</a>
   {{else}}
-    <button id="login-modal-toggle">login</button>
+  <a href="/login">login</a>
+  <!-- <button id="login-modal-toggle">login</button> -->
   {{end}}
 </header>
 {{end}}

@@ -8,7 +8,6 @@ import (
 	"freecreate/web_api_handlers"
 	"freecreate/web_page_handlers"
 	"html/template"
-	"log"
 	"net/http"
 	"os"
 
@@ -16,7 +15,6 @@ import (
 	"github.com/gorilla/csrf"
 	"github.com/gorilla/sessions"
 	"github.com/resend/resend-go/v2"
-	"github.com/rs/cors"
 	"github.com/valkey-io/valkey-go"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"gorm.io/gorm"
@@ -27,30 +25,40 @@ import (
 func CreateRouter(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB, mongoClient *mongo.Client, valkeyClient valkey.Client, resendClient *resend.Client) *chi.Mux {
 	router := chi.NewRouter()
 
-	var csrfMiddleware func(http.Handler) http.Handler
-	var corsMiddleware *cors.Cors
+	// var csrfMiddleware func(http.Handler) http.Handler
+	// var corsMiddleware *cors.Cors
+
+	
+
+	// if environment == "PRODUCTION" {
+	// 	csrfMiddleware = csrf.Protect([]byte(csrfKey))
+	// } else if environment == "DEVELOPMENT" {
+	// 	clientOrigin := os.Getenv("CLIENT_ORIGIN")
+
+	// 	corsMiddleware = cors.New(cors.Options{
+	// 		AllowedOrigins:   []string{clientOrigin},
+	// 		AllowedHeaders:   []string{"Content-Type", "X-CSRF-Token"},
+	// 		AllowedMethods:   []string{"POST", "PATCH", "GET", "DELETE", "OPTIONS"},
+	// 		AllowCredentials: true,
+	// 		MaxAge:           86400,
+	// 	})
+	// 	router.Use(corsMiddleware.Handler)
+	// 	csrfMiddleware = csrf.Protect([]byte(csrfKey), csrf.TrustedOrigins([]string{clientOrigin, "localhost:3000", "localhost:8080"}), csrf.Secure(false), csrf.Path("/"))
+	// } else {
+	// 	log.Fatal("bad environment variable load")
+	// }
+
 
 	environment := os.Getenv("ENVIRONMENT")
-	csrfKey := os.Getenv("CSRF_KEY")
-
-	if environment == "PRODUCTION" {
-		csrfMiddleware = csrf.Protect([]byte(csrfKey))
-	} else if environment == "DEVELOPMENT" {
-		clientOrigin := os.Getenv("CLIENT_ORIGIN")
-
-		corsMiddleware = cors.New(cors.Options{
-			AllowedOrigins:   []string{clientOrigin},
-			AllowedHeaders:   []string{"Content-Type", "X-CSRF-Token"},
-			AllowedMethods:   []string{"POST", "PATCH", "GET", "DELETE", "OPTIONS"},
-			AllowCredentials: true,
-			MaxAge:           86400,
-		})
-		router.Use(corsMiddleware.Handler)
-		csrfMiddleware = csrf.Protect([]byte(csrfKey), csrf.TrustedOrigins([]string{clientOrigin, "localhost:3000", "localhost:8080"}), csrf.Secure(false), csrf.Path("/"))
+	csrfKey := os.Getenv("CSRF_KEY")	
+	var csrfMiddleware func(http.Handler) http.Handler
+	if environment == "DEVELOPMENT"{
+		fmt.Println("DEVELOPMENT")
+		csrfMiddleware = csrf.Protect([]byte(csrfKey), csrf.Secure(false), csrf.TrustedOrigins([]string{"localhost:8080"}))
 	} else {
-		log.Fatal("bad environment variable load")
+		csrfMiddleware = csrf.Protect([]byte(csrfKey))
 	}
-
+	
 	router.Use(csrfMiddleware)
 
 	router.Get("/get-csrf", func(w http.ResponseWriter, r *http.Request) {
@@ -63,7 +71,47 @@ func CreateRouter(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB, mon
 	
 	router.Handle("/static/*", http.StripPrefix("/static/", cachedFileServer))
 
+	testTempl := template.Must(template.ParseFiles("templates/pages/test/test.html", "templates/components/globals.html", "templates/components/header.html"))
 
+	router.Get("/test", func (w http.ResponseWriter, r *http.Request){
+		fmt.Println(r.Method)
+		type PageData struct{
+			LoggedIn bool
+			CSRFToken template.HTML
+		}
+
+		pageData := PageData{
+			LoggedIn: true,
+			CSRFToken: csrf.TemplateField(r),
+		}
+		fmt.Println(pageData.CSRFToken)
+
+		testTempl.ExecuteTemplate(w, "test", pageData)
+	
+	})
+	router.Post("/test", func (w http.ResponseWriter, r *http.Request){
+		// fmt.Println(r.Method)
+		if err := r.ParseForm(); err != nil {
+			http.Error(w, "Inavlid Form Data", http.StatusBadRequest)
+			return
+    	}
+
+		type PageData struct{
+			LoggedIn bool
+			CSRFToken template.HTML
+		}
+
+		pageData := PageData{
+			LoggedIn: true,
+			CSRFToken: csrf.TemplateField(r),
+		}
+		fmt.Println(pageData.CSRFToken)
+
+		testTempl.ExecuteTemplate(w, "test", pageData)
+	
+	})
+	// router.Get("/test", web_page_handlers.TestHandler(testTmpl))
+	// router.Post("/test", web_page_handlers.TestHandler(testTmpl))
 
 	homeTmpl := template.Must(template.ParseFiles("templates/pages/home/home.html", "templates/pages/home/searchBox.html", "templates/pages/home/contentCard.html", "templates/components/header.html", "templates/components/globals.html"))
 	router.Get("/", web_page_handlers.HomeHandler(homeTmpl))
