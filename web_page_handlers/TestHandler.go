@@ -19,6 +19,11 @@ func TestHandler (templates *template.Template) http.HandlerFunc{
 			handleGet(templates, w, r)
 		case "POST":
 			handlePost(templates, w, r)
+		default:
+			errMsg := fmt.Sprintf("not a valid request method: method %s is not GET or POST", requestMethod)
+			err := errors.New(errMsg)
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
 		}
 	}
 }
