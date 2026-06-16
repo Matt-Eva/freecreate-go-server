@@ -11,19 +11,19 @@ import (
 	"github.com/gorilla/csrf"
 )
 
-func TestHandler (testTempl *template.Template) http.HandlerFunc{
+func TestHandler (templates *template.Template) http.HandlerFunc{
 	return func (w http.ResponseWriter, r *http.Request){
 		requestMethod := r.Method
 		switch requestMethod {
 		case "GET":
-			handleGet(testTempl, w, r)
+			handleGet(templates, w, r)
 		case "POST":
-			handlePost(testTempl, w, r)
+			handlePost(templates, w, r)
 		}
 	}
 }
 
-func handleGet(testTmpl *template.Template, w http.ResponseWriter, r *http.Request){
+func handleGet(templates *template.Template, w http.ResponseWriter, r *http.Request){
 	type PageData struct{
 			LoggedIn bool
 			CSRFToken template.HTML
@@ -32,20 +32,20 @@ func handleGet(testTmpl *template.Template, w http.ResponseWriter, r *http.Reque
 		LoggedIn: true,
 		CSRFToken: csrf.TemplateField(r),
 	}
-	testTmpl.ExecuteTemplate(w, "test", pageData)
+	templates.ExecuteTemplate(w, "test", pageData)
 }
 
-func handlePost(testTmpl *template.Template, w http.ResponseWriter, r *http.Request){
+func handlePost(templates *template.Template, w http.ResponseWriter, r *http.Request){
 	contentType := r.Header.Get("Content-Type")
 		switch contentType {
 		case "application/json":
 			handleJSONPost(w, r)
 		default:
-			handleFormPost(testTmpl, w, r)
+			handleFormPost(templates, w, r)
 		}
 }
 
-func handleFormPost(testTmpl *template.Template, w http.ResponseWriter, r *http.Request){
+func handleFormPost(templates *template.Template, w http.ResponseWriter, r *http.Request){
 	fmt.Println("handling form submission")
 	parseFormErr := r.ParseForm();
 	
@@ -64,7 +64,7 @@ func handleFormPost(testTmpl *template.Template, w http.ResponseWriter, r *http.
 		LoggedIn: true,
 		CSRFToken: csrf.TemplateField(r),
 	}
-	testTmpl.ExecuteTemplate(w, "test", pageData)
+	templates.ExecuteTemplate(w, "test", pageData)
 }
 
 func handleJSONPost(w http.ResponseWriter, r *http.Request){
