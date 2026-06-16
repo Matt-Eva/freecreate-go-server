@@ -56,7 +56,7 @@ func main() {
 		}
 	}
 
-	gormPGClient := config.ConfigPG()
+	gormPGClient := config.ConfigGORM()
 
 	mongoClient := config.ConfigMongo()
 
