@@ -6,8 +6,8 @@ import (
 	"net/http"
 )
 
-func TestHandler() http.HandlerFunc{
-	return func (w http.ResponseWriter, r *http.Request){
+func TestHandler() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
 		errMsg := "I want to generate this error message by default"
 		err := errors.New(errMsg)
 		logger.Log(err)

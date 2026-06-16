@@ -18,28 +18,26 @@ import (
 	"gorm.io/gorm"
 )
 
-
-
 func CreateRouter(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB, mongoClient *mongo.Client, valkeyClient valkey.Client, resendClient *resend.Client) *chi.Mux {
 	router := chi.NewRouter()
 
 	environment := os.Getenv("ENVIRONMENT")
 
-	csrfKey := os.Getenv("CSRF_KEY")	
+	csrfKey := os.Getenv("CSRF_KEY")
 	var csrfMiddleware func(http.Handler) http.Handler
 
-	if environment == "DEVELOPMENT"{
+	if environment == "DEVELOPMENT" {
 		fmt.Println("DEVELOPMENT")
 		csrfMiddleware = csrf.Protect([]byte(csrfKey), csrf.Secure(false), csrf.TrustedOrigins([]string{"localhost:8080"}))
 	} else {
 		csrfMiddleware = csrf.Protect([]byte(csrfKey))
 	}
-	
+
 	router.Use(csrfMiddleware)
 
 	fileServer := http.FileServer(http.Dir("static"))
- 	cachedFileServer := middleware.CacheControlHandler(fileServer)
-	
+	cachedFileServer := middleware.CacheControlHandler(fileServer)
+
 	router.Handle("/static/*", http.StripPrefix("/static/", cachedFileServer))
 
 	router.Get("/get-csrf", func(w http.ResponseWriter, r *http.Request) {
@@ -47,12 +45,12 @@ func CreateRouter(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB, mon
 		w.Header().Set("Access-Control-Expose-Headers", "X-CSRF-Token")
 	})
 
-	templates := template.Must(template.ParseGlob("templates/*html"));
-	
-	router.Get("/test", web_page_handlers.TestPageHandler(templates))
-	router.Post("/test", web_page_handlers.TestPageHandler(templates))
+	templates := template.Must(template.ParseGlob("templates/*html"))
 
 	router.Get("/", web_page_handlers.HomePageHandler(templates))
+
+	router.Get("/test", web_page_handlers.TestPageHandler(templates))
+	router.Post("/test", web_page_handlers.TestPageHandler(templates))
 
 	router.Get("/about", web_page_handlers.AboutPageHandler(templates))
 
@@ -62,7 +60,7 @@ func CreateRouter(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB, mon
 
 	router.Get("/donate", web_page_handlers.DonatePageHandler(templates))
 
-// ======== JSON Web API Routes =========
+	// ======== JSON Web API Routes =========
 	router.Route("/web-api", func(r chi.Router) {
 
 		r.Post("/test", web_api_handlers.TestHandler())
@@ -99,4 +97,3 @@ func CreateRouter(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB, mon
 
 	return router
 }
-

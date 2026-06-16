@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"errors"
 	"freecreate/auth"
-	"freecreate/logger"
 	"freecreate/gormModels"
+	"freecreate/logger"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"

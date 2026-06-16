@@ -5,13 +5,13 @@ import (
 	"net/http"
 )
 
-func DonatePageHandler(donateTmpl *template.Template) http.HandlerFunc{
-	return func (w http.ResponseWriter, r *http.Request){
-		type PageData struct{
+func DonatePageHandler(donateTmpl *template.Template) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		type PageData struct {
 			LoggedIn bool
 		}
 
-		pageData := PageData {
+		pageData := PageData{
 			LoggedIn: false,
 		}
 

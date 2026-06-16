@@ -2,8 +2,8 @@ package web_api_handlers
 
 import (
 	"freecreate/auth"
-	"freecreate/logger"
 	"freecreate/gormModels"
+	"freecreate/logger"
 	"net/http"
 
 	"github.com/google/uuid"

@@ -5,9 +5,9 @@ import (
 	"net/http"
 )
 
-func LoginPageHandler(loginTmpl *template.Template) http.HandlerFunc{
-	return func (w http.ResponseWriter, r *http.Request){
-		type PageData struct{
+func LoginPageHandler(loginTmpl *template.Template) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		type PageData struct {
 			LoggedIn bool
 		}
 

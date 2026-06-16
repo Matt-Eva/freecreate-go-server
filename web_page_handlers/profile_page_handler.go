@@ -5,10 +5,10 @@ import (
 	"net/http"
 )
 
-func ProfilePageHandler (profileTmpl *template.Template) http.HandlerFunc{
+func ProfilePageHandler(profileTmpl *template.Template) http.HandlerFunc {
 
-	return func (w http.ResponseWriter, r *http.Request){
-		type PageData struct{
+	return func(w http.ResponseWriter, r *http.Request) {
+		type PageData struct {
 			LoggedIn bool
 		}
 
