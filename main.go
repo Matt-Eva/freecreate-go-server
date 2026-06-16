@@ -56,6 +56,10 @@ func main() {
 		}
 	}
 
+	ctx := context.Background()
+
+	pgxMainDb := config.ConfigPgxMainDB(ctx)
+
 	gormPGClient := config.ConfigGORM()
 
 	mongoClient := config.ConfigMongo()
@@ -64,7 +68,7 @@ func main() {
 
 	resendClient := config.InitResend()
 
-	router := routes.CreateRouter(sessionStore, gormPGClient, mongoClient, valkeyClient, resendClient)
+	router := routes.CreateRouter(sessionStore, pgxMainDb, gormPGClient, mongoClient, valkeyClient, resendClient)
 
 	var srv = &http.Server{
 		Addr:         ":8080",
