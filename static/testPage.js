@@ -19,12 +19,13 @@ document.addEventListener("DOMContentLoaded", () => {
       }),
     })
       .then(async (res) => {
-        if (!res.ok) {
-          const message = await res.text();
-          throw new Error(`status: ${res.status}. message: ${message}`);
+        if (res.ok) {
+          const data = await res.json();
+          console.log(data);
+        } else {
+          const errMessage = await res.text();
+          console.error(res.status, errMessage);
         }
-        const data = await res.json();
-        console.log(data);
       })
       .catch(async (err) => {
         console.error(err);

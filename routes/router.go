@@ -65,29 +65,31 @@ func CreateRouter(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB, mon
 // ======== JSON Web API Routes =========
 	router.Route("/web-api", func(r chi.Router) {
 
-		router.Post("/login", web_api_handlers.LoginHandler(sessionStore, gormPGClient))
+		r.Post("/test", web_api_handlers.TestHandler())
 
-		router.Post("/signup", web_api_handlers.SignupHandler(sessionStore, gormPGClient))
+		r.Post("/login", web_api_handlers.LoginHandler(sessionStore, gormPGClient))
 
-		router.Delete("/logout", web_api_handlers.LogoutHandler(sessionStore, gormPGClient))
+		r.Post("/signup", web_api_handlers.SignupHandler(sessionStore, gormPGClient))
 
-		router.Get("/reauth", web_api_handlers.ReAuthHandler(sessionStore, gormPGClient))
+		r.Delete("/logout", web_api_handlers.LogoutHandler(sessionStore, gormPGClient))
 
-		router.Delete("/delete-account", web_api_handlers.DeleteAccountHandler(sessionStore, gormPGClient))
+		r.Get("/reauth", web_api_handlers.ReAuthHandler(sessionStore, gormPGClient))
 
-		router.Post("/creator", web_api_handlers.CreateCreatorHandler(sessionStore, gormPGClient))
+		r.Delete("/delete-account", web_api_handlers.DeleteAccountHandler(sessionStore, gormPGClient))
 
-		router.Delete("/creator/{creatorId}", web_api_handlers.DeleteCreatorHandler(sessionStore, gormPGClient))
+		r.Post("/creator", web_api_handlers.CreateCreatorHandler(sessionStore, gormPGClient))
 
-		router.Get("/user-creators", web_api_handlers.GetUserCreatorHandlers(sessionStore, gormPGClient))
+		r.Delete("/creator/{creatorId}", web_api_handlers.DeleteCreatorHandler(sessionStore, gormPGClient))
 
-		router.Post("/writing", web_api_handlers.CreateWritingHandler(sessionStore, gormPGClient))
+		r.Get("/user-creators", web_api_handlers.GetUserCreatorHandlers(sessionStore, gormPGClient))
 
-		router.Patch("/writing", web_api_handlers.UpdateWritingHandler(sessionStore, gormPGClient))
+		r.Post("/writing", web_api_handlers.CreateWritingHandler(sessionStore, gormPGClient))
 
-		router.Get("/my-writing", web_api_handlers.GetMyWritingHandler(sessionStore, gormPGClient))
+		r.Patch("/writing", web_api_handlers.UpdateWritingHandler(sessionStore, gormPGClient))
 
-		router.Get("/edit-writing/{writingUUID}", web_api_handlers.GetEditWritingHandler(sessionStore, gormPGClient))
+		r.Get("/my-writing", web_api_handlers.GetMyWritingHandler(sessionStore, gormPGClient))
+
+		r.Get("/edit-writing/{writingUUID}", web_api_handlers.GetEditWritingHandler(sessionStore, gormPGClient))
 
 		// router.Post("/createOTP", handlers.CreateOTPHandler(resendClient, valkeyClient))
 
