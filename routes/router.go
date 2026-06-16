@@ -51,25 +51,20 @@ func CreateRouter(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB, mon
 
 	templates := template.Must(template.ParseGlob("templates/*html"));
 	
-	// testTmpl := template.Must(template.ParseFiles("templates/pages/test/test.html", "templates/components/globals.html", "templates/components/header.html"))
 	router.Get("/test", web_page_handlers.TestPageHandler(templates))
 	router.Post("/test", web_page_handlers.TestPageHandler(templates))
 
-	// homeTmpl := template.Must(template.ParseFiles("templates/pages/home/home.html", "templates/pages/home/searchBox.html", "templates/pages/home/contentCard.html", "templates/components/header.html", "templates/components/globals.html"))
 	router.Get("/", web_page_handlers.HomePageHandler(templates))
 
-	// aboutTmpl := template.Must(template.ParseFiles("templates/pages/about/about.html", "templates/components/header.html", "templates/components/globals.html"))
 	router.Get("/about", web_page_handlers.AboutPageHandler(templates))
 
-	// loginTmpl := template.Must(template.ParseFiles("templates/pages/login/login.html", "templates/components/globals.html", "templates/components/header.html"))
 	router.Get("/login", web_page_handlers.LoginPageHandler(templates))
 
-	// profileTmpl := template.Must(template.ParseFiles("templates/pages/profile/profile.html", "templates/components/header.html", "templates/components/globals.html"))
 	router.Get("/profile", web_page_handlers.ProfilePageHandler(templates))
 
-	// donateTmpl := template.Must(template.ParseFiles("templates/pages/donate/donate.html", "templates/components/header.html", "templates/components/globals.html"))
 	router.Get("/donate", web_page_handlers.DonatePageHandler(templates))
 
+// ======== JSON Web API Routes =======
 	router.Route("/web-api", func(r chi.Router) {
 
 		router.Post("/login", web_api_handlers.LoginHandler(sessionStore, gormPGClient))
