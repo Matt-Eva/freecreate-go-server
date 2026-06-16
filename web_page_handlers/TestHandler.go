@@ -23,16 +23,24 @@ func TestHandler (templates *template.Template) http.HandlerFunc{
 	}
 }
 
-func handleGet(templates *template.Template, w http.ResponseWriter, r *http.Request){
-	type PageData struct{
-			LoggedIn bool
-			CSRFToken template.HTML
-		}
-	pageData := PageData{
+
+
+func renderTestPage(w http.ResponseWriter, r *http.Request, templates *template.Template){
+	type testPageData struct{
+		LoggedIn bool
+		CSRFToken template.HTML
+	}
+
+	pageData := testPageData{
 		LoggedIn: true,
 		CSRFToken: csrf.TemplateField(r),
 	}
+
 	templates.ExecuteTemplate(w, "test", pageData)
+}
+
+func handleGet(templates *template.Template, w http.ResponseWriter, r *http.Request){
+	renderTestPage(w, r, templates)
 }
 
 func handlePost(templates *template.Template, w http.ResponseWriter, r *http.Request){
@@ -56,15 +64,7 @@ func handleFormPost(templates *template.Template, w http.ResponseWriter, r *http
 	formAction := r.FormValue("form_action")
 	fmt.Println(formAction)
 	
-	type PageData struct{
-			LoggedIn bool
-			CSRFToken template.HTML
-		}
-	pageData := PageData{
-		LoggedIn: true,
-		CSRFToken: csrf.TemplateField(r),
-	}
-	templates.ExecuteTemplate(w, "test", pageData)
+	renderTestPage(w, r, templates)
 }
 
 func handleJSONPost(w http.ResponseWriter, r *http.Request){
