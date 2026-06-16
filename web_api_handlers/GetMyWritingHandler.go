@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"freecreate/auth"
 	"freecreate/logger"
-	"freecreate/pgModels"
+	"freecreate/gormModels"
 	"net/http"
 
 	"github.com/gorilla/sessions"

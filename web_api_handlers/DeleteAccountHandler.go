@@ -3,7 +3,7 @@ package web_api_handlers
 import (
 	"freecreate/auth"
 	"freecreate/logger"
-	"freecreate/pgModels"
+	"freecreate/gormModels"
 	"net/http"
 
 	"github.com/gorilla/sessions"

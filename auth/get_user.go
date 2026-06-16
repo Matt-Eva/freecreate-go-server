@@ -1,7 +1,7 @@
 package auth
 
 import (
-	"freecreate/pgModels"
+	"freecreate/gormModels"
 	"net/http"
 
 	"github.com/gorilla/sessions"

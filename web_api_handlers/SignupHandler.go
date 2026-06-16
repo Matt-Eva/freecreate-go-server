@@ -5,7 +5,7 @@ import (
 	"errors"
 	"freecreate/auth"
 	"freecreate/logger"
-	"freecreate/pgModels"
+	"freecreate/gormModels"
 	"net/http"
 	"time"
 

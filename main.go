@@ -95,12 +95,12 @@ func main() {
 	}
 	log.Println("http server shutdown")
 
-	gormPGDB, err := gormPGClient.DB()
-	if err != nil {
-		log.Fatalf("could not access gorm pg db: %v", err)
-	}
-	gormPGDB.Close()
-	log.Println("pg db connection shutdown")
+	// gormPGDB, err := gormPGClient.DB()
+	// if err != nil {
+	// 	log.Fatalf("could not access gorm pg db: %v", err)
+	// }
+	// gormPGDB.Close()
+	// log.Println("pg db connection shutdown")
 
 	log.Println("main function closing gracefully. Goodbye!")
 }
