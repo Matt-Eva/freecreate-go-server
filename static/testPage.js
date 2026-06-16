@@ -7,8 +7,8 @@ document.addEventListener("DOMContentLoaded", () => {
   console.log(csrfToken);
   formOne.addEventListener("submit", (e) => {
     e.preventDefault();
-    console.log("form one default prevented");
-    fetch("/test", {
+
+    fetch("/web-api/test", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
   formTwo.addEventListener("submit", (e) => {
     e.preventDefault();
     console.log("form two default prevented");
-    fetch("/test", {
+    fetch("/web-api/test", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
