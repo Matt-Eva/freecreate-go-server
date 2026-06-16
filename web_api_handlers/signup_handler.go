@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"freecreate/auth"
-	"freecreate/gormModels"
+	"freecreate/gorm_models"
 	"freecreate/logger"
 	"net/http"
 	"time"

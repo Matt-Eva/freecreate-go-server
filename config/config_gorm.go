@@ -2,7 +2,7 @@ package config
 
 import (
 	"fmt"
-	"freecreate/gormModels"
+	"freecreate/gorm_models"
 	"log"
 	"os"
 

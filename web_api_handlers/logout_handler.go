@@ -2,7 +2,7 @@ package web_api_handlers
 
 import (
 	"freecreate/auth"
-	"freecreate/gormModels"
+	"freecreate/gorm_models"
 	"freecreate/logger"
 	"net/http"
 
