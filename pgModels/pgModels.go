@@ -74,8 +74,8 @@ type Writing struct {
 	User          User `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	CreatorID     uint
 	Creator       Creator `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	Rank          uint
-	RelRank       uint
+	Rank          uint `gorm:"index"`
+	RelRank       uint `gorm:"index"`
 	Views         uint // weight 1
 	Likes         uint // weight 50
 	ListAdds      uint // weight 50
