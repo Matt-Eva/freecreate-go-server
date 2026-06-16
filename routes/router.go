@@ -26,8 +26,10 @@ func CreateRouter(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB, mon
 	router := chi.NewRouter()
 
 	environment := os.Getenv("ENVIRONMENT")
+
 	csrfKey := os.Getenv("CSRF_KEY")	
 	var csrfMiddleware func(http.Handler) http.Handler
+
 	if environment == "DEVELOPMENT"{
 		fmt.Println("DEVELOPMENT")
 		csrfMiddleware = csrf.Protect([]byte(csrfKey), csrf.Secure(false), csrf.TrustedOrigins([]string{"localhost:8080"}))
@@ -50,23 +52,23 @@ func CreateRouter(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB, mon
 	templates := template.Must(template.ParseGlob("templates/*html"));
 	
 	// testTmpl := template.Must(template.ParseFiles("templates/pages/test/test.html", "templates/components/globals.html", "templates/components/header.html"))
-	router.Get("/test", web_page_handlers.TestHandler(templates))
-	router.Post("/test", web_page_handlers.TestHandler(templates))
+	router.Get("/test", web_page_handlers.TestPageHandler(templates))
+	router.Post("/test", web_page_handlers.TestPageHandler(templates))
 
 	// homeTmpl := template.Must(template.ParseFiles("templates/pages/home/home.html", "templates/pages/home/searchBox.html", "templates/pages/home/contentCard.html", "templates/components/header.html", "templates/components/globals.html"))
-	router.Get("/", web_page_handlers.HomeHandler(templates))
+	router.Get("/", web_page_handlers.HomePageHandler(templates))
 
 	// aboutTmpl := template.Must(template.ParseFiles("templates/pages/about/about.html", "templates/components/header.html", "templates/components/globals.html"))
-	// router.Get("/about", web_page_handlers.AboutHandler(aboutTmpl))
+	router.Get("/about", web_page_handlers.AboutPageHandler(templates))
 
 	// loginTmpl := template.Must(template.ParseFiles("templates/pages/login/login.html", "templates/components/globals.html", "templates/components/header.html"))
-	// router.Get("/login", web_page_handlers.LoginHandler(loginTmpl))
+	router.Get("/login", web_page_handlers.LoginPageHandler(templates))
 
 	// profileTmpl := template.Must(template.ParseFiles("templates/pages/profile/profile.html", "templates/components/header.html", "templates/components/globals.html"))
-	// router.Get("/profile", web_page_handlers.ProfileHandler(profileTmpl))
+	router.Get("/profile", web_page_handlers.ProfilePageHandler(templates))
 
 	// donateTmpl := template.Must(template.ParseFiles("templates/pages/donate/donate.html", "templates/components/header.html", "templates/components/globals.html"))
-	// router.Get("/donate", web_page_handlers.DonateHandler(donateTmpl))
+	router.Get("/donate", web_page_handlers.DonatePageHandler(templates))
 
 	router.Route("/web-api", func(r chi.Router) {
 

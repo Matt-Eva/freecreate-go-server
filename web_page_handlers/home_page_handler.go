@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-func HomeHandler(homeTmpl *template.Template) http.HandlerFunc {
+func HomePageHandler(homeTmpl *template.Template) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		type CardContent struct {

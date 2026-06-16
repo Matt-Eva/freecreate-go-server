@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"freecreate/lib"
 	"freecreate/logger"
 	"html/template"
 	"net/http"
@@ -11,18 +12,16 @@ import (
 	"github.com/gorilla/csrf"
 )
 
-func TestHandler (templates *template.Template) http.HandlerFunc{
+func TestPageHandler (templates *template.Template) http.HandlerFunc{
 	return func (w http.ResponseWriter, r *http.Request){
 		requestMethod := r.Method
 		switch requestMethod {
 		case "GET":
-			handleGet(templates, w, r)
+			handleTestPageGet(templates, w, r)
 		case "POST":
-			handlePost(templates, w, r)
+			handleTestPagePost(templates, w, r)
 		default:
-			errMsg := fmt.Sprintf("not a valid request method: method %s is not GET or POST", requestMethod)
-			err := errors.New(errMsg)
-			http.Error(w, err.Error(), http.StatusBadRequest)
+			lib.HandleInvalidWebpageRequestMethod(w, requestMethod)
 			return
 		}
 	}
@@ -44,11 +43,11 @@ func renderTestPage(w http.ResponseWriter, r *http.Request, templates *template.
 	templates.ExecuteTemplate(w, "test", pageData)
 }
 
-func handleGet(templates *template.Template, w http.ResponseWriter, r *http.Request){
+func handleTestPageGet(templates *template.Template, w http.ResponseWriter, r *http.Request){
 	renderTestPage(w, r, templates)
 }
 
-func handlePost(templates *template.Template, w http.ResponseWriter, r *http.Request){
+func handleTestPagePost(templates *template.Template, w http.ResponseWriter, r *http.Request){
 	contentType := r.Header.Get("Content-Type")
 		switch contentType {
 		case "application/json":

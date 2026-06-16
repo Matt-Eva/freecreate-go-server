@@ -5,16 +5,16 @@ import (
 	"net/http"
 )
 
-func DonateHandler(donateTmpl *template.Template) http.HandlerFunc{
+func LoginPageHandler(loginTmpl *template.Template) http.HandlerFunc{
 	return func (w http.ResponseWriter, r *http.Request){
 		type PageData struct{
 			LoggedIn bool
 		}
 
-		pageData := PageData {
+		pageData := PageData{
 			LoggedIn: false,
 		}
 
-		donateTmpl.ExecuteTemplate(w, "donate", pageData)
+		loginTmpl.ExecuteTemplate(w, "login", pageData)
 	}
 }

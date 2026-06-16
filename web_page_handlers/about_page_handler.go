@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-func AboutHandler(aboutTmpl *template.Template) http.HandlerFunc {
+func AboutPageHandler(aboutTmpl *template.Template) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		type PageData struct {
 			Title    string
