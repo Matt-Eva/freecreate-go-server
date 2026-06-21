@@ -59,7 +59,7 @@ func main() {
 	ctx := context.Background()
 
 	pgxMainDb := config.ConfigPgxMainDb(ctx)
-	
+
 	pgxContentDbOne := config.ConfigPgxContentDbOne(ctx)
 
 	// gormPGClient := config.ConfigGORM()

@@ -17,7 +17,7 @@ import (
 	"github.com/valkey-io/valkey-go"
 )
 
-func CreateRouter(sessionStore *sessions.CookieStore,pgxMainDb *pgxpool.Pool, pgxContentDbOne *pgxpool.Pool,  valkeyClient valkey.Client, resendClient *resend.Client) *chi.Mux {
+func CreateRouter(sessionStore *sessions.CookieStore, pgxMainDb *pgxpool.Pool, pgxContentDbOne *pgxpool.Pool, valkeyClient valkey.Client, resendClient *resend.Client) *chi.Mux {
 	router := chi.NewRouter()
 
 	environment := os.Getenv("ENVIRONMENT")
