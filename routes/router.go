@@ -19,7 +19,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func CreateRouter(sessionStore *sessions.CookieStore,pgxMainDb *pgxpool.Pool, gormPGClient *gorm.DB, mongoClient *mongo.Client, valkeyClient valkey.Client, resendClient *resend.Client) *chi.Mux {
+func CreateRouter(sessionStore *sessions.CookieStore,pgxMainDb *pgxpool.Pool, pgxContentDbOne *pgxpool.Pool, gormPGClient *gorm.DB, mongoClient *mongo.Client, valkeyClient valkey.Client, resendClient *resend.Client) *chi.Mux {
 	router := chi.NewRouter()
 
 	environment := os.Getenv("ENVIRONMENT")
