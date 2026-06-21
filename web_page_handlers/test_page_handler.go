@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"freecreate/lib"
 	"freecreate/logger"
 	"html/template"
 	"net/http"
@@ -21,7 +20,7 @@ func TestPageHandler(templates *template.Template) http.HandlerFunc {
 		case "POST":
 			handleTestPagePost(templates, w, r)
 		default:
-			lib.HandleInvalidWebpageRequestMethod(w, requestMethod)
+			handleInvalidWebpageRequestMethod(w, requestMethod)
 			return
 		}
 	}
