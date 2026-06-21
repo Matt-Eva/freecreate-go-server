@@ -15,11 +15,9 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/resend/resend-go/v2"
 	"github.com/valkey-io/valkey-go"
-	"go.mongodb.org/mongo-driver/v2/mongo"
-	"gorm.io/gorm"
 )
 
-func CreateRouter(sessionStore *sessions.CookieStore,pgxMainDb *pgxpool.Pool, pgxContentDbOne *pgxpool.Pool, gormPGClient *gorm.DB, mongoClient *mongo.Client, valkeyClient valkey.Client, resendClient *resend.Client) *chi.Mux {
+func CreateRouter(sessionStore *sessions.CookieStore,pgxMainDb *pgxpool.Pool, pgxContentDbOne *pgxpool.Pool,  valkeyClient valkey.Client, resendClient *resend.Client) *chi.Mux {
 	router := chi.NewRouter()
 
 	environment := os.Getenv("ENVIRONMENT")
@@ -66,29 +64,29 @@ func CreateRouter(sessionStore *sessions.CookieStore,pgxMainDb *pgxpool.Pool, pg
 
 		r.Post("/test", web_api_handlers.TestHandler())
 
-		r.Post("/login", web_api_handlers.LoginHandler(sessionStore, gormPGClient))
+		// r.Post("/login", web_api_handlers.LoginHandler(sessionStore, ))
 
-		r.Post("/signup", web_api_handlers.SignupHandler(sessionStore, gormPGClient))
+		// r.Post("/signup", web_api_handlers.SignupHandler(sessionStore, ))
 
-		r.Delete("/logout", web_api_handlers.LogoutHandler(sessionStore, gormPGClient))
+		// r.Delete("/logout", web_api_handlers.LogoutHandler(sessionStore, ))
 
-		r.Get("/reauth", web_api_handlers.ReAuthHandler(sessionStore, gormPGClient))
+		// r.Get("/reauth", web_api_handlers.ReAuthHandler(sessionStore, ))
 
-		r.Delete("/delete-account", web_api_handlers.DeleteAccountHandler(sessionStore, gormPGClient))
+		// r.Delete("/delete-account", web_api_handlers.DeleteAccountHandler(sessionStore, ))
 
-		r.Post("/creator", web_api_handlers.CreateCreatorHandler(sessionStore, gormPGClient))
+		// r.Post("/creator", web_api_handlers.CreateCreatorHandler(sessionStore, ))
 
-		r.Delete("/creator/{creatorId}", web_api_handlers.DeleteCreatorHandler(sessionStore, gormPGClient))
+		// r.Delete("/creator/{creatorId}", web_api_handlers.DeleteCreatorHandler(sessionStore, ))
 
-		r.Get("/user-creators", web_api_handlers.GetUserCreatorHandlers(sessionStore, gormPGClient))
+		// r.Get("/user-creators", web_api_handlers.GetUserCreatorHandlers(sessionStore, ))
 
-		r.Post("/writing", web_api_handlers.CreateWritingHandler(sessionStore, gormPGClient))
+		// r.Post("/writing", web_api_handlers.CreateWritingHandler(sessionStore, ))
 
-		r.Patch("/writing", web_api_handlers.UpdateWritingHandler(sessionStore, gormPGClient))
+		// r.Patch("/writing", web_api_handlers.UpdateWritingHandler(sessionStore, ))
 
-		r.Get("/my-writing", web_api_handlers.GetMyWritingHandler(sessionStore, gormPGClient))
+		// r.Get("/my-writing", web_api_handlers.GetMyWritingHandler(sessionStore, ))
 
-		r.Get("/edit-writing/{writingUUID}", web_api_handlers.GetEditWritingHandler(sessionStore, gormPGClient))
+		// r.Get("/edit-writing/{writingUUID}", web_api_handlers.GetEditWritingHandler(sessionStore, ))
 
 		// router.Post("/createOTP", handlers.CreateOTPHandler(resendClient, valkeyClient))
 

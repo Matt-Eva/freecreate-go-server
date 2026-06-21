@@ -62,15 +62,15 @@ func main() {
 	
 	pgxContentDbOne := config.ConfigPgxContentDbOne(ctx)
 
-	gormPGClient := config.ConfigGORM()
+	// gormPGClient := config.ConfigGORM()
 
-	mongoClient := config.ConfigMongo()
+	// mongoClient := config.ConfigMongo()
 
 	valkeyClient := config.ConfigValkey()
 
 	resendClient := config.InitResend()
 
-	router := routes.CreateRouter(sessionStore, pgxMainDb, pgxContentDbOne, gormPGClient, mongoClient, valkeyClient, resendClient)
+	router := routes.CreateRouter(sessionStore, pgxMainDb, pgxContentDbOne, valkeyClient, resendClient)
 
 	var srv = &http.Server{
 		Addr:         ":8080",
