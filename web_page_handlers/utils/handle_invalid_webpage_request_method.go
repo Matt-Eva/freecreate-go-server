@@ -1,4 +1,4 @@
-package web_page_handlers
+package web_page_utils
 
 import (
 	"errors"
@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func handleInvalidWebpageRequestMethod(w http.ResponseWriter, requestMethod string) {
+func HandleInvalidWebpageRequestMethod(w http.ResponseWriter, requestMethod string) {
 	errMsg := fmt.Sprintf("not a valid request method: method %s is not GET or POST", requestMethod)
 	err := errors.New(errMsg)
 	logger.Log(err)

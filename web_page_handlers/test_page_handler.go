@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"freecreate/logger"
+	web_page_utils "freecreate/web_page_handlers/utils"
 	"html/template"
 	"net/http"
 
@@ -20,7 +21,7 @@ func TestPageHandler(templates *template.Template) http.HandlerFunc {
 		case "POST":
 			handleTestPagePost(templates, w, r)
 		default:
-			handleInvalidWebpageRequestMethod(w, requestMethod)
+			web_page_utils.HandleInvalidWebpageRequestMethod(w, requestMethod)
 			return
 		}
 	}
