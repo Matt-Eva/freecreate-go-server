@@ -6,6 +6,8 @@ import (
 	"os"
 
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/amacneil/dbmate/v2/pkg/dbmate"
+	_ "github.com/amacneil/dbmate/v2/pkg/driver/postgres"
 )
 
 func ConfigPgxMainDb(ctx context.Context) *pgxpool.Pool {
