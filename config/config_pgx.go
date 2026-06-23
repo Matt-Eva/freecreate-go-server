@@ -3,6 +3,7 @@ package config
 import (
 	"context"
 	"fmt"
+	"freecreate/logger"
 	"net/url"
 	"os"
 
@@ -11,28 +12,57 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-func ConfigPgxCoreDb(ctx context.Context, environment string) (*pgxpool.Pool, error) {
+type PgxDbConnections struct {
+	PgCore *pgxpool.Pool
+	PgContent *pgxpool.Pool
+}
 
-	mainDBConnURL := os.Getenv("PG_MAIN_DB_URL")
+func ConfigPgx(ctx context.Context, environment string)(PgxDbConnections, error){
+	corePool, coreErr := connectPgx(ctx, environment, os.Getenv("PG_MAIN_DB_URL"), "./db/pg_core/migrations", "./db/pg_core")
+	if coreErr != nil {
+		logger.Log(coreErr)
+		return PgxDbConnections{}, coreErr
+	}
 
-	pgxMainPool, err := pgxpool.New(ctx, mainDBConnURL)
+	contentPool, contentErr := connectPgx(ctx, environment, os.Getenv("PG_CONTENT_DB_ONE_URL"), "./db/pg_content/migrations", "./db/pg_content")
+	if contentErr != nil {
+		logger.Log(contentErr)
+		return PgxDbConnections{}, contentErr
+	}
+
+	PgxConnections := PgxDbConnections{
+		PgCore: corePool,
+		PgContent: contentPool,
+	}
+
+	return PgxConnections, nil
+}
+
+func connectPgx(ctx context.Context, environment string, connEnv string, migrationsDir string, schemaFile string) (*pgxpool.Pool, error) {
+
+	pgxPool, err := pgxpool.New(ctx, connEnv)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to create connection pool: %v\n", err)
 		os.Exit(1)
 	}
-	fmt.Println("successful connection to pgx Main db!")
+	msg := fmt.Sprintf("successful connection to %s!", connEnv)
+	fmt.Println(msg)
 
-	runPgxCoreMigrations(mainDBConnURL, environment)
+	migrationErr := runDbmateMigrations(connEnv, environment, migrationsDir, schemaFile)
+	if migrationErr != nil {
+		logger.Log(migrationErr)
+		return nil, migrationErr
+	}
 
-	return pgxMainPool, nil
+	return pgxPool, nil
 }
 
-func runPgxCoreMigrations(connString string, environment string) error {
+func runDbmateMigrations(connString string, environment string, migrationsDir string, schemaFile string) error {
 	u, _:= url.Parse(connString)
 	db := dbmate.New(u)
 
-	db.MigrationsDir = []string{"./db/pg_core/migrations"}
-	db.SchemaFile = "./db/pg_core"
+	db.MigrationsDir = []string{migrationsDir}
+	db.SchemaFile = schemaFile
 	
 	if environment == "PRODUCTION"{
 		db.AutoDumpSchema = false
@@ -47,18 +77,24 @@ func runPgxCoreMigrations(connString string, environment string) error {
 	return nil
 }
 
-func ConfigPgxContentDbOne(ctx context.Context) *pgxpool.Pool {
-	contentDbOneConnUrl := os.Getenv("PG_CONTENT_DB_ONE_URL")
+// func configPgxContentDbOne(ctx context.Context, environment string) (*pgxpool.Pool, error) {
+// 	contentDbOneConnUrl := os.Getenv("PG_CONTENT_DB_ONE_URL")
 
-	pgxContentDbOnePool, err := pgxpool.New(ctx, contentDbOneConnUrl)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Unable to create connection pool: %v\n", err)
-		os.Exit(1)
-	}
-	fmt.Println("successful connectino to pgx Content db one!")
+// 	pgxContentDbOnePool, err := pgxpool.New(ctx, contentDbOneConnUrl)
+// 	if err != nil {
+// 		fmt.Fprintf(os.Stderr, "Unable to create connection pool: %v\n", err)
+// 		os.Exit(1)
+// 	}
+// 	fmt.Println("successful connectino to pgx Content db one!")
+
+// 	migrationErr := runDbmateMigrations(contentDbOneConnUrl, environment, "./db/pg_content/migrations", "./db/pg_content")
+// 	if migrationErr != nil {
+// 		logger.Log(migrationErr)
+// 		return nil, migrationErr
+// 	}
 	
-	return pgxContentDbOnePool
-}
+// 	return pgxContentDbOnePool, nil
+// }
 
 // ============== Just create more content DBs in parallel to create "sharding" for content =======
 // func ConfigPgxContentDBTwo(ctx context.Context){

@@ -58,19 +58,18 @@ func main() {
 
 	ctx := context.Background()
 
-	pgxMainDb, pgxCoreErr := config.ConfigPgxCoreDb(ctx, environment)
-	if pgxCoreErr != nil {
-		logger.Log(pgxCoreErr)
+	pgxPools, pgxErr := config.ConfigPgx(ctx, environment)
+	if pgxErr != nil {
+		logger.Log(pgxErr)
+		log.Fatal(pgxErr)
 		return
 	}
-
-	pgxContentDbOne := config.ConfigPgxContentDbOne(ctx)
 
 	valkeyClient := config.ConfigValkey()
 
 	resendClient := config.InitResend()
 
-	router := routes.CreateRouter(sessionStore, pgxMainDb, pgxContentDbOne, valkeyClient, resendClient)
+	router := routes.CreateRouter(sessionStore, pgxPools, valkeyClient, resendClient)
 
 	var srv = &http.Server{
 		Addr:         ":8080",

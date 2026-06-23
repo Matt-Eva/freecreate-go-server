@@ -2,6 +2,7 @@ package routes
 
 import (
 	"fmt"
+	"freecreate/config"
 	"freecreate/middleware"
 	"freecreate/web_api_handlers"
 	"freecreate/web_page_handlers"
@@ -12,12 +13,11 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/gorilla/csrf"
 	"github.com/gorilla/sessions"
-	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/resend/resend-go/v2"
 	"github.com/valkey-io/valkey-go"
 )
 
-func CreateRouter(sessionStore *sessions.CookieStore, pgxMainDb *pgxpool.Pool, pgxContentDbOne *pgxpool.Pool, valkeyClient valkey.Client, resendClient *resend.Client) *chi.Mux {
+func CreateRouter(sessionStore *sessions.CookieStore, pgxPools config.PgxDbConnections, valkeyClient valkey.Client, resendClient *resend.Client) *chi.Mux {
 	router := chi.NewRouter()
 
 	environment := os.Getenv("ENVIRONMENT")
