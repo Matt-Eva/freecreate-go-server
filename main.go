@@ -58,7 +58,7 @@ func main() {
 
 	ctx := context.Background()
 
-	pgxMainDb := config.ConfigPgxMainDb(ctx)
+	pgxMainDb := config.ConfigPgxCoreDb(ctx)
 
 	pgxContentDbOne := config.ConfigPgxContentDbOne(ctx)
 

@@ -11,7 +11,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-func ConfigPgxMainDb(ctx context.Context) *pgxpool.Pool {
+func ConfigPgxCoreDb(ctx context.Context) *pgxpool.Pool {
 
 	mainDBConnURL := os.Getenv("PG_MAIN_DB_URL")
 
@@ -20,21 +20,26 @@ func ConfigPgxMainDb(ctx context.Context) *pgxpool.Pool {
 		fmt.Fprintf(os.Stderr, "Unable to create connection pool: %v\n", err)
 		os.Exit(1)
 	}
-
 	fmt.Println("successful connection to pgx Main db!")
 
-	u, _:= url.Parse(mainDBConnURL)
+	runPgxCoreMigrations(mainDBConnURL)
+
+	return pgxMainPool
+}
+
+func runPgxCoreMigrations(connString string) error {
+	u, _:= url.Parse(connString)
 	db := dbmate.New(u)
 
 	db.MigrationsDir = []string{"./db/pg_core/migrations"}
+	db.SchemaFile = "./db/pg_core"
 
 	migrationErr := db.Migrate()
 	if migrationErr != nil {
 		fmt.Fprintf(os.Stderr, "unable to run dbmate migration: %v\n", migrationErr)
 		os.Exit(1)
 	}
-
-	return pgxMainPool
+	return nil
 }
 
 func ConfigPgxContentDbOne(ctx context.Context) *pgxpool.Pool {
