@@ -58,7 +58,11 @@ func main() {
 
 	ctx := context.Background()
 
-	pgxMainDb := config.ConfigPgxCoreDb(ctx)
+	pgxMainDb, pgxCoreErr := config.ConfigPgxCoreDb(ctx, environment)
+	if pgxCoreErr != nil {
+		logger.Log(pgxCoreErr)
+		return
+	}
 
 	pgxContentDbOne := config.ConfigPgxContentDbOne(ctx)
 
