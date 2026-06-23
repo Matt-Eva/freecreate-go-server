@@ -9,8 +9,7 @@ import (
 )
 
 func ConfigPgxMainDb(ctx context.Context) *pgxpool.Pool {
-	// user, pwd, host, port, db, ssl :=  os.Getenv("PG_USER"), os.Getenv("PG_PASSWORD"), os.Getenv("PG_HOST") , os.Getenv("PG_PORT"), os.Getenv("PG_MAIN_DB"), os.Getenv("PG_SSL")
-	// connString := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s", user, pwd, host, port, db, ssl)
+
 
 	mainDBConnURL := os.Getenv("PG_MAIN_DB_URL")
 
