@@ -1,25 +1,25 @@
 package auth
 
-import (
-	pgModels "freecreate/gorm_models"
-	"net/http"
+// import (
+// 	pgModels "freecreate/gorm_models"
+// 	"net/http"
 
-	"github.com/gorilla/sessions"
-	"gorm.io/gorm"
-)
+// 	"github.com/gorilla/sessions"
+// 	"gorm.io/gorm"
+// )
 
-func GetUser(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB, w http.ResponseWriter, r *http.Request) (uint, error) {
-	sessionUUID, aErr := CheckSession(sessionStore, w, r)
-	if aErr != nil {
-		return 0, aErr
-	}
+// func GetUser(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB, w http.ResponseWriter, r *http.Request) (uint, error) {
+// 	sessionUUID, aErr := CheckSession(sessionStore, w, r)
+// 	if aErr != nil {
+// 		return 0, aErr
+// 	}
 
-	var userId uint
+// 	var userId uint
 
-	uErr := gormPGClient.Model(pgModels.User{}).Select("id").Where("session_uuid = ?", sessionUUID).First(&userId).Error
-	if uErr != nil {
-		return 0, uErr
-	}
+// 	uErr := gormPGClient.Model(pgModels.User{}).Select("id").Where("session_uuid = ?", sessionUUID).First(&userId).Error
+// 	if uErr != nil {
+// 		return 0, uErr
+// 	}
 
-	return userId, nil
-}
+// 	return userId, nil
+// }
