@@ -12,30 +12,30 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-type PgxDbConnections struct {
+type PgxPools struct {
 	PgCore *pgxpool.Pool
 	PgContent *pgxpool.Pool
 }
 
-func ConfigPgx(ctx context.Context, environment string)(PgxDbConnections, error){
+func ConfigPgx(ctx context.Context, environment string)(PgxPools, error){
 	corePool, coreErr := connectPgx(ctx, environment, os.Getenv("PG_MAIN_DB_URL"), "./db/pg_core/migrations", "./db/pg_core")
 	if coreErr != nil {
 		logger.Log(coreErr)
-		return PgxDbConnections{}, coreErr
+		return PgxPools{}, coreErr
 	}
 
 	contentPool, contentErr := connectPgx(ctx, environment, os.Getenv("PG_CONTENT_DB_ONE_URL"), "./db/pg_content/migrations", "./db/pg_content")
 	if contentErr != nil {
 		logger.Log(contentErr)
-		return PgxDbConnections{}, contentErr
+		return PgxPools{}, contentErr
 	}
 
-	PgxConnections := PgxDbConnections{
+	pgxPools := PgxPools{
 		PgCore: corePool,
 		PgContent: contentPool,
 	}
 
-	return PgxConnections, nil
+	return pgxPools, nil
 }
 
 func connectPgx(ctx context.Context, environment string, connEnv string, migrationsDir string, schemaFile string) (*pgxpool.Pool, error) {
