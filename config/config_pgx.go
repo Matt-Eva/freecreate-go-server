@@ -48,10 +48,12 @@ func connectPgx(ctx context.Context, environment string, connEnv string, migrati
 	msg := fmt.Sprintf("successful connection to %s!", connEnv)
 	fmt.Println(msg)
 
-	migrationErr := runDbmateMigrations(connEnv, environment, migrationsDir, schemaFile)
-	if migrationErr != nil {
-		logger.Log(migrationErr)
-		return nil, migrationErr
+	if environment == "PRODUCTION"{
+		migrationErr := runDbmateMigrations(connEnv, environment, migrationsDir, schemaFile)
+		if migrationErr != nil {
+			logger.Log(migrationErr)
+			return nil, migrationErr
+		}
 	}
 
 	return pgxPool, nil
