@@ -18,13 +18,13 @@ type PgxPools struct {
 }
 
 func ConfigPgx(ctx context.Context, environment string)(PgxPools, error){
-	corePool, coreErr := connectPgx(ctx, environment, os.Getenv("PG_MAIN_DB_URL"), "./db/pg_core/migrations", "./db/pg_core")
+	corePool, coreErr := connectPgx(ctx, environment, os.Getenv("PG_MAIN_DB_URL"), "./db/pg_core/migrations")
 	if coreErr != nil {
 		logger.Log(coreErr)
 		return PgxPools{}, coreErr
 	}
 
-	contentPool, contentErr := connectPgx(ctx, environment, os.Getenv("PG_CONTENT_DB_ONE_URL"), "./db/pg_content/migrations", "./db/pg_content")
+	contentPool, contentErr := connectPgx(ctx, environment, os.Getenv("PG_CONTENT_DB_ONE_URL"), "./db/pg_content/migrations")
 	if contentErr != nil {
 		logger.Log(contentErr)
 		return PgxPools{}, contentErr
@@ -38,33 +38,36 @@ func ConfigPgx(ctx context.Context, environment string)(PgxPools, error){
 	return pgxPools, nil
 }
 
-func connectPgx(ctx context.Context, environment string, connEnv string, migrationsDir string, schemaFile string) (*pgxpool.Pool, error) {
+func connectPgx(ctx context.Context, environment string, connEnv string, migrationsDir string) (*pgxpool.Pool, error) {
 
 	pgxPool, err := pgxpool.New(ctx, connEnv)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to create connection pool: %v\n", err)
 		os.Exit(1)
 	}
-	msg := fmt.Sprintf("successful connection to %s!", connEnv)
+
+	msg := fmt.Sprintf("successful connection to %s!", migrationsDir)
 	fmt.Println(msg)
 
 	if environment == "PRODUCTION"{
-		migrationErr := runDbmateMigrations(connEnv, environment, migrationsDir, schemaFile)
+		migrationErr := runDbmateMigrations(connEnv, environment, migrationsDir)
 		if migrationErr != nil {
 			logger.Log(migrationErr)
 			return nil, migrationErr
 		}
+	} else {
+		msg := fmt.Sprintf("migrations not run, environment is %s, not PRODUCTION", environment)
+		fmt.Println(msg)
 	}
 
 	return pgxPool, nil
 }
 
-func runDbmateMigrations(connString string, environment string, migrationsDir string, schemaFile string) error {
+func runDbmateMigrations(connString string, environment string, migrationsDir string) error {
 	u, _:= url.Parse(connString)
 	db := dbmate.New(u)
 
 	db.MigrationsDir = []string{migrationsDir}
-	db.SchemaFile = schemaFile
 	
 	if environment == "PRODUCTION"{
 		db.AutoDumpSchema = false

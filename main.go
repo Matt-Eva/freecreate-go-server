@@ -28,6 +28,7 @@ func main() {
 		if err != nil {
 			log.Fatal("Error loading .env file")
 		}
+		environment = "DEVELOPMENT"
 	}
 
 	gob.Register(uuid.UUID{})
