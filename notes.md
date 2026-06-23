@@ -37,3 +37,11 @@ However, this will likely cause some layout / appearance shift of the website. S
 # dbmate
 
 to create a migration in a specific folder using dbmate, run the command `dbmate -d "./[location of my folder]"` new name_of_my_migration_file.
+
+To run a migration for a specific database instance, run this command `dbmate -d "./db/pg_core/migrations" -s "./db/pg_core/schema.sql" --url "postgres://matte:code@localhost:5432/freecreate_go?sslmode=disable" migrate`.
+
+To run the rollback, run `dbmate -d "./db/pg_core/migrations" -s "./db/pg_core/schema.sql" --url "postgres://matte:code@localhost:5432/freecreate_go?sslmode=disable" rollback`.
+
+Note that for the custom schema sql argument, you must pass the full path as an argument, otherwise it will not write to the file.
+
+To Do: Create some bash shorthand commands for this.

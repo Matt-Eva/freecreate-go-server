@@ -1,5 +1,10 @@
 -- migrate:up
-
+CREATE TABLE users (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
 -- migrate:down
+
+DROP TABLE users;
 
