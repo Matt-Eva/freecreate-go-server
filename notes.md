@@ -33,3 +33,7 @@ It looks like the downloading of separate CSS files without preloading approxima
 This can be ammeliorated by using the preload attribute for css stylesheets, then dynamically changing their attributes once they're loaded to be regular stylesheets, which will allow the html to begin rendering immediately and also allow for caching of most of the css.
 
 However, this will likely cause some layout / appearance shift of the website. So maybe embedding styles in the head is just the way to go? Either that or enable long caching in the browser.
+
+# dbmate
+
+to create a migration in a specific folder using dbmate, run the command `dbmate -d "./[location of my folder]"` new name_of_my_migration_file.
