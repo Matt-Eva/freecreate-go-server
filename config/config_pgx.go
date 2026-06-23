@@ -3,11 +3,12 @@ package config
 import (
 	"context"
 	"fmt"
+	"net/url"
 	"os"
 
-	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/amacneil/dbmate/v2/pkg/dbmate"
 	_ "github.com/amacneil/dbmate/v2/pkg/driver/postgres"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 func ConfigPgxMainDb(ctx context.Context) *pgxpool.Pool {
@@ -19,7 +20,20 @@ func ConfigPgxMainDb(ctx context.Context) *pgxpool.Pool {
 		fmt.Fprintf(os.Stderr, "Unable to create connection pool: %v\n", err)
 		os.Exit(1)
 	}
+
 	fmt.Println("successful connection to pgx Main db!")
+
+	u, _:= url.Parse(mainDBConnURL)
+	db := dbmate.New(u)
+
+	db.MigrationsDir = []string{"./db/pg_core/migrations"}
+
+	migrationErr := db.Migrate()
+	if migrationErr != nil {
+		fmt.Fprintf(os.Stderr, "unable to run dbmate migration: %v\n", migrationErr)
+		os.Exit(1)
+	}
+
 	return pgxMainPool
 }
 
