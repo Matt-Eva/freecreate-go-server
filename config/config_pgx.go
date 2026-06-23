@@ -10,7 +10,6 @@ import (
 
 func ConfigPgxMainDb(ctx context.Context) *pgxpool.Pool {
 
-
 	mainDBConnURL := os.Getenv("PG_MAIN_DB_URL")
 
 	pgxMainPool, err := pgxpool.New(ctx, mainDBConnURL)
