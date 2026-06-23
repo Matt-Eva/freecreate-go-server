@@ -66,10 +66,6 @@ func main() {
 
 	pgxContentDbOne := config.ConfigPgxContentDbOne(ctx)
 
-	// gormPGClient := config.ConfigGORM()
-
-	// mongoClient := config.ConfigMongo()
-
 	valkeyClient := config.ConfigValkey()
 
 	resendClient := config.InitResend()
