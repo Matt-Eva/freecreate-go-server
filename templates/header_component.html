@@ -1,16 +1,15 @@
-{{define "header"}}
-
-<header>
-  <h1 class="headerTitle"><a href="/">FreeCreate</a></h1>
-  <a href="/">browse</a>
-  <a href="/about">about</a>
-  <a href="/donate">donate</a>
-  <a href="/test">test</a>
-  {{if .LoggedIn}}
-  <a href="/profile">profile</a>
-  {{else}}
-  <a href="/login">login</a>
-  <!-- <button id="login-modal-toggle">login</button> -->
-  {{end}}
-</header>
-{{end}}
+{{ define "header" }}
+  <header>
+    <h1 class="headerTitle"><a href="/">FreeCreate</a></h1>
+    <a href="/">browse</a>
+    <a href="/about">about</a>
+    <a href="/donate">donate</a>
+    <a href="/test">test</a>
+    {{ if .LoggedIn }}
+      <a href="/profile">profile</a>
+    {{ else }}
+      <a href="/login">login</a>
+      <!-- <button id="login-modal-toggle">login</button> -->
+    {{ end }}
+  </header>
+{{ end }}

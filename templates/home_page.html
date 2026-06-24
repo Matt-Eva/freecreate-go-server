@@ -4,12 +4,12 @@
     <head>
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
       {{ template "globals" }}
-      <script defer src="static/home.js"></script>
+      <script defer src="static/home_page.js"></script>
     </head>
     <body>
       {{ template "header" . }}
+      <div id="lexical-editor"></div>
       <button id="post-hello">post</button>
       <p>will this reload?</p>
       <p>and what about this?</p>
@@ -19,9 +19,11 @@
           .
         }}
       {{ end }}
+
     </body>
   </html>
 {{ end }}
+
 {{ define "homeScript" }}
   <script>
     document.addEventListener("DOMContentLoaded", () => {

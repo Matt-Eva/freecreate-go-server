@@ -39,6 +39,14 @@ func CreateRouter(sessionStore *sessions.CookieStore, pgxPools config.PgxPools, 
 
 	router.Handle("/static/*", http.StripPrefix("/static/", cachedFileServer))
 
+	// fileServer := http.FileServer(http.Dir("static"))
+	// cachedFileServer := middleware.CacheControlHandler(fileServer)
+
+	// // Chi requires the wildcard string to be stripped properly
+	// router.Route("/static", func(r chi.Router) {
+	// 	r.Get("/*", http.StripPrefix("/static", cachedFileServer).ServeHTTP)
+	// })
+
 	router.Get("/get-csrf", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("X-CSRF-Token", csrf.Token(r))
 		w.Header().Set("Access-Control-Expose-Headers", "X-CSRF-Token")
