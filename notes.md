@@ -45,3 +45,13 @@ To run the rollback, run `dbmate -d "./db/pg_core/migrations" -s "./db/pg_core/s
 Note that for the custom schema sql argument, you must pass the full path as an argument, otherwise it will not write to the file.
 
 To Do: Create some bash shorthand commands for this.
+
+# creator tags / topics vs writing tags / topics
+
+store writing tags and topics in a gin array - 23 values max - on the table itself.
+
+because creator tags and topics will include all of the tags and topics they've ever added to their pieces of writing, we will store that information in a join table between a tag and topic in another table (for simplicity, they should just be stored in the tags table).
+
+Because of this, we will be running a join operation on them.
+
+However, we will store the writing types they've written across within a GIN index, since that value cannot span as many unique values.
