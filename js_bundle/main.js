@@ -12,4 +12,4 @@ const editor = createEditor(config);
 
 const editorRoot = document.getElementById("lexical-editor");
 
-editor.setRootElement(editoRoot);
+editor.setRootElement(editorRoot);
