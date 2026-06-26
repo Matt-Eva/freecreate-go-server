@@ -1,0 +1,28 @@
+{
+  "name": "go-freecreate",
+  "version": "1.0.0",
+  "description": "freecreate website built in go",
+  "homepage": "https://github.com/Matt-Eva/freecreate-go-server#readme",
+  "bugs": {
+    "url": "https://github.com/Matt-Eva/freecreate-go-server/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Matt-Eva/freecreate-go-server.git"
+  },
+  "license": "ISC",
+  "author": "Matt Eva",
+  "type": "commonjs",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "lexical": "^0.45.0",
+    "prettier-plugin-go-template": "^0.0.15"
+  }
+}
