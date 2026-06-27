@@ -12,12 +12,23 @@
         <p>{{ . }}</p>
       {{ end }}
       {{ .RequestMethod }}
-      <form action="/login" method="POST">
+      <form action="/login" method="POST" autocomplete="off">
         {{ .CSRFToken }}
         <label>Email:</label>
         <input type="hidden" name="form_action" value="request_otp" />
         <input type="text" placeholder="enter your email address" />
         <input type="submit" />
+      </form>
+      <form action="/login" method="GET" autocomplete="off">
+        <label>Search test:</label>
+        <input
+          type="text"
+          name="search_field"
+          value="{{ .Query }}"
+          autocomplete="off"
+          placeholder="type your search in here"
+        />
+        <input type="submit" value="search" />
       </form>
       <p>Enter your email address to receive a One Time Password via email.</p>
       <p>This password will last for five minutes.</p>
@@ -36,9 +47,9 @@
           display: none;
         }
 
-        #checkbox {
-          /* display: none; */
-        }
+        /* #checkbox {
+          display: none; 
+        } */
 
         #checkbox:checked ~ #toggle {
           display: block;
