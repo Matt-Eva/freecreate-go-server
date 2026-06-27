@@ -1,23 +1,31 @@
-{{ define "login" }}
+{{ define "login_page" }}
   <!doctype html>
   <html lang="en">
     <head>
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      {{ template "globals" }}
+      {{ template "globals_component" }}
     </head>
     <body>
-      {{ template "header" . }}
-      <form>
+      {{ template "header_component" . }}
+      {{ range .Errors }}
+        <p>{{ . }}</p>
+      {{ end }}
+      {{ .RequestMethod }}
+      <form action="/login" method="POST">
+        {{ .CSRFToken }}
         <label>Email:</label>
+        <input type="hidden" name="form_action" value="request_otp" />
         <input type="text" placeholder="enter your email address" />
         <input type="submit" />
       </form>
       <p>Enter your email address to receive a One Time Password via email.</p>
       <p>This password will last for five minutes.</p>
       <details>
-        <summary>click to see more</summary>
-        <form>
+        <summary>Submit otp</summary>
+        <form action="/login" method="POST">
+          {{ .CSRFToken }}
+          <input type="hidden" name="form_action" value="submit_otp" />
           <input type="text" />
           <input type="submit" />
         </form>
@@ -29,14 +37,14 @@
         }
 
         #checkbox {
-          display: none;
+          /* display: none; */
         }
 
         #checkbox:checked ~ #toggle {
           display: block;
         }
       </style>
-      <label for="checkbox">check checkbox</label>
+      <label for="checkbox">show form</label>
       <input type="checkbox" name="checkbox" id="checkbox" />
       <p id="toggle">this is hidden content</p>
     </body>

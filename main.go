@@ -66,11 +66,17 @@ func main() {
 		return
 	}
 
+	pgCoreQueries, pgCoreQueryError := config.ConfigPgCoreQueries()
+	if pgCoreQueryError != nil {
+		logger.Log(pgCoreQueryError)
+		return
+	}
+
 	valkeyClient := config.ConfigValkey()
 
 	resendClient := config.InitResend()
 
-	router := routes.CreateRouter(sessionStore, pgxPools, valkeyClient, resendClient)
+	router := routes.CreateRouter(sessionStore, pgxPools, pgCoreQueries, valkeyClient, resendClient)
 
 	var srv = &http.Server{
 		Addr:         ":8080",

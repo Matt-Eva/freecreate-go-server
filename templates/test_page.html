@@ -5,20 +5,20 @@
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <title>Document</title>
-      {{ template "globals" }}
+      {{ template "globals_component" }}
       <script defer src="/static/test_page.js"></script>
     </head>
     <body>
-      {{ template "header" }}
+      {{ template "header_component" }}
       <h2>Test</h2>
       <form method="POST" action="/test" id="form-1">
         {{ .CSRFToken }}
-        <input type="hidden" name="form_action" value="updat_profile" />
+        <input type="hidden" name="form_action" value="update_profile" />
         <input type="submit" />
       </form>
       <form method="POST" action="/test" id="form-2">
         {{ .CSRFToken }}
-        <input type="hidden" name="form_action" value="updat_settings" />
+        <input type="hidden" name="form_action" value="update_settings" />
         <input type="submit" />
       </form>
     </body>

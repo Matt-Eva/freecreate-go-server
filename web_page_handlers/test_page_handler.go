@@ -22,7 +22,6 @@ func TestPageHandler(templates *template.Template) http.HandlerFunc {
 			handleTestPagePost(templates, w, r)
 		default:
 			web_page_utils.HandleInvalidWebpageRequestMethod(w, requestMethod)
-			return
 		}
 	}
 }
@@ -56,14 +55,10 @@ func handleTestPagePost(templates *template.Template, w http.ResponseWriter, r *
 }
 
 func handleFormPost(templates *template.Template, w http.ResponseWriter, r *http.Request) {
-	fmt.Println("handling form submission")
-	parseFormErr := r.ParseForm()
-
-	if parseFormErr != nil {
-		fmt.Println(parseFormErr)
+	formAction, formActionErr := web_page_utils.GetFormAction(r)
+	if formActionErr != nil {
+		logger.Log(formActionErr)
 	}
-
-	formAction := r.FormValue("form_action")
 	fmt.Println(formAction)
 
 	renderTestPage(w, r, templates)
