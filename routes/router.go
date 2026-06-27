@@ -17,7 +17,7 @@ import (
 	"github.com/valkey-io/valkey-go"
 )
 
-func CreateRouter(sessionStore *sessions.CookieStore, pgxPools config.PgxPools, valkeyClient valkey.Client, resendClient *resend.Client) *chi.Mux {
+func CreateRouter(sessionStore *sessions.CookieStore, pgxPools config.PgxPools, pgCoreQueries config.PgCoreQueries, valkeyClient valkey.Client, resendClient *resend.Client) *chi.Mux {
 	router := chi.NewRouter()
 
 	environment := os.Getenv("ENVIRONMENT")
@@ -61,7 +61,8 @@ func CreateRouter(sessionStore *sessions.CookieStore, pgxPools config.PgxPools, 
 
 	router.Get("/about", web_page_handlers.AboutPageHandler(templates))
 
-	router.Get("/login", web_page_handlers.LoginPageHandler(templates))
+	router.Get("/login", web_page_handlers.LoginPageHandler(templates, pgxPools.PgCore, pgCoreQueries))
+	router.Post("/login", web_page_handlers.LoginPageHandler(templates, pgxPools.PgCore, pgCoreQueries))
 
 	router.Get("/profile", web_page_handlers.ProfilePageHandler(templates))
 

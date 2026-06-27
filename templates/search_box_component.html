@@ -1,8 +1,15 @@
-{{ define "searchBox" }}
+{{ define "search_box_component" }}
   <div>
     <h2>search box</h2>
     <form>
       <div>
+        <input
+          type="checkbox"
+          id="noGenreCheck"
+          class="genre-check"
+          value="No Genre"
+        />
+        <label for="nogGenreCheck">No Genre</label>
         <input
           type="checkbox"
           id="actionCheck"
@@ -104,6 +111,7 @@
         />
         <label for="actionCheck">Action</label>
       </div>
+      <input type="submit" value="search" />
     </form>
   </div>
 {{ end }}
