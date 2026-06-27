@@ -54,7 +54,6 @@ CREATE TABLE public.schema_migrations (
 
 CREATE TABLE public.users (
     id bigint NOT NULL,
-    uuid uuid DEFAULT gen_random_uuid(),
     email character varying(255),
     created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP
 );
@@ -118,13 +117,6 @@ CREATE INDEX idx_creators_user_id ON public.creators USING btree (user_id);
 --
 
 CREATE INDEX idx_creators_uuid ON public.creators USING btree (uuid);
-
-
---
--- Name: idx_users_uuid; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX idx_users_uuid ON public.users USING btree (uuid);
 
 
 --
