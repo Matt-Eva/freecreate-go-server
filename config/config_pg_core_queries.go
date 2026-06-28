@@ -2,7 +2,7 @@ package config
 
 import (
 	"fmt"
-	"freecreate/logger"
+	"freecreate/lib/logger"
 	"os"
 	"path/filepath"
 )

@@ -5,7 +5,7 @@ import (
 	"encoding/base64"
 	"encoding/gob"
 	"freecreate/config"
-	"freecreate/logger"
+	"freecreate/lib/logger"
 	"freecreate/routes"
 	"log"
 	"net/http"

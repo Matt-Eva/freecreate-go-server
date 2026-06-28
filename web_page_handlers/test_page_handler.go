@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"freecreate/logger"
+	"freecreate/lib/logger"
 	web_page_utils "freecreate/web_page_handlers/utils"
 	"html/template"
 	"net/http"

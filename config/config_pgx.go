@@ -3,7 +3,7 @@ package config
 import (
 	"context"
 	"fmt"
-	"freecreate/logger"
+	"freecreate/lib/logger"
 	"net/url"
 	"os"
 

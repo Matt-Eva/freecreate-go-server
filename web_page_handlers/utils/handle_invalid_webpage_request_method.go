@@ -3,7 +3,7 @@ package web_page_utils
 import (
 	"errors"
 	"fmt"
-	"freecreate/logger"
+	"freecreate/lib/logger"
 	"net/http"
 )
 

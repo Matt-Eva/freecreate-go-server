@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"freecreate/config"
 	pg_core_queries "freecreate/db/pg_core/queries"
-	"freecreate/logger"
+	"freecreate/lib/logger"
 	web_page_utils "freecreate/web_page_handlers/utils"
 	"html/template"
 	"net/http"

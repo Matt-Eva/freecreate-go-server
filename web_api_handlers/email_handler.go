@@ -3,7 +3,7 @@ package web_api_handlers
 import (
 	"encoding/json"
 	"fmt"
-	"freecreate/logger"
+	"freecreate/lib/logger"
 	"net/http"
 
 	"github.com/resend/resend-go/v2"

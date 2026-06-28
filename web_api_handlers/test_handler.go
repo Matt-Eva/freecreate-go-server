@@ -2,7 +2,7 @@ package web_api_handlers
 
 import (
 	"errors"
-	"freecreate/logger"
+	"freecreate/lib/logger"
 	"net/http"
 )
 
