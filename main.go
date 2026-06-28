@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"encoding/base64"
 	"encoding/gob"
 	"freecreate/config"
 	"freecreate/lib/logger"
@@ -15,13 +14,13 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
 
-	"github.com/gorilla/sessions"
 	"github.com/joho/godotenv"
 )
 
-func main() {
+func initialize()(*chi.Mux, error){
 	environment := os.Getenv("ENVIRONMENT")
 
 	if environment != "PRODUCTION" {
@@ -34,43 +33,25 @@ func main() {
 
 	gob.Register(uuid.UUID{})
 
-	sessionAuthKey, err := base64.StdEncoding.DecodeString(os.Getenv("SESSION_AUTH_KEY"))
-	if err != nil {
-		logger.Log(err)
-		log.Fatal(err.Error())
-		return
-	}
-
-	sessionEncryptionKey, err := base64.StdEncoding.DecodeString(os.Getenv("SESSION_ENCRYPTION_KEY"))
-	if err != nil {
-		logger.Log(err)
-		log.Fatal(err.Error())
-		return
-	}
-
-	sessionStore := sessions.NewCookieStore(sessionAuthKey, sessionEncryptionKey)
-
-	if environment == "PRODUCTION" {
-		sessionStore.Options = &sessions.Options{
-			Secure:   true,
-			SameSite: http.SameSiteStrictMode,
-			HttpOnly: true,
-		}
-	}
-
 	ctx := context.Background()
+
+	sessionStore, sessionErr := config.ConfigSessionStore(environment)
+	if sessionErr != nil {
+		logger.Log(sessionErr)
+		return nil, sessionErr
+	}
 
 	pgxPools, pgxErr := config.ConfigPgx(ctx, environment)
 	if pgxErr != nil {
 		logger.Log(pgxErr)
 		log.Fatal(pgxErr)
-		return
+		return nil, pgxErr
 	}
 
 	pgCoreQueries, pgCoreQueryError := config.ConfigPgCoreQueries()
 	if pgCoreQueryError != nil {
 		logger.Log(pgCoreQueryError)
-		return
+		return nil, pgCoreQueryError
 	}
 
 	valkeyClient := config.ConfigValkey()
@@ -78,6 +59,17 @@ func main() {
 	resendClient := config.InitResend()
 
 	router := CreateRouter(sessionStore, pgxPools, pgCoreQueries, valkeyClient, resendClient)
+
+	return router, nil
+}
+
+func main() {
+	
+	router, err := initialize()
+	if err != nil {
+		logger.Log(err)
+		return
+	}
 
 	var srv = &http.Server{
 		Addr:         ":8080",
@@ -107,13 +99,6 @@ func main() {
 		log.Fatalf("server failed to shutdown: %v", err)
 	}
 	log.Println("http server shutdown")
-
-	// gormPGDB, err := gormPGClient.DB()
-	// if err != nil {
-	// 	log.Fatalf("could not access gorm pg db: %v", err)
-	// }
-	// gormPGDB.Close()
-	// log.Println("pg db connection shutdown")
 
 	log.Println("main function closing gracefully. Goodbye!")
 }

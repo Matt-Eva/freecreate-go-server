@@ -1,14 +1,12 @@
 package main
 
 import (
-	"fmt"
 	"freecreate/config"
 	"freecreate/middleware"
 	"freecreate/web_api_handlers"
 	"freecreate/web_page_handlers"
 	"html/template"
 	"net/http"
-	"os"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/gorilla/csrf"
@@ -20,18 +18,7 @@ import (
 func CreateRouter(sessionStore *sessions.CookieStore, pgxPools config.PgxPools, pgCoreQueries config.PgCoreQueries, valkeyClient valkey.Client, resendClient *resend.Client) *chi.Mux {
 	router := chi.NewRouter()
 
-	environment := os.Getenv("ENVIRONMENT")
-
-	csrfKey := os.Getenv("CSRF_KEY")
-	var csrfMiddleware func(http.Handler) http.Handler
-
-	if environment == "DEVELOPMENT" {
-		fmt.Println("DEVELOPMENT")
-		csrfMiddleware = csrf.Protect([]byte(csrfKey), csrf.Secure(false), csrf.TrustedOrigins([]string{"localhost:8080"}))
-	} else {
-		csrfMiddleware = csrf.Protect([]byte(csrfKey))
-	}
-
+	csrfMiddleware := middleware.GenereateCsrfMiddleware()
 	router.Use(csrfMiddleware)
 
 	fileServer := http.FileServer(http.Dir("static"))
