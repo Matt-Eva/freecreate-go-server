@@ -13,3 +13,4 @@ const editor = createEditor(config);
 const editorRoot = document.getElementById("lexical-editor");
 
 editor.setRootElement(editorRoot);
+console.log(editor);
