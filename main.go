@@ -6,7 +6,8 @@ import (
 	"encoding/gob"
 	"freecreate/config"
 	"freecreate/lib/logger"
-	"freecreate/routes"
+
+	// "freecreate/routes"
 	"log"
 	"net/http"
 	"os"
@@ -76,7 +77,7 @@ func main() {
 
 	resendClient := config.InitResend()
 
-	router := routes.CreateRouter(sessionStore, pgxPools, pgCoreQueries, valkeyClient, resendClient)
+	router := CreateRouter(sessionStore, pgxPools, pgCoreQueries, valkeyClient, resendClient)
 
 	var srv = &http.Server{
 		Addr:         ":8080",
