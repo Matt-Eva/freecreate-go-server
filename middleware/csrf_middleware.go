@@ -8,7 +8,7 @@ import (
 	"github.com/gorilla/csrf"
 )
 
-func GenereateCsrfMiddleware()(func(http.Handler) http.Handler){
+func GenereateCsrfMiddleware() func(http.Handler) http.Handler {
 	environment := os.Getenv("ENVIRONMENT")
 	csrfKey := os.Getenv("CSRF_KEY")
 	var csrfMiddleware func(http.Handler) http.Handler

@@ -11,11 +11,11 @@ type PgCoreQueries struct {
 	getUserByEmail string
 }
 
-func (q PgCoreQueries) GetUserByEmail () string{
+func (q PgCoreQueries) GetUserByEmail() string {
 	return q.getUserByEmail
 }
 
-func ConfigPgCoreQueries ()(PgCoreQueries, error){
+func ConfigPgCoreQueries() (PgCoreQueries, error) {
 	q := PgCoreQueries{}
 	getUserByEmail, getUserEmailErr := os.ReadFile(filepath.Join("./db/pg_core/query_files", "get_user_by_email.sql"))
 	if getUserEmailErr != nil {

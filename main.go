@@ -20,17 +20,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func initialize()(*chi.Mux, error){
-	environment := os.Getenv("ENVIRONMENT")
-
-	if environment != "PRODUCTION" {
-		err := godotenv.Load()
-		if err != nil {
-			log.Fatal("Error loading .env file")
-		}
-		environment = "DEVELOPMENT"
-	}
-
+func initialize(environment string) (*chi.Mux, error) {
 	gob.Register(uuid.UUID{})
 
 	ctx := context.Background()
@@ -64,8 +54,17 @@ func initialize()(*chi.Mux, error){
 }
 
 func main() {
-	
-	router, err := initialize()
+	environment := os.Getenv("ENVIRONMENT")
+
+	if environment != "PRODUCTION" {
+		err := godotenv.Load()
+		if err != nil {
+			log.Fatal("Error loading .env file")
+		}
+		environment = "DEVELOPMENT"
+	}
+
+	router, err := initialize(environment)
 	if err != nil {
 		logger.Log(err)
 		return
@@ -80,8 +79,15 @@ func main() {
 	}
 
 	go func() {
-		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			log.Fatalf("Server failed: %v", err)
+		if environment == "DEVELOPMENT" {
+			if err := srv.ListenAndServeTLS("cert.pem", "key.pem"); err != nil && err != http.ErrServerClosed {
+				log.Fatalf("Server failed: %v", err)
+			}
+		} else {
+
+			if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+				log.Fatalf("Server failed: %v", err)
+			}
 		}
 	}()
 
