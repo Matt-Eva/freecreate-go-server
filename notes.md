@@ -1,3 +1,7 @@
+# Auth
+
+Have a user submit their email. Then, re-render the page to display the email and the OTP field. Store the OTP in valkey related to both the email and the session ID to ensure maximum security. And, of course, make sure Cookie is HTTP only, secure, and samesite strict.
+
 # Writing Structure
 
 All writing is structured such that a piece of writing is split into various "chapters", which are stored in Mongo.
