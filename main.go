@@ -79,16 +79,16 @@ func main() {
 	}
 
 	go func() {
-		if environment == "DEVELOPMENT" {
-			if err := srv.ListenAndServeTLS("cert.pem", "key.pem"); err != nil && err != http.ErrServerClosed {
-				log.Fatalf("Server failed: %v", err)
-			}
-		} else {
+		// if environment == "DEVELOPMENT" {
+		// 	if err := srv.ListenAndServeTLS("cert.pem", "key.pem"); err != nil && err != http.ErrServerClosed {
+		// 		log.Fatalf("Server failed: %v", err)
+		// 	}
+		// } else {
 
 			if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 				log.Fatalf("Server failed: %v", err)
 			}
-		}
+		// }
 	}()
 
 	sigChan := make(chan os.Signal, 1)
