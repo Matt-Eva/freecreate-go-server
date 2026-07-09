@@ -85,9 +85,9 @@ func main() {
 		// 	}
 		// } else {
 
-			if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-				log.Fatalf("Server failed: %v", err)
-			}
+		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatalf("Server failed: %v", err)
+		}
 		// }
 	}()
 

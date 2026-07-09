@@ -45,7 +45,7 @@ func renderLoginPage(loginTmpl *template.Template, w http.ResponseWriter, r *htt
 		Errors:        errors,
 		Query:         searchQuery,
 	}
-	
+
 	loginTmpl.ExecuteTemplate(w, "login_page", pageData)
 }
 

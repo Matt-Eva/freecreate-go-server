@@ -6,6 +6,8 @@ Implement blind_indexing and SHA encryption for storage of user emails.
 
 Try to ensure that user creation doesn't occur until OTP has been successfully verified upon signup.
 
+To keep session state persistent between guest logins and logouts, save the session data from the login (if needed), then destroy the old cookie session and create a new cookie session with / without the userId.
+
 # Writing Structure
 
 All writing is structured such that a piece of writing is split into various "chapters", which are stored in the postgres content DB.

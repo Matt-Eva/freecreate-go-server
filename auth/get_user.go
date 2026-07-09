@@ -1,25 +1,31 @@
 package auth
 
-// import (
-// 	pgModels "freecreate/gorm_models"
-// 	"net/http"
+import (
+	"errors"
+	"net/http"
 
-// 	"github.com/gorilla/sessions"
-// 	"gorm.io/gorm"
-// )
+	"github.com/google/uuid"
+	"github.com/gorilla/sessions"
+)
 
-// func GetUser(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB, w http.ResponseWriter, r *http.Request) (uint, error) {
-// 	sessionUUID, aErr := CheckSession(sessionStore, w, r)
-// 	if aErr != nil {
-// 		return 0, aErr
-// 	}
+func GetUser(sessionStore *sessions.CookieStore, w http.ResponseWriter, r *http.Request) (*sessions.Session, error) {
+	session, _ := GetSession(sessionStore, r)
 
-// 	var userId uint
+	if session.Values["userId"] == nil {
+		session.Options.MaxAge = -1
+		session.Save(r, w)
+		return nil, errors.New("user not logged in")
+	}
 
-// 	uErr := gormPGClient.Model(pgModels.User{}).Select("id").Where("session_uuid = ?", sessionUUID).First(&userId).Error
-// 	if uErr != nil {
-// 		return 0, uErr
-// 	}
+	val := session.Values["userId"]
 
-// 	return userId, nil
-// }
+	_, ok := val.(uuid.UUID)
+	if !ok {
+		session.Values["userId"] = nil
+		session.Options.MaxAge = -1
+		session.Save(r, w)
+		return nil, errors.New("session does not contain a valid uuid - session destroyed")
+	}
+
+	return session, nil
+}

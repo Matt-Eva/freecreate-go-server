@@ -8,8 +8,8 @@ import (
 	"github.com/gorilla/csrf"
 )
 
-func SignupPageHandler(signupTmpl *template.Template)http.HandlerFunc {
-	return func (w http.ResponseWriter, r *http.Request){
+func SignupPageHandler(signupTmpl *template.Template) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case "GET":
 			handleSignupPageGet(signupTmpl, w, r)
@@ -21,22 +21,22 @@ func SignupPageHandler(signupTmpl *template.Template)http.HandlerFunc {
 	}
 }
 
-func renderSignupPage(signupTmpl *template.Template, w http.ResponseWriter, r *http.Request){
+func renderSignupPage(signupTmpl *template.Template, w http.ResponseWriter, r *http.Request) {
 	type PageData struct {
 		CsrfToken template.HTML
 	}
 
-	pageData := PageData {
+	pageData := PageData{
 		CsrfToken: csrf.TemplateField(r),
 	}
 
 	signupTmpl.ExecuteTemplate(w, "signup_page", pageData)
 }
 
-func handleSignupPageGet(signupTmpl *template.Template, w http.ResponseWriter, r *http.Request){
+func handleSignupPageGet(signupTmpl *template.Template, w http.ResponseWriter, r *http.Request) {
 	renderSignupPage(signupTmpl, w, r)
 }
 
-func handleSignupPagePost(signupTmpl *template.Template, w http.ResponseWriter, r *http.Request){
+func handleSignupPagePost(signupTmpl *template.Template, w http.ResponseWriter, r *http.Request) {
 
 }
