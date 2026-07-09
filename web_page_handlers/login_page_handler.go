@@ -45,10 +45,7 @@ func renderLoginPage(loginTmpl *template.Template, w http.ResponseWriter, r *htt
 		Errors:        errors,
 		Query:         searchQuery,
 	}
-
-	w.Header().Set("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0")
-	w.Header().Set("Pragma", "no-cache") // Legacy support for HTTP/1.0
-	w.Header().Set("Expires", "0")
+	
 	loginTmpl.ExecuteTemplate(w, "login_page", pageData)
 }
 

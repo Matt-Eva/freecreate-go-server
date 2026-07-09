@@ -1,0 +1,21 @@
+{{ define "signup_page" }}
+  <!doctype html>
+  <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Document</title>
+      {{ template "globals_component" }}
+    </head>
+    <body>
+      {{ template "header_component" }}
+      <form>
+        {{ .CsrfToken }}
+        <input type="hidden" name="form_action" value="request_otp" />
+        <label for="enter_email">Email:</label>
+        <input type="text" name="enter_email" />
+        <input type="submit" />
+      </form>
+    </body>
+  </html>
+{{ end }}

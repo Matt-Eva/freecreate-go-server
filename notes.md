@@ -1,10 +1,14 @@
 # Auth
 
-Have a user submit their email. Then, re-render the page to display the email and the OTP field. Store the OTP in valkey related to both the email and the session ID to ensure maximum security. And, of course, make sure Cookie is HTTP only, secure, and samesite strict.
+Have a user submit their email. Then, re-render the page to display the email (hidden, read only) and the OTP field. Store the OTP in valkey related to both the email and the session ID to ensure maximum security. And, of course, make sure Cookie is HTTP only, secure, and samesite strict.
+
+Implement blind_indexing and SHA encryption for storage of user emails.
+
+Try to ensure that user creation doesn't occur until OTP has been successfully verified upon signup.
 
 # Writing Structure
 
-All writing is structured such that a piece of writing is split into various "chapters", which are stored in Mongo.
+All writing is structured such that a piece of writing is split into various "chapters", which are stored in the postgres content DB.
 Writing can also have "notes" documents.
 Primary / shard key for chapters and notes in Mongo is a piece of writing's uuid.
 
