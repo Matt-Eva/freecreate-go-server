@@ -10,7 +10,7 @@ import (
 
 func ReAuthHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		_, err := auth.CheckUser(sessionStore, w, r)
+		_, err := auth.GetUser(sessionStore, w, r)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusUnauthorized)
 			return

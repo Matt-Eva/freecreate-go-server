@@ -9,13 +9,26 @@
     </head>
     <body>
       {{ template "header_component" }}
-      <form>
+      <form action="/signup" method="POST">
         {{ .CsrfToken }}
         <input type="hidden" name="form_action" value="request_otp" />
         <label for="enter_email">Email:</label>
         <input type="text" name="enter_email" />
         <input type="submit" />
       </form>
+      {{ range .Errors }}
+        <p>{{ . }}</p>
+      {{ end }}
+      {{ if .OtpRequested }}
+        <form action="/signup">
+          {{ .CsrfToken }}
+          <input type="hidden" name="form_action" value="submit_otp" />
+          <label for="enter_otp">Enter One Time Password:</label>
+          <input type="text" name="enter_otp" />
+          <input type="submit" />
+        </form>
+      {{ end }}
+
     </body>
   </html>
 {{ end }}
