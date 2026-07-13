@@ -49,8 +49,8 @@ func CreateRouter(sessionStore *sessions.CookieStore, pgxPools config.PgxPools, 
 	router.Get("/login", web_page_handlers.LoginPageHandler(templates, pgxPools.PgCore, pgCoreQueries))
 	router.Post("/login", web_page_handlers.LoginPageHandler(templates, pgxPools.PgCore, pgCoreQueries))
 
-	router.Get("/signup", web_page_handlers.SignupPageHandler(templates))
-	router.Post("/signup", web_page_handlers.SignupPageHandler(templates))
+	router.Get("/signup", web_page_handlers.SignupPageHandler(templates, sessionStore, pgxPools.PgCore, pgCoreQueries))
+	router.Post("/signup", web_page_handlers.SignupPageHandler(templates, sessionStore, pgxPools.PgCore, pgCoreQueries))
 
 	router.Get("/about", web_page_handlers.AboutPageHandler(templates))
 
