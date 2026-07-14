@@ -2,6 +2,7 @@ package pg_core_queries
 
 import (
 	"context"
+	"errors"
 	"freecreate/config"
 	"freecreate/lib/logger"
 
@@ -18,7 +19,9 @@ func GetUserByEmail(ctx context.Context, pgCoreQueries config.PgCoreQueries, pgx
 	}
 
 	queryErr := pgxCore.QueryRow(ctx, query, queryArgs).Scan(&userId)
-	if queryErr != nil {
+	if errors.Is(queryErr, pgx.ErrNoRows) {
+		return 0, queryErr
+	} else if queryErr != nil {
 		logger.Log(queryErr)
 		return 0, queryErr
 	}
