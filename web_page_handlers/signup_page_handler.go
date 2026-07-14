@@ -19,8 +19,8 @@ import (
 
 func SignupPageHandler(signupTmpl *template.Template, sessionStore *sessions.CookieStore, pgxCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		session, _ := auth.GetSession(sessionStore, w, r)
-		if session != nil {
+		user, _ := auth.GetUser(sessionStore, w, r)
+		if user != nil {
 			http.Redirect(w, r, "/profile", 303)
 			return
 		}

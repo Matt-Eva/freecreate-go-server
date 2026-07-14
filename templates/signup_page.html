@@ -13,8 +13,18 @@
         {{ .CsrfToken }}
         <input type="hidden" name="form_action" value="request_otp" />
         <label for="enter_email">Email:</label>
-        <input type="text" name="enter_email" />
-        <input type="submit" />
+        {{ if ne .Email "" }}
+          <input
+            type="text"
+            disabled="true"
+            name="enter_email"
+            value="{{ .Email }}"
+          />
+        {{ else }}
+          <input type="text" name="enter_email" value="{{ .Email }}" />
+          <input type="submit" />
+        {{ end }}
+
       </form>
       {{ range .Errors }}
         <p>{{ . }}</p>
@@ -27,6 +37,9 @@
           <input type="text" name="enter_otp" />
           <input type="submit" />
         </form>
+        <p>
+          Is your email incorrect? <a href="/signup">Start over</a>.</p>
+        </p>
       {{ end }}
       <p>Already have an account? <a href="/login">Login</a>.</p>
     </body>

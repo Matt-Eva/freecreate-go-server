@@ -2,7 +2,6 @@ package auth
 
 import (
 	"errors"
-	"fmt"
 	"freecreate/lib/logger"
 	"net/http"
 
@@ -18,7 +17,6 @@ func GetSession(sessionStore *sessions.CookieStore, w http.ResponseWriter, r *ht
 	}
 
 	if session.Values["session_uuid"] == nil {
-		fmt.Println("nil session_uuid")
 		sessionUuid, err := uuid.NewRandom()
 		if err != nil {
 			logger.Log(err)
