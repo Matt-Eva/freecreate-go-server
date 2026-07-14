@@ -34,14 +34,14 @@ func renderSignupPage(signupTmpl *template.Template, w http.ResponseWriter, r *h
 	type PageData struct {
 		CsrfToken    template.HTML
 		OtpRequested bool
-		Email string
+		Email        string
 		Errors       []string
 	}
 
 	pageData := PageData{
 		CsrfToken:    csrf.TemplateField(r),
 		OtpRequested: otpRequested,
-		Email: email,
+		Email:        email,
 		Errors:       errors,
 	}
 
@@ -80,12 +80,12 @@ func handleRequestOtpFormPost(signupTmpl *template.Template, w http.ResponseWrit
 	if emailErr != nil {
 		logger.Log(emailErr)
 		renderSignupPage(signupTmpl, w, r, false, "", []string{emailErr.Error()})
-		return 
+		return
 	}
 
 	_, getUserErr := pg_core_queries.GetUserByEmail(r.Context(), pgCoreQueries, pgxCore, email)
 
-	if errors.Is(getUserErr, pgx.ErrNoRows){
+	if errors.Is(getUserErr, pgx.ErrNoRows) {
 		renderSignupPage(signupTmpl, w, r, true, email, []string{})
 	} else if getUserErr != nil {
 		errMsg := "Our server had trouble processing that request. Please try again."
@@ -94,7 +94,8 @@ func handleRequestOtpFormPost(signupTmpl *template.Template, w http.ResponseWrit
 		errMsg := "That email address is already in use. Please enter a different email address to create a new account, or login with your existing email."
 		renderSignupPage(signupTmpl, w, r, false, "", []string{errMsg})
 	}
-	
+
 }
 
-func handleSubmitOtpFormPost(sessionStore *sessions.CookieStore, w http.ResponseWriter, r *http.Request) {}
+func handleSubmitOtpFormPost(sessionStore *sessions.CookieStore, w http.ResponseWriter, r *http.Request) {
+}

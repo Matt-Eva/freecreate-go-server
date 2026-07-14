@@ -11,7 +11,7 @@ import (
 )
 
 func GetUserByEmail(ctx context.Context, pgCoreQueries config.PgCoreQueries, pgxCore *pgxpool.Pool, email string) (int, error) {
-	
+
 	var userId int
 	query := pgCoreQueries.GetUserByEmail()
 	queryArgs := pgx.NamedArgs{
@@ -28,5 +28,3 @@ func GetUserByEmail(ctx context.Context, pgCoreQueries config.PgCoreQueries, pgx
 
 	return userId, nil
 }
-
-

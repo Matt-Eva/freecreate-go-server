@@ -11,6 +11,6 @@ func ValidateEmail(email string) error {
 		logger.Log(err)
 		return err
 	}
-	
+
 	return nil
 }

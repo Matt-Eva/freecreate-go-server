@@ -67,7 +67,7 @@ func handleLoginPagePost(loginTmpl *template.Template, w http.ResponseWriter, r 
 	}
 	fmt.Println(formAction)
 
-	userId, getUserErr := pg_core_queries.GetUserByEmail(r.Context(),pgCoreQueries, pgxCore, "")
+	userId, getUserErr := pg_core_queries.GetUserByEmail(r.Context(), pgCoreQueries, pgxCore, "")
 	if getUserErr != nil {
 		logger.Log(getUserErr)
 		errs = append(errs, getUserErr.Error())
