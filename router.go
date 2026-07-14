@@ -9,7 +9,6 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/gorilla/csrf"
 	"github.com/gorilla/sessions"
 	"github.com/resend/resend-go/v2"
 	"github.com/valkey-io/valkey-go"
@@ -34,10 +33,11 @@ func CreateRouter(sessionStore *sessions.CookieStore, pgxPools config.PgxPools, 
 	// 	r.Get("/*", http.StripPrefix("/static", cachedFileServer).ServeHTTP)
 	// })
 
-	router.Get("/get-csrf", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("X-CSRF-Token", csrf.Token(r))
-		w.Header().Set("Access-Control-Expose-Headers", "X-CSRF-Token")
-	})
+	// router.Get("/get-csrf", func(w http.ResponseWriter, r *http.Request) {
+	// 	fmt.Println("request csrf token")
+	// 	w.Header().Set("X-CSRF-Token", csrf.Token(r))
+	// 	w.Header().Set("Access-Control-Expose-Headers", "X-CSRF-Token")
+	// })
 
 	templates := template.Must(template.ParseGlob("templates/*html"))
 

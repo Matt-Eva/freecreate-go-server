@@ -4,7 +4,6 @@ import (
 	web_page_utils "freecreate/web_page_handlers/utils"
 	"html/template"
 	"net/http"
-	"time"
 )
 
 func HomePageHandler(homeTmpl *template.Template) http.HandlerFunc {
@@ -12,7 +11,7 @@ func HomePageHandler(homeTmpl *template.Template) http.HandlerFunc {
 		preloadLinks := []string{"/static/globals.css", "/static/header_component.css"}
 		web_page_utils.HandlePreloadLinks(w, preloadLinks)
 
-		time.Sleep(300 * time.Millisecond)
+		
 
 		type CardContent struct {
 			CardTitle       string

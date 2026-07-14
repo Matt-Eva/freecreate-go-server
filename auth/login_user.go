@@ -8,7 +8,7 @@ import (
 )
 
 func LoginUser(sessionStore *sessions.CookieStore, w http.ResponseWriter, r *http.Request, userId uuid.UUID) error {
-	session, _ := GetSession(sessionStore, r)
+	session, _ := GetSession(sessionStore, w, r)
 	session.Values["userId"] = userId
 	err := session.Save(r, w)
 	return err

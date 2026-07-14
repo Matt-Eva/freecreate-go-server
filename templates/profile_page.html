@@ -4,10 +4,11 @@
     <head>
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      {{ template "globals" }}
+      {{ template "globals_component" }}
     </head>
     <body>
-      {{ template "header" . }} profile
+      {{ template "header_component" . }}
+      <p>profile</p>
     </body>
   </html>
 {{ end }}
