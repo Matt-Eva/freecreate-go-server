@@ -21,7 +21,7 @@
         <input type="submit" />
       </form>
 
-      {{ if .OtpReqeuested }}
+      {{ if .OtpRequested }}
         <form action="/login" method="POST">
           {{ .CSRFToken }}
           <input type="hidden" name="form_action" value="submit_otp" />

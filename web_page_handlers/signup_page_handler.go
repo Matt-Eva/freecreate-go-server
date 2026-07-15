@@ -2,6 +2,7 @@ package web_page_handlers
 
 import (
 	"errors"
+	"fmt"
 	"freecreate/auth"
 	"freecreate/config"
 	pg_core_queries "freecreate/db/pg_core/queries"
@@ -104,7 +105,7 @@ func handleRequestOtpFormPost(resendClient *resend.Client, valkeyClient valkey.C
 	}
 }
 
-func requestOtp(resendClient *resend.Client, valkeyClient valkey.Client, sessionStore *sessions.CookieStore, w http.ResponseWriter, r *http.Request, signupTmpl *template.Template, email string){
+func requestOtp(resendClient *resend.Client, valkeyClient valkey.Client, sessionStore *sessions.CookieStore, w http.ResponseWriter, r *http.Request, signupTmpl *template.Template, email string) {
 	session, getSessionErr := auth.GetSession(sessionStore, w, r)
 	if getSessionErr != nil {
 		logger.Log(getSessionErr)
@@ -119,17 +120,19 @@ func requestOtp(resendClient *resend.Client, valkeyClient valkey.Client, session
 		return
 	}
 
-	storeOtpErr := auth.StoreOtp(valkeyClient, session, email, otp)
+	storeOtpErr := auth.StoreOtp(r.Context(), valkeyClient, session, email, otp)
 	if storeOtpErr != nil {
 		logger.Log(storeOtpErr)
 		renderSignupPage(signupTmpl, w, r, false, "", []string{storeOtpErr.Error()})
 		return
 	}
 
+	fmt.Println("successfully set otp value")
+
 	sendOtpErr := email_handler.SendOtp(resendClient, email, otp)
 	if sendOtpErr != nil {
 		logger.Log(sendOtpErr)
-		renderSignupPage(signupTmpl,w, r, false, "", []string{sendOtpErr.Error()})
+		renderSignupPage(signupTmpl, w, r, false, "", []string{sendOtpErr.Error()})
 		return
 	}
 

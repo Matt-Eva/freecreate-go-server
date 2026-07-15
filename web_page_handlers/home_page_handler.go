@@ -11,8 +11,6 @@ func HomePageHandler(homeTmpl *template.Template) http.HandlerFunc {
 		preloadLinks := []string{"/static/globals.css", "/static/header_component.css"}
 		web_page_utils.HandlePreloadLinks(w, preloadLinks)
 
-		
-
 		type CardContent struct {
 			CardTitle       string
 			CardDescription string

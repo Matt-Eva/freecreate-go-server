@@ -36,6 +36,7 @@ func renderLoginPage(loginTmpl *template.Template, w http.ResponseWriter, r *htt
 		CSRFToken     template.HTML
 		Errors        []string
 		Query         string
+		OtpRequested  bool
 	}
 
 	pageData := PageData{
@@ -44,6 +45,7 @@ func renderLoginPage(loginTmpl *template.Template, w http.ResponseWriter, r *htt
 		CSRFToken:     csrf.TemplateField(r),
 		Errors:        errors,
 		Query:         searchQuery,
+		OtpRequested:  false,
 	}
 
 	loginTmpl.ExecuteTemplate(w, "login_page", pageData)

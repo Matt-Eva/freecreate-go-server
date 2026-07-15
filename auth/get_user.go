@@ -10,7 +10,7 @@ import (
 )
 
 func GetUser(sessionStore *sessions.CookieStore, w http.ResponseWriter, r *http.Request) (*sessions.Session, error) {
-	session, getSessionErr := GetSession(sessionStore,w, r)
+	session, getSessionErr := GetSession(sessionStore, w, r)
 	if getSessionErr != nil {
 		logger.Log(getSessionErr)
 		return nil, getSessionErr

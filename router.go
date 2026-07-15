@@ -54,7 +54,7 @@ func CreateRouter(sessionStore *sessions.CookieStore, pgxPools config.PgxPools, 
 
 	router.Get("/about", web_page_handlers.AboutPageHandler(templates))
 
-	router.Get("/profile", web_page_handlers.ProfilePageHandler(sessionStore,templates))
+	router.Get("/profile", web_page_handlers.ProfilePageHandler(sessionStore, templates))
 
 	router.Get("/donate", web_page_handlers.DonatePageHandler(templates))
 

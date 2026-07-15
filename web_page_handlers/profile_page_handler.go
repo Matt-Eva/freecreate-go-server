@@ -8,7 +8,7 @@ import (
 	"github.com/gorilla/sessions"
 )
 
-func ProfilePageHandler(sessionStore *sessions.CookieStore,profileTmpl *template.Template) http.HandlerFunc {
+func ProfilePageHandler(sessionStore *sessions.CookieStore, profileTmpl *template.Template) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 		_, getUserErr := auth.GetUser(sessionStore, w, r)
