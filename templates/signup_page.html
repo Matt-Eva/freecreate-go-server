@@ -24,11 +24,7 @@
           <input type="text" name="enter_email" value="{{ .Email }}" />
           <input type="submit" />
         {{ end }}
-
       </form>
-      {{ range .Errors }}
-        <p>{{ . }}</p>
-      {{ end }}
       {{ if .OtpRequested }}
         <form action="/signup">
           {{ .CsrfToken }}
@@ -40,6 +36,9 @@
         <p>
           Is your email incorrect? <a href="/signup">Start over</a>.</p>
         </p>
+      {{ end }}
+      {{ range .Errors }}
+        <p>{{ . }}</p>
       {{ end }}
       <p>Already have an account? <a href="/login">Login</a>.</p>
     </body>

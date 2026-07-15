@@ -6,6 +6,7 @@ import (
 	"freecreate/config"
 	pg_core_queries "freecreate/db/pg_core/queries"
 	pg_core_validators "freecreate/db/pg_core/validators"
+	email_handler "freecreate/email"
 	"freecreate/lib/logger"
 	web_page_utils "freecreate/web_page_handlers/utils"
 	"html/template"
@@ -15,12 +16,14 @@ import (
 	"github.com/gorilla/sessions"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/resend/resend-go/v2"
+	"github.com/valkey-io/valkey-go"
 )
 
-func SignupPageHandler(signupTmpl *template.Template, sessionStore *sessions.CookieStore, pgxCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries) http.HandlerFunc {
+func SignupPageHandler(resendClient *resend.Client, valkeyClient valkey.Client, signupTmpl *template.Template, sessionStore *sessions.CookieStore, pgxCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		user, _ := auth.GetUser(sessionStore, w, r)
-		if user != nil {
+		userSession, _ := auth.GetUser(sessionStore, w, r)
+		if userSession != nil {
 			http.Redirect(w, r, "/profile", 303)
 			return
 		}
@@ -29,7 +32,7 @@ func SignupPageHandler(signupTmpl *template.Template, sessionStore *sessions.Coo
 		case "GET":
 			handleSignupPageGet(signupTmpl, w, r)
 		case "POST":
-			handleSignupPagePost(signupTmpl, w, r, sessionStore, pgxCore, pgCoreQueries)
+			handleSignupPagePost(resendClient, valkeyClient, signupTmpl, w, r, sessionStore, pgxCore, pgCoreQueries)
 		default:
 			web_page_utils.HandleInvalidWebpageRequestMethod(w, r.Method)
 		}
@@ -58,7 +61,7 @@ func handleSignupPageGet(signupTmpl *template.Template, w http.ResponseWriter, r
 	renderSignupPage(signupTmpl, w, r, false, "", []string{})
 }
 
-func handleSignupPagePost(signupTmpl *template.Template, w http.ResponseWriter, r *http.Request, sessionStore *sessions.CookieStore, pgxCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries) {
+func handleSignupPagePost(resendClient *resend.Client, valkeyClient valkey.Client, signupTmpl *template.Template, w http.ResponseWriter, r *http.Request, sessionStore *sessions.CookieStore, pgxCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries) {
 	formAction, formActionErr := web_page_utils.GetFormAction(r)
 	if formActionErr != nil {
 		logger.Log(formActionErr)
@@ -68,7 +71,7 @@ func handleSignupPagePost(signupTmpl *template.Template, w http.ResponseWriter, 
 
 	switch formAction {
 	case "request_otp":
-		handleRequestOtpFormPost(signupTmpl, w, r, sessionStore, pgxCore, pgCoreQueries)
+		handleRequestOtpFormPost(resendClient, valkeyClient, signupTmpl, w, r, sessionStore, pgxCore, pgCoreQueries)
 	case "submit_otp":
 		handleSubmitOtpFormPost(sessionStore, w, r)
 	default:
@@ -79,9 +82,7 @@ func handleSignupPagePost(signupTmpl *template.Template, w http.ResponseWriter, 
 	}
 }
 
-func handleRequestOtpFormPost(signupTmpl *template.Template, w http.ResponseWriter, r *http.Request, sessionStore *sessions.CookieStore, pgxCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries) {
-	
-
+func handleRequestOtpFormPost(resendClient *resend.Client, valkeyClient valkey.Client, signupTmpl *template.Template, w http.ResponseWriter, r *http.Request, sessionStore *sessions.CookieStore, pgxCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries) {
 	email := r.Form.Get("enter_email")
 	emailErr := pg_core_validators.ValidateEmail(email)
 	if emailErr != nil {
@@ -93,7 +94,7 @@ func handleRequestOtpFormPost(signupTmpl *template.Template, w http.ResponseWrit
 	_, getUserErr := pg_core_queries.GetUserByEmail(r.Context(), pgCoreQueries, pgxCore, email)
 
 	if errors.Is(getUserErr, pgx.ErrNoRows) {
-		handleNewUser(sessionStore, w, r, signupTmpl, email)
+		requestOtp(resendClient, valkeyClient, sessionStore, w, r, signupTmpl, email)
 	} else if getUserErr != nil {
 		errMsg := "Our server had trouble processing that request. Please try again."
 		renderSignupPage(signupTmpl, w, r, false, "", []string{errMsg})
@@ -103,8 +104,36 @@ func handleRequestOtpFormPost(signupTmpl *template.Template, w http.ResponseWrit
 	}
 }
 
-func handleNewUser(sessionStore *sessions.CookieStore, w http.ResponseWriter, r *http.Request, signupTmpl *template.Template, email string){
-	
+func requestOtp(resendClient *resend.Client, valkeyClient valkey.Client, sessionStore *sessions.CookieStore, w http.ResponseWriter, r *http.Request, signupTmpl *template.Template, email string){
+	session, getSessionErr := auth.GetSession(sessionStore, w, r)
+	if getSessionErr != nil {
+		logger.Log(getSessionErr)
+		renderSignupPage(signupTmpl, w, r, false, "", []string{getSessionErr.Error()})
+		return
+	}
+
+	otp, genOtpErr := auth.GenerateOtp()
+	if genOtpErr != nil {
+		logger.Log(genOtpErr)
+		renderSignupPage(signupTmpl, w, r, false, "", []string{genOtpErr.Error()})
+		return
+	}
+
+	storeOtpErr := auth.StoreOtp(valkeyClient, session, email, otp)
+	if storeOtpErr != nil {
+		logger.Log(storeOtpErr)
+		renderSignupPage(signupTmpl, w, r, false, "", []string{storeOtpErr.Error()})
+		return
+	}
+
+	sendOtpErr := email_handler.SendOtp(resendClient, email, otp)
+	if sendOtpErr != nil {
+		logger.Log(sendOtpErr)
+		renderSignupPage(signupTmpl,w, r, false, "", []string{sendOtpErr.Error()})
+		return
+	}
+
+	session.Save(r, w)
 	renderSignupPage(signupTmpl, w, r, true, email, []string{})
 }
 
