@@ -47,16 +47,21 @@ func CreateRouter(sessionStore *sessions.CookieStore, pgxPools config.PgxPools, 
 	router.Post("/test", web_page_handlers.TestPageHandler(templates))
 
 	router.Get("/login", web_page_handlers.LoginPageHandler(templates, pgxPools.PgCore, pgCoreQueries))
+	router.Get("/login/verify-otp", web_page_handlers.LoginVerifyOtpPageHandler(templates))
 	router.Post("/login", web_page_handlers.LoginPageHandler(templates, pgxPools.PgCore, pgCoreQueries))
 
 	router.Get("/signup", web_page_handlers.SignupPageHandler(resendClient, valkeyClient, templates, sessionStore, pgxPools.PgCore, pgCoreQueries))
-	router.Post("/signup", web_page_handlers.SignupPageHandler(resendClient, valkeyClient, templates, sessionStore, pgxPools.PgCore, pgCoreQueries))
+	router.Post("/signup/request-otp", web_page_handlers.SignupPageHandler(resendClient, valkeyClient, templates, sessionStore, pgxPools.PgCore, pgCoreQueries))
+	router.Get("/signup/verify-otp", web_page_handlers.SignupVerifyOtpPageHandler(templates, sessionStore))
+	// router.Post("/signup/verify-otp", web_page_handlers.Sign)
 
 	router.Get("/about", web_page_handlers.AboutPageHandler(templates))
 
 	router.Get("/profile", web_page_handlers.ProfilePageHandler(sessionStore, templates))
 
 	router.Get("/donate", web_page_handlers.DonatePageHandler(templates))
+
+	router.Get("/search", web_page_handlers.SearchPageHandler(templates))
 
 	// ======== JSON Web API Routes =========
 	router.Route("/web-api", func(r chi.Router) {

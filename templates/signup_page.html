@@ -9,7 +9,7 @@
     </head>
     <body>
       {{ template "header_component" }}
-      <form action="/signup" method="POST">
+      <form action="/signup/request-otp" method="POST">
         {{ .CsrfToken }}
         <input type="hidden" name="form_action" value="request_otp" />
         <label for="enter_email">Email:</label>
@@ -25,6 +25,7 @@
           <input type="submit" />
         {{ end }}
       </form>
+      <a href="/signup/verify-otp">verify otp (testing only)</a>
       {{ if .OtpRequested }}
         <form action="/signup">
           {{ .CsrfToken }}

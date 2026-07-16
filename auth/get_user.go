@@ -17,8 +17,6 @@ func GetUser(sessionStore *sessions.CookieStore, w http.ResponseWriter, r *http.
 	}
 
 	if session.Values["userId"] == nil {
-		session.Options.MaxAge = -1
-		session.Save(r, w)
 		return nil, errors.New("user not logged in")
 	}
 
@@ -27,8 +25,6 @@ func GetUser(sessionStore *sessions.CookieStore, w http.ResponseWriter, r *http.
 	_, ok := val.(uuid.UUID)
 	if !ok {
 		session.Values["userId"] = nil
-		session.Options.MaxAge = -1
-		session.Save(r, w)
 		return nil, errors.New("session does not contain a valid uuid - session destroyed")
 	}
 

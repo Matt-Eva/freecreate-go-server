@@ -84,6 +84,17 @@ func handleSignupPagePost(resendClient *resend.Client, valkeyClient valkey.Clien
 }
 
 func handleRequestOtpFormPost(resendClient *resend.Client, valkeyClient valkey.Client, signupTmpl *template.Template, w http.ResponseWriter, r *http.Request, sessionStore *sessions.CookieStore, pgxCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries) {
+	// session, getSessionErr := auth.GetSession(sessionStore, w, r)
+	// if getSessionErr != nil {
+	// 	logger.Log(getSessionErr)
+	// 	renderSignupPage(signupTmpl, w, r, false, "", []string{getSessionErr.Error()})
+	// 	return
+	// }
+	// session.AddFlash("no way", "email")
+	// session.Save(r, w)
+	http.Redirect(w, r, "/signup/verify-otp", 303)
+	return
+
 	email := r.Form.Get("enter_email")
 	emailErr := pg_core_validators.ValidateEmail(email)
 	if emailErr != nil {
