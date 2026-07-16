@@ -23,7 +23,7 @@ func SignupVerifyOtpPageHandler(signupVerifyOtpTmpl *template.Template, sessionS
 		email := session.Flashes("email")
 		session.Save(r, w)
 		fmt.Println(email)
-		if len(email) == 0{
+		if len(email) == 0 {
 			err := errors.New("no email was passed in session flash - redirecting to signup")
 			logger.Log(err)
 			http.Redirect(w, r, "/signup", 303)

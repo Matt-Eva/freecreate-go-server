@@ -5,6 +5,7 @@ import (
 	"freecreate/middleware"
 	"freecreate/web_api_handlers"
 	"freecreate/web_page_handlers"
+	"freecreate/web_post_handlers"
 	"html/template"
 	"net/http"
 
@@ -51,9 +52,9 @@ func CreateRouter(sessionStore *sessions.CookieStore, pgxPools config.PgxPools, 
 	router.Post("/login", web_page_handlers.LoginPageHandler(templates, pgxPools.PgCore, pgCoreQueries))
 
 	router.Get("/signup", web_page_handlers.SignupPageHandler(resendClient, valkeyClient, templates, sessionStore, pgxPools.PgCore, pgCoreQueries))
-	router.Post("/signup/request-otp", web_page_handlers.SignupPageHandler(resendClient, valkeyClient, templates, sessionStore, pgxPools.PgCore, pgCoreQueries))
+	router.Post("/signup/request-otp", web_post_handlers.SignupRequestOtp(resendClient, valkeyClient, sessionStore, pgxPools.PgCore, pgCoreQueries))
 	router.Get("/signup/verify-otp", web_page_handlers.SignupVerifyOtpPageHandler(templates, sessionStore))
-	// router.Post("/signup/verify-otp", web_page_handlers.Sign)
+	router.Post("/signup/verify-otp", web_post_handlers.SignupVerifyOtp())
 
 	router.Get("/about", web_page_handlers.AboutPageHandler(templates))
 

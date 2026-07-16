@@ -92,8 +92,8 @@ func handleRequestOtpFormPost(resendClient *resend.Client, valkeyClient valkey.C
 	// }
 	// session.AddFlash("no way", "email")
 	// session.Save(r, w)
-	http.Redirect(w, r, "/signup/verify-otp", 303)
-	return
+	// http.Redirect(w, r, "/signup/verify-otp", 303)
+	// return
 
 	email := r.Form.Get("enter_email")
 	emailErr := pg_core_validators.ValidateEmail(email)
