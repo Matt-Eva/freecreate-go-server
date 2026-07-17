@@ -72,7 +72,7 @@ func handleSignupPagePost(resendClient *resend.Client, valkeyClient valkey.Clien
 
 	switch formAction {
 	case "request_otp":
-		handleRequestOtpFormPost(resendClient, valkeyClient, signupTmpl, w, r, sessionStore, pgxCore, pgCoreQueries)
+		// handleRequestOtpFormPost(resendClient, valkeyClient, signupTmpl, w, r, sessionStore, pgxCore, pgCoreQueries)
 	case "submit_otp":
 		handleSubmitOtpFormPost(sessionStore, w, r)
 	default:
@@ -83,7 +83,7 @@ func handleSignupPagePost(resendClient *resend.Client, valkeyClient valkey.Clien
 	}
 }
 
-func handleRequestOtpFormPost(resendClient *resend.Client, valkeyClient valkey.Client, signupTmpl *template.Template, w http.ResponseWriter, r *http.Request, sessionStore *sessions.CookieStore, pgxCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries) {
+func RequestOtpFormHandler(resendClient *resend.Client, valkeyClient valkey.Client, signupTmpl *template.Template, w http.ResponseWriter, r *http.Request, sessionStore *sessions.CookieStore, pgxCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries) {
 	// session, getSessionErr := auth.GetSession(sessionStore, w, r)
 	// if getSessionErr != nil {
 	// 	logger.Log(getSessionErr)

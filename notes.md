@@ -100,3 +100,20 @@ One is by using the details HTML element, the other is by using css and a checkb
 <input type="checkbox" name="checkbox" id="checkbox" />
 <p id="toggle">this is hidden content</p>
 ```
+
+# Post - Redirect - Get request pattern
+
+When rendering web pages in the traditional way without javascript rendering on the frontend,
+we follow a post - redirect - get paradigm.
+
+Basically, if any post requests are made on a specific page, upon their success they will redirect to the desired page - it may even be the same page, just rendered as a get, if that's the desired functionality.
+
+We want to redirect rather than just handle the page directly because a page rendered by a post will cause the post request to run again if the user hard refreshes the page.
+
+However, upon a failed post request, the post page will need to re-render the page.
+
+Problem: For pages where we want to have multiple post requests available without massive UI penalties - aka an author or piece of content route, with multiple buttons for user interaction - managing backend rendering logic becomes an absolute nightmare. Plus, for key functionality, like creating content or making a donation, users will need to have javascript enabled anyway, in order to create content via the Lexical Editor or post a donation using the Stripe Api.
+
+Aka, just default to using JavaScript.
+
+We got there folks!

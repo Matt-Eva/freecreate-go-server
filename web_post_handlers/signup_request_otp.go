@@ -14,6 +14,11 @@ import (
 
 func SignupRequestOtp(resendClient *resend.Client, valkeyClient valkey.Client, sessionStore *sessions.CookieStore, pgxCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		// session, getSessionErr := auth.GetSession(sessionStore, w, r)
+		// if getSessionErr != nil {
+
+		// }
+
 		email := r.Form.Get("enter_email")
 		emailErr := pg_core_validators.ValidateEmail(email)
 		if emailErr != nil {
