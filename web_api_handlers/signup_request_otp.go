@@ -7,7 +7,9 @@ import (
 func SignupRequestOtp() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
-		http.Error(w, "there was an error requesting your one time password", 422)
+		// http.Error(w, "there was an error requesting your one time password", 422)
+
+		w.WriteHeader(http.StatusAccepted)
 
 		// type ResponsePayload struct {
 		// 	Message string `json:"message"`

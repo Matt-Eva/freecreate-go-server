@@ -1,16 +1,43 @@
 document.addEventListener("DOMContentLoaded", () => {
   console.log("running from signup page");
 
+  // ========= Declaring Global Variables =========
+
   const csrfToken = document.getElementsByName("gorilla.csrf.Token")[0].value;
-  const requestOtpForm = document.getElementById("signup_request_otp_form");
-  const requestOtpErrorBlock = document.getElementById("requestOtpErrorBlock");
+
+  const requestOtpForm = document.getElementById("request_otp_form");
+  const requestOtpFormFieldset = document.getElementById(
+    "request_otp_form_fieldset",
+  );
+  const emailInput = document.getElementById("enter_email");
+  const requestOtpMessageBlock = document.getElementById(
+    "request_otp_error_block",
+  );
+
+  const submitOtpContainer = document.getElementById("submit_otp_container");
+  const otpInput = document.getElementById("enter_otp");
+
+  const resetFlowButton = document.getElementById("reset_flow_button");
+
+  // ========= Adding Event Listeners =======
 
   requestOtpForm.addEventListener("submit", handleRequestOtpForm);
 
+  resetFlowButton.addEventListener("click", resetFlow);
+
+  // ============ Request Otp Form Functionality =========
+
   function handleRequestOtpForm(e) {
     e.preventDefault();
+    if (!requestOtpMessageBlock) {
+      console.error(
+        "request otp error block is not valid HTML!",
+        requestOtpMessageBlock,
+      );
+      return;
+    }
+    requestOtpMessageBlock.textContent = "Processing request...";
 
-    const emailInput = document.getElementById("enter_email");
     if (!emailInput) {
       console.error("emailInputElement is null!");
       return;
@@ -44,7 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (!res.ok) {
         const errorMessage = await res.text();
-        throw new Error(`\n status: ${res.status} \n message: ${errorMessage}`);
+        throw new Error(errorMessage);
       }
 
       renderOtpInputForm();
@@ -60,18 +87,53 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    const errorP = document.createElement("p");
-    if (!errorP) {
-      console.error("could not create error paragraph!");
+    if (!requestOtpMessageBlock) {
+      console.error(
+        "requestOtpMessageBlock is not valid HTML element!",
+        requestOtpMessageBlock,
+      );
       return;
     }
-
-    errorP.value = errorMessage;
-
-    requestOtpErrorBlock.append(errorP);
+    requestOtpMessageBlock.textContent = errorMessage;
   }
 
   function renderOtpInputForm() {
-    console.log("rendering input form");
+    if (!requestOtpFormFieldset) {
+      console.error(
+        "requestOtpFormFieldset is not valid html!",
+        requestOtpFormFieldset,
+      );
+      return;
+    }
+    requestOtpFormFieldset.disabled = true;
+
+    if (!requestOtpMessageBlock) {
+      console.error(
+        "requestOptMessage block is not valid html",
+        requestOtpMessageBlock,
+      );
+      return;
+    }
+    requestOtpMessageBlock.textContent = "";
+
+    if (!submitOtpContainer) {
+      console.error(
+        "submit otp container is not valid html",
+        submitOtpContainer,
+      );
+      return;
+    }
+    submitOtpContainer.hidden = false;
+  }
+
+  // ========== submit otp functionality ===========
+
+  // ========== reset page flow functionality ===========
+
+  function resetFlow() {
+    emailInput.value = "";
+    requestOtpFormFieldset.disabled = false;
+    submitOtpContainer.hidden = true;
+    otpInput.value = "";
   }
 });

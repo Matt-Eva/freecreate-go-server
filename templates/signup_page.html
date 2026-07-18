@@ -7,42 +7,34 @@
       <title>Document</title>
       {{ template "globals_component" }}
       <script defer src="static/signup_page.js"></script>
+      <link rel="stylesheet" href="static/signup_page.css" />
+      {{ .CsrfToken }}
     </head>
     <body>
       {{ template "header_component" }}
-      <form id="signup_request_otp_form">
-        {{ .CsrfToken }}
-        <input type="hidden" name="form_action" value="request_otp" />
-        <label for="enter_email">Email:</label>
-        {{ if ne .Email "" }}
-          <input
-            type="text"
-            disabled="true"
-            name="enter_email"
-            value="{{ .Email }}"
-          />
-        {{ else }}
-          <input type="text" id="enter_email" value="{{ .Email }}" />
+
+      <form id="request_otp_form">
+        <fieldset id="request_otp_form_fieldset">
+          <label for="enter_email">Email:</label>
+          <input type="text" id="enter_email"/>
           <input type="submit" />
-        {{ end }}
+        </fieldset>
       </form>
-      <div id="request_otp_error_block"></div>
-      <a href="/signup/verify-otp">verify otp (testing only)</a>
-      {{ if .OtpRequested }}
-        <form action="/signup">
-          {{ .CsrfToken }}
-          <input type="hidden" name="form_action" value="submit_otp" />
+
+      <p id="request_otp_error_block"></p>
+      
+      <div id="submit_otp_container" hidden>
+        <form id="submit_otp_form">
           <label for="enter_otp">Enter One Time Password:</label>
-          <input type="text" name="enter_otp" />
+          <input type="text" id="enter_otp" />
           <input type="submit" />
         </form>
+
         <p>
-          Is your email incorrect? <a href="/signup">Start over</a>.</p>
+          Is your email incorrect? <button id="reset_flow_button">Start over</button>.</p>
         </p>
-      {{ end }}
-      {{ range .Errors }}
-        <p>{{ . }}</p>
-      {{ end }}
+      </div>
+
       <p>Already have an account? <a href="/login">Login</a>.</p>
     </body>
   </html>
