@@ -6,10 +6,11 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <title>Document</title>
       {{ template "globals_component" }}
+      <script defer src="static/signup_page.js"></script>
     </head>
     <body>
       {{ template "header_component" }}
-      <form action="/signup/request-otp" method="POST">
+      <form id="signup_request_otp_form">
         {{ .CsrfToken }}
         <input type="hidden" name="form_action" value="request_otp" />
         <label for="enter_email">Email:</label>
