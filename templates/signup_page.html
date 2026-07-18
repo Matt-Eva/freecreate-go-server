@@ -26,6 +26,7 @@
           <input type="submit" />
         {{ end }}
       </form>
+      <div id="request_otp_error_block"></div>
       <a href="/signup/verify-otp">verify otp (testing only)</a>
       {{ if .OtpRequested }}
         <form action="/signup">

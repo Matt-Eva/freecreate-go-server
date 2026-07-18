@@ -1,31 +1,31 @@
 package web_api_handlers
 
 import (
-	"encoding/json"
-	"freecreate/lib/logger"
 	"net/http"
 )
 
 func SignupRequestOtp() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
-		type ResponsePayload struct {
-			Message string `json:"message"`
-		}
+		http.Error(w, "there was an error requesting your one time password", 422)
 
-		responsePayload := ResponsePayload{
-			Message: "success!",
-		}
+		// type ResponsePayload struct {
+		// 	Message string `json:"message"`
+		// }
 
-		response, marshalError := json.Marshal(responsePayload)
-		if marshalError != nil {
-			logger.Log(marshalError)
-			http.Error(w, "error marshalling json response", 500)
-			return
-		}
+		// responsePayload := ResponsePayload{
+		// 	Message: "success!",
+		// }
 
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusAccepted)
-		w.Write(response)
+		// response, marshalError := json.Marshal(responsePayload)
+		// if marshalError != nil {
+		// 	logger.Log(marshalError)
+		// 	http.Error(w, "error marshalling json response", 500)
+		// 	return
+		// }
+
+		// w.Header().Set("Content-Type", "application/json")
+		// w.WriteHeader(http.StatusAccepted)
+		// w.Write(response)
 	}
 }
