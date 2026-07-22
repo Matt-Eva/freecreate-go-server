@@ -16,4 +16,4 @@ const editorRoot = document.getElementById("lexical-editor");
 editor.setRootElement(editorRoot);
 console.log(editor);
 
-InitSignupPage();
+// InitSignupPage();
