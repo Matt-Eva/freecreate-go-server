@@ -66,7 +66,7 @@ func CreateRouter(sessionStore *sessions.CookieStore, pgxPools config.PgxPools, 
 
 		r.Post("/test", web_api_handlers.TestHandler())
 
-		r.Post("/signup/request-otp", web_api_handlers.SignupRequestOtp())
+		r.Post("/signup/request-otp", web_api_handlers.SignupRequestOtp(sessionStore, valkeyClient, resendClient, pgCoreQueries, pgxPools.PgCore))
 
 		// r.Post("/login", web_api_handlers.LoginHandler(sessionStore, ))
 
