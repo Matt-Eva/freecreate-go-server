@@ -29,7 +29,7 @@ func SignupRequestOtp(sessionStore *sessions.CookieStore, valkeyClient valkey.Cl
 
 		ctx := r.Context()
 
-		type RequestBody struct{
+		type RequestBody struct {
 			Email string `json:"email"`
 		}
 
@@ -51,7 +51,7 @@ func SignupRequestOtp(sessionStore *sessions.CookieStore, valkeyClient valkey.Cl
 		}
 
 		_, checkEmailInUseErr := pg_core_queries.GetUserByEmail(ctx, pgCoreQueries, pgCore, email)
-		if checkEmailInUseErr != nil && !errors.Is(checkEmailInUseErr, pgx.ErrNoRows){
+		if checkEmailInUseErr != nil && !errors.Is(checkEmailInUseErr, pgx.ErrNoRows) {
 			logger.Log(checkEmailInUseErr)
 			http.Error(w, checkEmailInUseErr.Error(), 500)
 			return
@@ -81,10 +81,10 @@ func SignupRequestOtp(sessionStore *sessions.CookieStore, valkeyClient valkey.Cl
 			http.Error(w, storeOtpErr.Error(), 500)
 			return
 		}
-		
+
 		sendEmailErr := email_handler.SendOtp(resendClient, email, otp)
 		if sendEmailErr != nil {
-			if sendEmailErr.Error() == "[ERROR]: Invalid `to` field. The email address needs to follow the `email@example.com` or `Name <email@example.com>` format."{
+			if sendEmailErr.Error() == "[ERROR]: Invalid `to` field. The email address needs to follow the `email@example.com` or `Name <email@example.com>` format." {
 				err := errors.New("That is not a valid email address. Please enter a valid email address.")
 				http.Error(w, err.Error(), 422)
 				return

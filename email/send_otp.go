@@ -8,12 +8,12 @@ import (
 )
 
 func SendOtp(resendClient *resend.Client, email string, otp string) error {
-	html := fmt.Sprintf("<p>Your One Time Password is %s</p> <p>This password will expire in 5 minutes.</p> <p>DO NOT SHARE your password with ANYONE. We will NEVER ask you to share your one time password with us.</p>", otp)
+	html := fmt.Sprintf("<div><p>Your One Time Password is %s</p> <p>This password will expire in 5 minutes.</p> <p>DO NOT SHARE your password with ANYONE. We will NEVER ask you to share your one time password with us.</p> </div>", otp)
 
 	params := &resend.SendEmailRequest{
-		From: "test@email.freecreate.net",
-		To: []string{email},
-		Html: html,
+		From:    "test@email.freecreate.net",
+		To:      []string{email},
+		Html:    html,
 		Subject: "FreeCreate One Time Password",
 	}
 

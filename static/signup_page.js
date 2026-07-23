@@ -15,13 +15,17 @@ document.addEventListener("DOMContentLoaded", () => {
   );
 
   const submitOtpContainer = document.getElementById("submit_otp_container");
+  const submitOtpForm = document.getElementById("submit_otp_form");
   const otpInput = document.getElementById("enter_otp");
+  const submitOtpErrorBlock = document.getElementById("submitOtpErrorBlock");
 
   const resetFlowButton = document.getElementById("reset_flow_button");
 
   // ========= Adding Event Listeners =======
 
   requestOtpForm.addEventListener("submit", handleRequestOtpForm);
+
+  submitOtpForm.addEventListener("submit", handleSubmitOtpForm);
 
   resetFlowButton.addEventListener("click", resetFlow);
 
@@ -127,6 +131,66 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ========== submit otp functionality ===========
+
+  function handleSubmitOtpForm(e) {
+    e.preventDefault();
+
+    if (!otpInput) {
+      console.error("otp input is not valid html", otpInput);
+      return;
+    }
+    const otp = otpInput.value;
+
+    if (!emailInput) {
+      console.error("email input is not valid html!", emailInput);
+      return;
+    }
+    const email = emailInput.value;
+
+    submitOtp(email, otp);
+  }
+
+  async function submitOtp(email, otp) {
+    const requestBody = {
+      otp: otp,
+    };
+
+    const requestObject = {
+      method: "POST",
+      headers: {
+        "X-CSRF-Token": csrfToken,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestBody),
+    };
+
+    try {
+      const res = await fetch("/signup/submit-otp", requestObject);
+      if (!res.ok) {
+        const errorMessage = await res.text();
+        throw new Error(errorMessage);
+      }
+    } catch (error) {
+      console.error(error);
+      renderSubmitOtpErrors(error.message);
+    }
+  }
+
+  function renderSubmitOtpErrors(errorMessage) {
+    if (!errorMessage || typeof errorMessage !== "string") {
+      console.error("error is not valid: error ===", errorMessage);
+      return;
+    }
+
+    if (!submitOtpErrorBlock) {
+      console.error(
+        "submitOtpErrorBlock is not valid HTML element!",
+        submitOtpErrorBlock,
+      );
+      return;
+    }
+    submitOtpErrorBlock.textContent = errorMessage;
+  }
 
   // ========== reset page flow functionality ===========
 
