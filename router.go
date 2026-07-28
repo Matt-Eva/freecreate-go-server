@@ -46,12 +46,11 @@ func CreateRouter(sessionStore *sessions.CookieStore, pgxPools config.PgxPools, 
 	router.Get("/test", web_page_handlers.TestPageHandler(templates))
 	router.Post("/test", web_page_handlers.TestPageHandler(templates))
 
-	router.Get("/login", web_page_handlers.LoginPageHandler(sessionStore, valkeyClient, templates, pgxPools.PgCore, pgCoreQueries))
-	
+	router.Get("/login", web_page_handlers.LoginPageHandler(sessionStore, valkeyClient, templates))
+
 	// router.Post("/login", web_page_handlers.LoginPageHandler(templates, pgxPools.PgCore, pgCoreQueries))
 
-	router.Get("/signup", web_page_handlers.SignupPageHandler( templates))
-
+	router.Get("/signup", web_page_handlers.SignupPageHandler(templates))
 
 	router.Get("/about", web_page_handlers.AboutPageHandler(templates, sessionStore, valkeyClient))
 
@@ -63,6 +62,10 @@ func CreateRouter(sessionStore *sessions.CookieStore, pgxPools config.PgxPools, 
 
 	// ======== JSON Web API Routes =========
 	router.Route("/web-api", func(r chi.Router) {
+
+		r.Post("/login/request-otp", web_api_handlers.LoginRequestOtpHandler(sessionStore, valkeyClient, pgCoreQueries, pgxPools.PgCore))
+
+		r.Post("/login/submit-otp", web_api_handlers.LoginSubmitOtpHandler(sessionStore, valkeyClient, pgCoreQueries, pgxPools.PgCore))
 
 		r.Post("/signup/request-otp", web_api_handlers.SignupRequestOtp(sessionStore, valkeyClient, resendClient, pgCoreQueries, pgxPools.PgCore))
 

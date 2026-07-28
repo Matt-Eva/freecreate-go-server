@@ -4,6 +4,10 @@ document.addEventListener("DOMContentLoaded", () => {
   // ========= Declaring Global Variables =========
 
   const csrfToken = document.getElementsByName("gorilla.csrf.Token")[0].value;
+  if (!csrfToken) {
+    console.error("could not retrieve csrfToken!", csrfToken);
+    return;
+  }
 
   const requestOtpForm = document.getElementById("request_otp_form");
   const requestOtpFormFieldset = document.getElementById(

@@ -9,14 +9,14 @@ import (
 
 type PgCoreQueries struct {
 	getUserByEmail string
-	createUser string
+	createUser     string
 }
 
 func (q PgCoreQueries) GetUserByEmail() string {
 	return q.getUserByEmail
 }
 
-func (q PgCoreQueries) CreateUser()string{
+func (q PgCoreQueries) CreateUser() string {
 	return q.createUser
 }
 

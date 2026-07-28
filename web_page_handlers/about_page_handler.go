@@ -14,7 +14,7 @@ func AboutPageHandler(aboutTmpl *template.Template, sessionStore *sessions.Cooki
 		ctx := r.Context()
 		_, userId, _ := auth.GetUser(ctx, sessionStore, valkeyClient, w, r)
 		loggedIn := false
-		if userId != 0{
+		if userId != 0 {
 			loggedIn = true
 		}
 

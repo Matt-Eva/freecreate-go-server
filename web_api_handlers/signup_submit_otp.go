@@ -77,7 +77,6 @@ func SignupSubmitOtp(sessionStore *sessions.CookieStore, valkeyClient valkey.Cli
 		}
 		fmt.Println("user successfully logged in!")
 
-		
 		fmt.Println("redirecting")
 		http.Redirect(w, r, "/profile", 303)
 	}

@@ -5,32 +5,27 @@
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       {{ template "globals_component" }}
+      <script defer src="static/login_page.js"></script>
+      {{ .CsrfToken }}
     </head>
     <body>
       {{ template "header_component" . }}
-      {{ range .Errors }}
-        <p>{{ . }}</p>
-      {{ end }}
       <p>Enter your email address to receive a One Time Password via email.</p>
       <p>This password will last for five minutes.</p>
-      <form action="/login" method="POST" autocomplete="off">
-        {{ .CSRFToken }}
-        <input type="hidden" name="form_action" value="request_otp" />
+
+      <form id="request_otp_form">
         <label>Email:</label>
         <input type="text" placeholder="enter your email address" />
         <input type="submit" />
       </form>
+      <p id="request_otp_err_block"></p>
 
-      {{ if .OtpRequested }}
-        <form action="/login" method="POST">
-          {{ .CSRFToken }}
-          <input type="hidden" name="form_action" value="submit_otp" />
-          <label>Submit One Time Password:</label>
-          <input type="text" />
-          <input type="submit" />
-        </form>
-      {{ end }}
-
+      <form id="submit_otp_form" hidden>
+        <label>Submit One Time Password:</label>
+        <input type="text" />
+        <input type="submit" />
+      </form>
+      <p id="submit_otp_err_block"></p>
 
       <p>Don't have an account? <a href="/signup">Sign up</a>!</p>
     </body>
