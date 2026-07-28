@@ -37,19 +37,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function handleRequestOtpForm(e) {
     e.preventDefault();
-    if (!requestOtpMessageBlock) {
-      console.error(
-        "request otp error block is not valid HTML!",
-        requestOtpMessageBlock,
-      );
-      return;
-    }
-    requestOtpMessageBlock.textContent = "Processing request...";
 
-    if (!emailInput) {
-      console.error("emailInputElement is null!");
-      return;
-    }
+    requestOtpMessageBlock.textContent = "Processing request...";
 
     const emailValue = emailInput.value;
     if (!emailValue) {
@@ -61,6 +50,10 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   async function requestOtp(email) {
+    if (!email) {
+      renderRequestOtpErrors("Email cannot be empty.");
+    }
+
     const requestBody = {
       email: email,
     };
@@ -90,47 +83,12 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function renderRequestOtpErrors(errorMessage) {
-    if (!errorMessage || typeof errorMessage !== "string") {
-      console.error("error is not valid: error ===", errorMessage);
-      return;
-    }
-
-    if (!requestOtpMessageBlock) {
-      console.error(
-        "requestOtpMessageBlock is not valid HTML element!",
-        requestOtpMessageBlock,
-      );
-      return;
-    }
     requestOtpMessageBlock.textContent = errorMessage;
   }
 
   function renderOtpInputForm() {
-    if (!requestOtpFormFieldset) {
-      console.error(
-        "requestOtpFormFieldset is not valid html!",
-        requestOtpFormFieldset,
-      );
-      return;
-    }
     requestOtpFormFieldset.disabled = true;
-
-    if (!requestOtpMessageBlock) {
-      console.error(
-        "requestOptMessage block is not valid html",
-        requestOtpMessageBlock,
-      );
-      return;
-    }
     requestOtpMessageBlock.textContent = "";
-
-    if (!submitOtpContainer) {
-      console.error(
-        "submit otp container is not valid html",
-        submitOtpContainer,
-      );
-      return;
-    }
     submitOtpContainer.hidden = false;
   }
 
@@ -139,22 +97,29 @@ document.addEventListener("DOMContentLoaded", () => {
   function handleSubmitOtpForm(e) {
     e.preventDefault();
 
-    if (!otpInput) {
-      console.error("otp input is not valid html", otpInput);
-      return;
-    }
+    submitOtpErrorBlock.textContent = "Processing request...";
+
     const otp = otpInput.value;
 
-    if (!emailInput) {
-      console.error("email input is not valid html!", emailInput);
-      return;
-    }
     const email = emailInput.value;
 
     submitOtp(email, otp);
   }
 
   async function submitOtp(email, otp) {
+    if (!otp) {
+      renderSubmitOtpError("One Time Password cannot be empty.");
+      return;
+    } else if (otp.length !== 8) {
+      renderSubmitOtpError("One Time Password must be 8 characters in length.");
+      return;
+    }
+
+    if (!email) {
+      renderSubmitOtpError("Email cannot be empty.");
+      return;
+    }
+
     const requestBody = {
       otp: otp,
       email: email,
@@ -184,18 +149,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function renderSubmitOtpErrors(errorMessage) {
-    if (!errorMessage || typeof errorMessage !== "string") {
-      console.error("error is not valid: error ===", errorMessage);
-      return;
-    }
-
-    if (!submitOtpErrorBlock) {
-      console.error(
-        "submitOtpErrorBlock is not valid HTML element!",
-        submitOtpErrorBlock,
-      );
-      return;
-    }
     submitOtpErrorBlock.textContent = errorMessage;
   }
 

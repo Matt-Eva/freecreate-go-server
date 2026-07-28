@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function handleRequestOtpForm(e) {
     e.preventDefault();
 
-    requestOtpErrBlock.textContent = "";
+    requestOtpErrBlock.textContent = "Processing request...";
 
     const email = emailInput.value;
 
@@ -74,13 +74,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function renderSubmitOtpForm() {
     requestOtpFieldset.disabled = true;
+    requestOtpErrBlock.textContent = "";
     submitOtpContainer.hidden = false;
   }
 
   function handleSubmitOtpForm(e) {
     e.preventDefault();
 
-    submitOtpErrBlock.textContent = "";
+    submitOtpErrBlock.textContent = "Processing request...";
 
     const email = emailInput.value;
 
