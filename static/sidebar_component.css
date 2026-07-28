@@ -1,0 +1,12 @@
+#sidebar_component {
+  display: hidden;
+}
+
+@media (min-width: 768px) {
+  #sidebar_component {
+    grid-column: 1;
+    grid-row: 1;
+    height: 100%;
+    width: 100%;
+  }
+}
