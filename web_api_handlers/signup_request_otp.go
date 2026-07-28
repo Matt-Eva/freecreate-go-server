@@ -3,6 +3,7 @@ package web_api_handlers
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"freecreate/auth"
 	"freecreate/config"
 	pg_core_queries "freecreate/db/pg_core/queries"
@@ -23,8 +24,8 @@ func SignupRequestOtp(sessionStore *sessions.CookieStore, valkeyClient valkey.Cl
 		// if user already logged in, redirect to profile page
 		ctx := r.Context()
 
-		isLoggedIn, _ := auth.CheckLogin(sessionStore, w, r)
-		if isLoggedIn {
+		_, userId, _ := auth.GetUser(ctx, sessionStore, valkeyClient, w, r)
+		if userId != 0 {
 			http.Redirect(w, r, "/profile", 303)
 			return
 		}
@@ -50,7 +51,7 @@ func SignupRequestOtp(sessionStore *sessions.CookieStore, valkeyClient valkey.Cl
 			return
 		}
 
-		_, checkEmailInUseErr := pg_core_queries.GetUserByEmail(ctx, pgCoreQueries, pgCore, email)
+		userId, checkEmailInUseErr := pg_core_queries.GetUserByEmail(ctx, pgCoreQueries, pgCore, email)
 		if checkEmailInUseErr != nil && !errors.Is(checkEmailInUseErr, pgx.ErrNoRows) {
 			logger.Log(checkEmailInUseErr)
 			http.Error(w, checkEmailInUseErr.Error(), 500)
@@ -60,6 +61,7 @@ func SignupRequestOtp(sessionStore *sessions.CookieStore, valkeyClient valkey.Cl
 			http.Error(w, err.Error(), 422)
 			return
 		}
+		fmt.Println(userId)
 
 		_, sessionUuid, getSessionErr := auth.CreateGuestSesion(sessionStore, w, r)
 		if getSessionErr != nil {

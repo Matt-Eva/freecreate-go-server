@@ -6,11 +6,17 @@ import (
 	"net/http"
 
 	"github.com/gorilla/sessions"
+	"github.com/valkey-io/valkey-go"
 )
 
-func AboutPageHandler(aboutTmpl *template.Template, sessionStore *sessions.CookieStore) http.HandlerFunc {
+func AboutPageHandler(aboutTmpl *template.Template, sessionStore *sessions.CookieStore, valkeyClient valkey.Client) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		isLoggedIn, _ := auth.CheckLogin(sessionStore, w, r)
+		ctx := r.Context()
+		_, userId, _ := auth.GetUser(ctx, sessionStore, valkeyClient, w, r)
+		loggedIn := false
+		if userId != 0{
+			loggedIn = true
+		}
 
 		type PageData struct {
 			Title    string
@@ -19,7 +25,7 @@ func AboutPageHandler(aboutTmpl *template.Template, sessionStore *sessions.Cooki
 
 		pageData := PageData{
 			Title:    "about",
-			LoggedIn: isLoggedIn,
+			LoggedIn: loggedIn,
 		}
 
 		aboutTmpl.ExecuteTemplate(w, "about_page", pageData)

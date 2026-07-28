@@ -10,7 +10,7 @@ import (
 )
 
 func LogoutUser(ctx context.Context, sessionStore *sessions.CookieStore, valkeyClient valkey.Client, w http.ResponseWriter, r *http.Request) error {
-	session, _, getSessionErr := GetSession(sessionStore, w, r)
+	session, _, getSessionErr := GetUser(ctx, sessionStore, valkeyClient, w, r)
 	if getSessionErr != nil {
 		logger.Log(getSessionErr)
 		return getSessionErr

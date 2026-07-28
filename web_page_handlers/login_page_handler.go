@@ -13,12 +13,14 @@ import (
 	"github.com/gorilla/csrf"
 	"github.com/gorilla/sessions"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/valkey-io/valkey-go"
 )
 
-func LoginPageHandler(sessionStore *sessions.CookieStore, loginTmpl *template.Template, pgxCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries) http.HandlerFunc {
+func LoginPageHandler(sessionStore *sessions.CookieStore, valkeyClient valkey.Client, loginTmpl *template.Template, pgxCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		isLoggedIn, _ := auth.CheckLogin(sessionStore, w, r)
-		if isLoggedIn {
+		ctx := r.Context()
+		_, userId, _ := auth.GetUser(ctx, sessionStore, valkeyClient, w, r)
+		if userId != 0 {
 			http.Redirect(w, r, "/profile", 303)
 		}
 

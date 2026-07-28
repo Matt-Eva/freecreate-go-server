@@ -7,19 +7,25 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/gorilla/sessions"
 	"github.com/valkey-io/valkey-go"
 )
 
-func LoginUser(ctx context.Context, sessionStore *sessions.CookieStore, valkeyClient valkey.Client, r *http.Request, userId int64) error {
+func LoginUser(ctx context.Context, sessionStore *sessions.CookieStore, valkeyClient valkey.Client, r *http.Request, w http.ResponseWriter, userId int64) error {
 	session, getSessionErr := sessionStore.Get(r, "user-session")
 	if getSessionErr != nil {
 		logger.Log(getSessionErr)
 		return getSessionErr
 	}
 
-	session.Values["logged_in"] = true
-	sessionUuid := session.Values["session_uuid"]
+	sessionUuid, newUuidErr := uuid.NewUUID()
+	if newUuidErr != nil {
+		logger.Log(newUuidErr)
+		return newUuidErr
+	}
+
+	session.Values["session_uuid"] = sessionUuid
 
 	authKey := fmt.Sprintf("auth_key:%s", sessionUuid)
 	userIdString := fmt.Sprintf("%d", userId)
@@ -29,6 +35,8 @@ func LoginUser(ctx context.Context, sessionStore *sessions.CookieStore, valkeyCl
 		logger.Log(storeUserErr)
 		return storeUserErr
 	}
+
+	session.Save(r, w)
 
 	return nil
 }
