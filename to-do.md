@@ -1,6 +1,7 @@
 # To-Do
 
-- Reformat Auth Flow []
+- Setup Login Route
+- Reformat Auth Flow [x]
   - We can have two types of sessions
     - One is the guest session, which is only used by the login and signup pages for storing the otp and creating a session uuid for doing so
     - the other is the auth session, which is created once the user acutally logs in
