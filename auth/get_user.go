@@ -20,7 +20,12 @@ func GetUser(ctx context.Context, sessionStore *sessions.CookieStore, valkeyClie
 		return nil, 0, getSessionErr
 	}
 
-	sessionUuid, ok := session.Values["session_uuid"].(uuid.UUID)
+	uuidVal := session.Values["session_uuid"]
+	if uuidVal == nil {
+		return nil, 0, nil
+	}
+
+	sessionUuid, ok := uuidVal.(uuid.UUID)
 	if !ok {
 		err := errors.New("session uuid could not be converted to uuid")
 		logger.Log(err)

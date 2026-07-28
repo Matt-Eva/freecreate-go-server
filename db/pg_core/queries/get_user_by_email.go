@@ -10,14 +10,14 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-func GetUserByEmail(ctx context.Context, pgCoreQueries config.PgCoreQueries, pgxCore *pgxpool.Pool, email string) (int, error) {
+func GetUserByEmail(ctx context.Context, pgCoreQueries config.PgCoreQueries, pgxCore *pgxpool.Pool, email string) (int64, error) {
 
 	query := pgCoreQueries.GetUserByEmail()
 	queryArgs := pgx.NamedArgs{
 		"email": email,
 	}
 
-	var userId int
+	var userId int64
 	queryErr := pgxCore.QueryRow(ctx, query, queryArgs).Scan(&userId)
 	if errors.Is(queryErr, pgx.ErrNoRows) {
 		return 0, queryErr

@@ -7,15 +7,17 @@ import (
 	"freecreate/config"
 	pg_core_queries "freecreate/db/pg_core/queries"
 	pg_core_validators "freecreate/db/pg_core/validators"
+	email_handler "freecreate/email"
 	"freecreate/lib/logger"
 	"net/http"
 
 	"github.com/gorilla/sessions"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/resend/resend-go/v2"
 	"github.com/valkey-io/valkey-go"
 )
 
-func LoginRequestOtpHandler(sessionStore *sessions.CookieStore, valkeyClient valkey.Client, pgCoreQueries config.PgCoreQueries, pgCore *pgxpool.Pool) http.HandlerFunc {
+func LoginRequestOtpHandler(sessionStore *sessions.CookieStore, valkeyClient valkey.Client, resendClient *resend.Client, pgCoreQueries config.PgCoreQueries, pgCore *pgxpool.Pool) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// if user already logged in, redirect to profile page
 		ctx := r.Context()
@@ -47,13 +49,49 @@ func LoginRequestOtpHandler(sessionStore *sessions.CookieStore, valkeyClient val
 			return
 		}
 
-		userId, checkEmailErr := pg_core_queries.GetUserByEmail(ctx, pgCoreQueries, pgCore, email)
+		_, checkEmailErr := pg_core_queries.GetUserByEmail(ctx, pgCoreQueries, pgCore, email)
 		if checkEmailErr != nil {
 			logger.Log(checkEmailErr)
 			err := errors.New("we had trouble finding an account with that address")
 			http.Error(w, err.Error(), 404)
 			return
 		}
+
+
+		_, sessionUuid, getSessionErr := auth.CreateGuestSesion(sessionStore, w, r)
+		if getSessionErr != nil {
+			logger.Log(getSessionErr)
+			http.Error(w, getSessionErr.Error(), 500)
+			return
+		}
+
+		otp, genOtpErr := auth.GenerateOtp()
+		if genOtpErr != nil {
+			logger.Log(genOtpErr)
+			http.Error(w, genOtpErr.Error(), 500)
+			return
+		}
+
+		storeOtpErr := auth.StoreOtp(ctx, valkeyClient, sessionUuid, email, otp)
+		if storeOtpErr != nil {
+			logger.Log(storeOtpErr)
+			http.Error(w, storeOtpErr.Error(), 500)
+			return
+		}
+
+		sendEmailErr := email_handler.SendOtp(resendClient, email, otp)
+		if sendEmailErr != nil {
+			if sendEmailErr.Error() == "[ERROR]: Invalid `to` field. The email address needs to follow the `email@example.com` or `Name <email@example.com>` format." {
+				err := errors.New("That is not a valid email address. Please enter a valid email address.")
+				http.Error(w, err.Error(), 422)
+				return
+			}
+			logger.Log(sendEmailErr)
+			http.Error(w, sendEmailErr.Error(), 422)
+			return
+		}
+
+		w.WriteHeader(http.StatusAccepted)
 
 	}
 }
