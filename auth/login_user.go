@@ -10,7 +10,7 @@ import (
 	"github.com/valkey-io/valkey-go"
 )
 
-func LoginUser(ctx context.Context, session *sessions.Session, valkeyClient valkey.Client, userId int) error {
+func LoginUser(ctx context.Context, session *sessions.Session, valkeyClient valkey.Client, userId int64) error {
 	session.Values["logged_in"] = true
 	sessionUuid := session.Values["session_uuid"]
 

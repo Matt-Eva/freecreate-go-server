@@ -35,7 +35,7 @@ func StoreOtp(ctx context.Context, valkeyClient valkey.Client, session *sessions
 	otpKey := fmt.Sprintf("%s:%s", sessionUuid, email)
 
 	// we don't have to check if the key value pair already exists, as set will overwrite it unless we call the NX function, which limits setting to only work if the record already does not exist.
-	storeOtpErr := valkeyClient.Do(ctx, valkeyClient.B().Set().Key(otpKey).Value(otp).Ex(300*time.Second).Build()).Error()
+	storeOtpErr := valkeyClient.Do(ctx, valkeyClient.B().Set().Key(otpKey).Value(otp).Ex(12*time.Hour).Build()).Error()
 	if storeOtpErr != nil {
 		logger.Log(storeOtpErr)
 		return storeOtpErr

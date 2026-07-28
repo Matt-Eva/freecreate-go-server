@@ -2,6 +2,7 @@ package web_page_handlers
 
 import (
 	"fmt"
+	"freecreate/auth"
 	"freecreate/config"
 	pg_core_queries "freecreate/db/pg_core/queries"
 	"freecreate/lib/logger"
@@ -10,11 +11,16 @@ import (
 	"net/http"
 
 	"github.com/gorilla/csrf"
+	"github.com/gorilla/sessions"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-func LoginPageHandler(loginTmpl *template.Template, pgxCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries) http.HandlerFunc {
+func LoginPageHandler(sessionStore *sessions.CookieStore, loginTmpl *template.Template, pgxCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		isLoggedIn, _ := auth.CheckLogin(sessionStore, w, r)
+		if isLoggedIn {
+			http.Redirect(w, r, "/profile", 303)
+		}
 
 		switch r.Method {
 		case "GET":

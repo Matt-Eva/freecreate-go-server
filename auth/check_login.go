@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"fmt"
 	"freecreate/lib/logger"
 	"net/http"
 
@@ -18,6 +19,8 @@ func CheckLogin(sessionStore *sessions.CookieStore, w http.ResponseWriter, r *ht
 	if loggedIn != true {
 		return false, nil
 	}
+	fmt.Println("is logged in")
+	fmt.Println(loggedIn)
 	
-	return true, nil
+	return loggedIn, nil
 }

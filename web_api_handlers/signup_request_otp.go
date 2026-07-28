@@ -23,8 +23,8 @@ func SignupRequestOtp(sessionStore *sessions.CookieStore, valkeyClient valkey.Cl
 		// if user already logged in, redirect to profile page
 		ctx := r.Context()
 
-		_,  checkLoginErr := auth.CheckLogin(sessionStore, w, r)
-		if checkLoginErr == nil {
+		isLoggedIn, _ := auth.CheckLogin(sessionStore, w, r)
+		if isLoggedIn {
 			http.Redirect(w, r, "/profile", 303)
 			return
 		}

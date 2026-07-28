@@ -6,12 +6,13 @@ import (
 	"fmt"
 	"freecreate/lib/logger"
 	"net/http"
+	"strconv"
 
 	"github.com/gorilla/sessions"
 	"github.com/valkey-io/valkey-go"
 )
 
-func GetUser(ctx context.Context, sessionStore *sessions.CookieStore, valkeyClient valkey.Client, w http.ResponseWriter, r *http.Request) (session *sessions.Session, userId int64, error error) {
+func GetUser(ctx context.Context, sessionStore *sessions.CookieStore, valkeyClient valkey.Client, w http.ResponseWriter, r *http.Request) (session *sessions.Session, userId int, error error) {
 	isLoggedIn, loggedInErr := CheckLogin(sessionStore, w, r)
 	if loggedInErr != nil {
 		logger.Log(loggedInErr)
@@ -30,12 +31,21 @@ func GetUser(ctx context.Context, sessionStore *sessions.CookieStore, valkeyClie
 		return nil, 0, getSessionErr
 	}
 
-	authKey := fmt.Sprintf("auth_key::%s", sessionUuid)
+	authKey := fmt.Sprintf("auth_key:%s", sessionUuid)
 
-	userId, getUserErr := valkeyClient.Do(ctx, valkeyClient.B().Get().Key(authKey).Build()).ToInt64()
+	userIdString, getUserErr := valkeyClient.Do(ctx, valkeyClient.B().Get().Key(authKey).Build()).ToString()
 	if getUserErr != nil {
 		logger.Log(getUserErr)
 		err := errors.New("could not retrive user id")
+		DestroySession(sessionStore, w, r)
+		return nil, 0, err
+	}
+
+	userId, parseIdErr := strconv.Atoi(userIdString)
+	if parseIdErr != nil {
+		err := errors.New("could not convert userid string to int64")
+		logger.Log(err)
+		
 		return nil, 0, err
 	}
 

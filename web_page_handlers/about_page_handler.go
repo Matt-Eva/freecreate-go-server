@@ -1,17 +1,16 @@
 package web_page_handlers
 
 import (
-	web_page_utils "freecreate/web_page_handlers/utils"
+	"freecreate/auth"
 	"html/template"
 	"net/http"
+
+	"github.com/gorilla/sessions"
 )
 
-func AboutPageHandler(aboutTmpl *template.Template) http.HandlerFunc {
+func AboutPageHandler(aboutTmpl *template.Template, sessionStore *sessions.CookieStore) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		preloadLinks := []string{"/static/globals.css", "/static/header_component.css"}
-		web_page_utils.HandlePreloadLinks(w, preloadLinks)
-
-		// time.Sleep(300 * time.Millisecond)
+		isLoggedIn, _ := auth.CheckLogin(sessionStore, w, r)
 
 		type PageData struct {
 			Title    string
@@ -20,7 +19,7 @@ func AboutPageHandler(aboutTmpl *template.Template) http.HandlerFunc {
 
 		pageData := PageData{
 			Title:    "about",
-			LoggedIn: false,
+			LoggedIn: isLoggedIn,
 		}
 
 		aboutTmpl.ExecuteTemplate(w, "about_page", pageData)
