@@ -9,35 +9,35 @@ import (
 	"github.com/gorilla/sessions"
 )
 
-func GetSession(sessionStore *sessions.CookieStore, w http.ResponseWriter, r *http.Request) (*sessions.Session, error) {
+func GetSession(sessionStore *sessions.CookieStore, w http.ResponseWriter, r *http.Request) (*sessions.Session, uuid.UUID, error) {
 	session, err := sessionStore.Get(r, "user-session")
 	if err != nil {
 		logger.Log(err)
-		return nil, err
+		return nil, uuid.UUID{}, err
 	}
 
 	if session.Values["session_uuid"] == nil {
 		sessionUuid, err := uuid.NewRandom()
 		if err != nil {
 			logger.Log(err)
-			return nil, err
+			return nil, uuid.UUID{}, err
 		}
 		session.Values["session_uuid"] = sessionUuid
+		session.Options.MaxAge = 3600 * 12
 	}
 
-	val := session.Values["session_uuid"]
-	_, ok := val.(uuid.UUID)
+	sessionUuid, ok := session.Values["session_uuid"].(uuid.UUID)
 	if !ok {
 		err := errors.New("Could not convert uuid value - destroying session")
 		logger.Log(err)
 		destroyErr := DestroySession(sessionStore, w, r)
 		if destroyErr != nil {
 			logger.Log(destroyErr)
-			return nil, destroyErr
+			return nil, uuid.UUID{}, destroyErr
 		}
-		return nil, err
+		return nil, uuid.UUID{}, err
 	}
 
-	session.Options.MaxAge = 3600 * 12
-	return session, nil
+	
+	return session, sessionUuid, nil
 }

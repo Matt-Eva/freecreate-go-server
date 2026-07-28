@@ -2,7 +2,7 @@ package web_api_handlers
 
 import (
 	"encoding/json"
-	"errors"
+	"fmt"
 	"freecreate/auth"
 	"freecreate/config"
 	pg_core_queries "freecreate/db/pg_core/queries"
@@ -10,7 +10,6 @@ import (
 	"freecreate/lib/logger"
 	"net/http"
 
-	"github.com/google/uuid"
 	"github.com/gorilla/sessions"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/valkey-io/valkey-go"
@@ -18,19 +17,11 @@ import (
 
 func SignupSubmitOtp(sessionStore *sessions.CookieStore, valkeyClient valkey.Client, pgCoreQueries config.PgCoreQueries, pgCore *pgxpool.Pool) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		session, getSessionErr := auth.GetSession(sessionStore, w, r)
+		fmt.Println("hit submit otp route")
+		session, sessionUuid, getSessionErr := auth.GetSession(sessionStore, w, r)
 		if getSessionErr != nil {
 			logger.Log(getSessionErr)
 			http.Error(w, getSessionErr.Error(), 500)
-			return
-		}
-
-		val := session.Values["session_uuid"]
-		sessionUuid, ok := val.(uuid.UUID)
-		if !ok {
-			err := errors.New("Could not convert uuid value - destroying session")
-			logger.Log(err)
-			http.Error(w, err.Error(), 422)
 			return
 		}
 
@@ -57,6 +48,7 @@ func SignupSubmitOtp(sessionStore *sessions.CookieStore, valkeyClient valkey.Cli
 			http.Error(w, emailValidationError.Error(), 422)
 			return
 		}
+		fmt.Println("email successfully validated!")
 
 		otp := body.Otp
 
@@ -66,6 +58,7 @@ func SignupSubmitOtp(sessionStore *sessions.CookieStore, valkeyClient valkey.Cli
 			http.Error(w, validateOtpErr.Error(), 500)
 			return
 		}
+		fmt.Println("otp successfully validated!")
 
 		userId, createUserErr := pg_core_queries.CreateUser(ctx, pgCoreQueries, pgCore, email)
 		if createUserErr != nil {
@@ -73,6 +66,7 @@ func SignupSubmitOtp(sessionStore *sessions.CookieStore, valkeyClient valkey.Cli
 			http.Error(w, createUserErr.Error(), 500)
 			return
 		}
+		fmt.Println("user successfully created!")
 
 		loginUserErr := auth.LoginUser(ctx, session, valkeyClient, userId)
 		if loginUserErr != nil {
@@ -80,8 +74,10 @@ func SignupSubmitOtp(sessionStore *sessions.CookieStore, valkeyClient valkey.Cli
 			http.Error(w, loginUserErr.Error(), 500)
 			return
 		}
+		fmt.Println("user successfully logged in!")
 
 		session.Save(r, w)
+		fmt.Println("redirecting")
 		http.Redirect(w, r, "/profile", 303)
 	}
 }

@@ -21,13 +21,14 @@ import (
 func SignupRequestOtp(sessionStore *sessions.CookieStore, valkeyClient valkey.Client, resendClient *resend.Client, pgCoreQueries config.PgCoreQueries, pgCore *pgxpool.Pool) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// if user already logged in, redirect to profile page
-		_, getUserErr := auth.GetUser(sessionStore, w, r)
-		if getUserErr == nil {
+		ctx := r.Context()
+
+		_,  checkLoginErr := auth.CheckLogin(sessionStore, w, r)
+		if checkLoginErr == nil {
 			http.Redirect(w, r, "/profile", 303)
 			return
 		}
 
-		ctx := r.Context()
 
 		type RequestBody struct {
 			Email string `json:"email"`
@@ -61,7 +62,7 @@ func SignupRequestOtp(sessionStore *sessions.CookieStore, valkeyClient valkey.Cl
 			return
 		}
 
-		session, getSessionErr := auth.GetSession(sessionStore, w, r)
+		session, _, getSessionErr := auth.GetSession(sessionStore, w, r)
 		if getSessionErr != nil {
 			logger.Log(getSessionErr)
 			http.Error(w, getSessionErr.Error(), 500)

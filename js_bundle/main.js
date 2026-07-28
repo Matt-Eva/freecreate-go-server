@@ -2,7 +2,8 @@ import HelloWorld from "./test_module";
 import { createEditor } from "lexical";
 import InitSignupPage from "./signup_page/signup_page";
 
-HelloWorld();
+// HelloWorld();
+console.log("running js bundle");
 
 const config = {
   namespace: "MyEditor",
@@ -14,6 +15,6 @@ const editor = createEditor(config);
 const editorRoot = document.getElementById("lexical-editor");
 
 editor.setRootElement(editorRoot);
-console.log(editor);
+// console.log(editor);
 
 // InitSignupPage();

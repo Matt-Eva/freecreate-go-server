@@ -55,7 +55,7 @@ func CreateRouter(sessionStore *sessions.CookieStore, pgxPools config.PgxPools, 
 
 	router.Get("/about", web_page_handlers.AboutPageHandler(templates))
 
-	router.Get("/profile", web_page_handlers.ProfilePageHandler(sessionStore, templates))
+	router.Get("/profile", web_page_handlers.ProfilePageHandler(sessionStore, valkeyClient, templates))
 
 	router.Get("/donate", web_page_handlers.DonatePageHandler(templates))
 
@@ -69,6 +69,8 @@ func CreateRouter(sessionStore *sessions.CookieStore, pgxPools config.PgxPools, 
 		r.Post("/signup/request-otp", web_api_handlers.SignupRequestOtp(sessionStore, valkeyClient, resendClient, pgCoreQueries, pgxPools.PgCore))
 
 		r.Post("/signup/submit-otp", web_api_handlers.SignupSubmitOtp(sessionStore, valkeyClient, pgCoreQueries, pgxPools.PgCore))
+
+		r.Delete("/logout", web_api_handlers.LogoutHandler(sessionStore, valkeyClient))
 
 		// r.Post("/login", web_api_handlers.LoginHandler(sessionStore, ))
 

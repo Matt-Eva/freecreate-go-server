@@ -41,12 +41,11 @@ func StoreOtp(ctx context.Context, valkeyClient valkey.Client, session *sessions
 		return storeOtpErr
 	}
 
-	retrievedOtp, getOtpErr := valkeyClient.Do(ctx, valkeyClient.B().Get().Key(otpKey).Build()).ToString()
+	_, getOtpErr := valkeyClient.Do(ctx, valkeyClient.B().Get().Key(otpKey).Build()).ToString()
 	if getOtpErr != nil {
 		logger.Log(getOtpErr)
 		return getOtpErr
 	}
-	fmt.Println(retrievedOtp)
 
 	return nil
 }

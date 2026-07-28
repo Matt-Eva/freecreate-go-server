@@ -23,8 +23,8 @@ import (
 
 func SignupPageHandler(resendClient *resend.Client, valkeyClient valkey.Client, signupTmpl *template.Template, sessionStore *sessions.CookieStore, pgxCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		userSession, _ := auth.GetUser(sessionStore, w, r)
-		if userSession != nil {
+		loggedIn, _ := auth.CheckLogin(sessionStore, w, r)
+		if loggedIn {
 			http.Redirect(w, r, "/profile", 303)
 			return
 		}
@@ -117,7 +117,7 @@ func RequestOtpFormHandler(resendClient *resend.Client, valkeyClient valkey.Clie
 }
 
 func requestOtp(resendClient *resend.Client, valkeyClient valkey.Client, sessionStore *sessions.CookieStore, w http.ResponseWriter, r *http.Request, signupTmpl *template.Template, email string) {
-	session, getSessionErr := auth.GetSession(sessionStore, w, r)
+	session, _, getSessionErr := auth.GetSession(sessionStore, w, r)
 	if getSessionErr != nil {
 		logger.Log(getSessionErr)
 		renderSignupPage(signupTmpl, w, r, false, "", []string{getSessionErr.Error()})

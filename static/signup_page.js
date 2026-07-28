@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const submitOtpContainer = document.getElementById("submit_otp_container");
   const submitOtpForm = document.getElementById("submit_otp_form");
   const otpInput = document.getElementById("enter_otp");
-  const submitOtpErrorBlock = document.getElementById("submitOtpErrorBlock");
+  const submitOtpErrorBlock = document.getElementById("submit_otp_error_block");
 
   const resetFlowButton = document.getElementById("reset_flow_button");
 
@@ -153,6 +153,7 @@ document.addEventListener("DOMContentLoaded", () => {
   async function submitOtp(email, otp) {
     const requestBody = {
       otp: otp,
+      email: email,
     };
 
     const requestObject = {
@@ -165,10 +166,12 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     try {
-      const res = await fetch("/signup/submit-otp", requestObject);
+      const res = await fetch("/web-api/signup/submit-otp", requestObject);
       if (!res.ok) {
         const errorMessage = await res.text();
         throw new Error(errorMessage);
+      } else if (res.redirected) {
+        window.location.href = res.url;
       }
     } catch (error) {
       console.error(error);

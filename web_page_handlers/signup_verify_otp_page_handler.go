@@ -13,7 +13,7 @@ import (
 
 func SignupVerifyOtpPageHandler(signupVerifyOtpTmpl *template.Template, sessionStore *sessions.CookieStore) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		session, getSessionErr := auth.GetSession(sessionStore, w, r)
+		session, _, getSessionErr := auth.GetSession(sessionStore, w, r)
 		if getSessionErr != nil {
 			logger.Log(getSessionErr)
 			http.Redirect(w, r, "/signup", 303)

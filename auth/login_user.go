@@ -17,10 +17,10 @@ func LoginUser(ctx context.Context, session *sessions.Session, valkeyClient valk
 	authKey := fmt.Sprintf("auth_key:%s", sessionUuid)
 	userIdString := fmt.Sprintf("%d", userId)
 
-	storeOtpErr := valkeyClient.Do(ctx, valkeyClient.B().Set().Key(authKey).Value(userIdString).Ex(300*time.Second).Build()).Error()
-	if storeOtpErr != nil {
-		logger.Log(storeOtpErr)
-		return storeOtpErr
+	storeUserErr := valkeyClient.Do(ctx, valkeyClient.B().Set().Key(authKey).Value(userIdString).Ex(300*time.Second).Build()).Error()
+	if storeUserErr != nil {
+		logger.Log(storeUserErr)
+		return storeUserErr
 	}
 
 	return nil

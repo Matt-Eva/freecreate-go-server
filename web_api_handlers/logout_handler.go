@@ -1,45 +1,36 @@
 package web_api_handlers
 
-// import (
-// 	"freecreate/auth"
-// 	"freecreate/gorm_models"
-// 	"freecreate/logger"
-// 	"net/http"
+import (
+	"freecreate/auth"
+	"freecreate/lib/logger"
+	"net/http"
 
-// 	"github.com/google/uuid"
-// 	"github.com/gorilla/sessions"
-// 	"gorm.io/gorm"
-// )
+	"github.com/gorilla/sessions"
+	"github.com/valkey-io/valkey-go"
+)
 
-// func LogoutHandler(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB) http.HandlerFunc {
-// 	return func(w http.ResponseWriter, r *http.Request) {
-// 		sessionUUID, uErr := auth.CheckSession(sessionStore, w, r)
-// 		if uErr != nil {
-// 			logger.Log(uErr)
-// 		} else {
-// 			var user pgModels.User
 
-// 			gErr := gormPGClient.Where("session_uuid = ?", sessionUUID).First(&user).Error
-// 			if gErr != nil {
-// 				logger.Log(uErr)
-// 			} else {
-// 				user.SessionUUID = uuid.New()
 
-// 				sErr := gormPGClient.Save(&user).Error
-// 				if sErr != nil {
-// 					logger.Log(sErr)
-// 				}
+func LogoutHandler(sessionStore *sessions.CookieStore, valkeyClient valkey.Client) http.HandlerFunc{
+	return func (w http.ResponseWriter, r *http.Request){
+		ctx := r.Context()
 
-// 			}
-// 		}
+		_, _, getUserErr := auth.GetUser(ctx, sessionStore, valkeyClient, w, r)
+		if getUserErr != nil {
+			logger.Log(getUserErr)
+			http.Error(w, getUserErr.Error(), 500)
+			return
+		}
 
-// 		err := auth.DestroySession(sessionStore, w, r)
-// 		if err != nil {
-// 			logger.Log(err)
-// 			http.Error(w, err.Error(), http.StatusInternalServerError)
-// 			return
-// 		}
+		
+		
+		logoutErr := auth.LogoutUser(ctx, sessionStore, valkeyClient, w, r)
+		if logoutErr != nil {
+			logger.Log(logoutErr)
+			http.Error(w, logoutErr.Error(), 500)
+			return
+		}
 
-// 		w.WriteHeader(http.StatusAccepted)
-// 	}
-// }
+		http.Redirect(w, r, "/", 303)
+	}
+}
