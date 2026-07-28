@@ -26,7 +26,7 @@ body.logged_in {
 }
 
 body.logged_out {
-  grid-template-rows: 40px calc(100vh - 80px);
+  grid-template-rows: 40px calc(100vh - 40px);
 }
 
 #page_container {
@@ -43,13 +43,13 @@ body.logged_out {
 }
 
 @media (min-width: 768px) {
-  #page_container.logged_in {
+  #page_container {
     display: grid;
     grid-template-columns: 200px calc(100% - 200px);
     grid-template-rows: 100%;
   }
 
-  #page_content.logged_in {
+  #page_content {
     grid-column: 2;
     grid-row: 1;
   }

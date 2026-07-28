@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"net/http"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/gorilla/sessions"
 	"github.com/valkey-io/valkey-go"
 )
@@ -21,14 +22,18 @@ func HomePageHandler(homeTmpl *template.Template, sessionStore *sessions.CookieS
 			loggedInClass = "logged_in"
 		}
 
+		writingType := chi.URLParam(r, "writing_type")
+
 		type PageData struct {
 			LoggedIn bool
 			LoggedInClass string
+			WritingType string
 		}
 
 		pageData := PageData{
 			LoggedIn: loggedIn,
 			LoggedInClass: loggedInClass,
+			WritingType: writingType,
 		}
 		homeTmpl.ExecuteTemplate(w, "home", pageData)
 	}

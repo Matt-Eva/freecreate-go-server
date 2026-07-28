@@ -33,6 +33,7 @@ func CreateRouter(sessionStore *sessions.CookieStore, pgxPools config.PgxPools, 
 	// ========= Web Page Handlers =========
 
 	router.Get("/", web_page_handlers.HomePageHandler(templates, sessionStore, valkeyClient))
+	router.Get("/browse/{writing_type}", web_page_handlers.HomePageHandler(templates, sessionStore, valkeyClient))
 
 	router.Get("/login", web_page_handlers.LoginPageHandler(sessionStore, valkeyClient, templates))
 
