@@ -30,7 +30,7 @@ func LoginUser(ctx context.Context, sessionStore *sessions.CookieStore, valkeyCl
 	authKey := fmt.Sprintf("auth_key:%s", sessionUuid)
 	userIdString := fmt.Sprintf("%d", userId)
 
-	storeUserErr := valkeyClient.Do(ctx, valkeyClient.B().Set().Key(authKey).Value(userIdString).Ex(300*time.Second).Build()).Error()
+	storeUserErr := valkeyClient.Do(ctx, valkeyClient.B().Set().Key(authKey).Value(userIdString).Ex(12*time.Hour).Build()).Error()
 	if storeUserErr != nil {
 		logger.Log(storeUserErr)
 		return storeUserErr

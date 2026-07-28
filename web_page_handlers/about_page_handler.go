@@ -12,6 +12,7 @@ import (
 func AboutPageHandler(aboutTmpl *template.Template, sessionStore *sessions.CookieStore, valkeyClient valkey.Client) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
+
 		_, userId, _ := auth.GetUser(ctx, sessionStore, valkeyClient, w, r)
 		loggedIn := false
 		if userId != 0 {

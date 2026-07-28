@@ -14,19 +14,19 @@ func LoginPageHandler(sessionStore *sessions.CookieStore, valkeyClient valkey.Cl
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
 		_, userId, _ := auth.GetUser(ctx, sessionStore, valkeyClient, w, r)
-		if userId != 0{
+		if userId != 0 {
 			http.Redirect(w, r, "/profile", 303)
 			return
 		}
 
 		type PageData struct {
 			CsrfToken template.HTML
-			LoggedIn bool
+			LoggedIn  bool
 		}
 
 		pageData := PageData{
 			CsrfToken: csrf.TemplateField(r),
-			LoggedIn: false,
+			LoggedIn:  false,
 		}
 
 		loginTmpl.ExecuteTemplate(w, "login_page", pageData)

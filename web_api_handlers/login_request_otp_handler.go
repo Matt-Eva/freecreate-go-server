@@ -57,7 +57,6 @@ func LoginRequestOtpHandler(sessionStore *sessions.CookieStore, valkeyClient val
 			return
 		}
 
-
 		_, sessionUuid, getSessionErr := auth.CreateGuestSesion(sessionStore, w, r)
 		if getSessionErr != nil {
 			logger.Log(getSessionErr)

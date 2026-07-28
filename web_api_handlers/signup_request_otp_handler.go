@@ -60,7 +60,6 @@ func SignupRequestOtp(sessionStore *sessions.CookieStore, valkeyClient valkey.Cl
 			http.Error(w, err.Error(), 422)
 			return
 		}
-		
 
 		_, sessionUuid, getSessionErr := auth.CreateGuestSesion(sessionStore, w, r)
 		if getSessionErr != nil {

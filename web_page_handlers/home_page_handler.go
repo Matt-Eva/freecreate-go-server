@@ -1,39 +1,30 @@
 package web_page_handlers
 
 import (
-	web_page_utils "freecreate/web_page_handlers/utils"
+	"freecreate/auth"
 	"html/template"
 	"net/http"
+
+	"github.com/gorilla/sessions"
+	"github.com/valkey-io/valkey-go"
 )
 
-func HomePageHandler(homeTmpl *template.Template) http.HandlerFunc {
+func HomePageHandler(homeTmpl *template.Template, sessionStore *sessions.CookieStore, valkeyClient valkey.Client) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		preloadLinks := []string{"/static/globals.css", "/static/header_component.css"}
-		web_page_utils.HandlePreloadLinks(w, preloadLinks)
+		ctx := r.Context()
 
-		type CardContent struct {
-			CardTitle       string
-			CardDescription string
+		_, userId, _ := auth.GetUser(ctx, sessionStore, valkeyClient, w, r)
+		loggedIn := false
+		if userId != 0 {
+			loggedIn = true
 		}
 
 		type PageData struct {
-			Title         string
-			LoggedIn      bool
-			UserIsAdult   bool
-			LoadedContent []CardContent
-		}
-
-		cardContent := make([]CardContent, 0, 100)
-
-		for i := 0; i < 100; i++ {
-			cardContent = append(cardContent, CardContent{CardTitle: "welcome home", CardDescription: "a heartwarming tale"})
+			LoggedIn bool
 		}
 
 		pageData := PageData{
-			Title:         "home",
-			LoggedIn:      false,
-			UserIsAdult:   true,
-			LoadedContent: cardContent,
+			LoggedIn: loggedIn,
 		}
 		homeTmpl.ExecuteTemplate(w, "home", pageData)
 	}

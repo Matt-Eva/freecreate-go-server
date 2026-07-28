@@ -15,6 +15,9 @@ import (
 )
 
 func CreateRouter(sessionStore *sessions.CookieStore, pgxPools config.PgxPools, pgCoreQueries config.PgCoreQueries, valkeyClient valkey.Client, resendClient *resend.Client) *chi.Mux {
+
+	// ========= Router Configuration ========
+
 	router := chi.NewRouter()
 
 	csrfMiddleware := middleware.GenereateCsrfMiddleware()
@@ -25,42 +28,26 @@ func CreateRouter(sessionStore *sessions.CookieStore, pgxPools config.PgxPools, 
 
 	router.Handle("/static/*", http.StripPrefix("/static/", cachedFileServer))
 
-	// fileServer := http.FileServer(http.Dir("static"))
-	// cachedFileServer := middleware.CacheControlHandler(fileServer)
-
-	// // Chi requires the wildcard string to be stripped properly
-	// router.Route("/static", func(r chi.Router) {
-	// 	r.Get("/*", http.StripPrefix("/static", cachedFileServer).ServeHTTP)
-	// })
-
-	// router.Get("/get-csrf", func(w http.ResponseWriter, r *http.Request) {
-	// 	fmt.Println("request csrf token")
-	// 	w.Header().Set("X-CSRF-Token", csrf.Token(r))
-	// 	w.Header().Set("Access-Control-Expose-Headers", "X-CSRF-Token")
-	// })
-
 	templates := template.Must(template.ParseGlob("templates/*html"))
 
-	router.Get("/", web_page_handlers.HomePageHandler(templates))
+	// ========= Web Page Handlers =========
 
-	router.Get("/test", web_page_handlers.TestPageHandler(templates))
-	router.Post("/test", web_page_handlers.TestPageHandler(templates))
+	router.Get("/", web_page_handlers.HomePageHandler(templates, sessionStore, valkeyClient))
 
 	router.Get("/login", web_page_handlers.LoginPageHandler(sessionStore, valkeyClient, templates))
 
-	// router.Post("/login", web_page_handlers.LoginPageHandler(templates, pgxPools.PgCore, pgCoreQueries))
-
 	router.Get("/signup", web_page_handlers.SignupPageHandler(templates))
-
-	router.Get("/about", web_page_handlers.AboutPageHandler(templates, sessionStore, valkeyClient))
 
 	router.Get("/profile", web_page_handlers.ProfilePageHandler(sessionStore, valkeyClient, templates))
 
-	router.Get("/donate", web_page_handlers.DonatePageHandler(templates))
+	router.Get("/about", web_page_handlers.AboutPageHandler(templates, sessionStore, valkeyClient))
 
-	router.Get("/search", web_page_handlers.SearchPageHandler(templates))
+	router.Get("/donate", web_page_handlers.DonatePageHandler(templates, sessionStore, valkeyClient))
+
+	router.Get("/search", web_page_handlers.SearchPageHandler(templates, sessionStore, valkeyClient))
 
 	// ======== JSON Web API Routes =========
+
 	router.Route("/web-api", func(r chi.Router) {
 
 		r.Post("/login/request-otp", web_api_handlers.LoginRequestOtpHandler(sessionStore, valkeyClient, resendClient, pgCoreQueries, pgxPools.PgCore))
@@ -72,35 +59,6 @@ func CreateRouter(sessionStore *sessions.CookieStore, pgxPools config.PgxPools, 
 		r.Post("/signup/submit-otp", web_api_handlers.SignupSubmitOtp(sessionStore, valkeyClient, pgCoreQueries, pgxPools.PgCore))
 
 		r.Delete("/logout", web_api_handlers.LogoutHandler(sessionStore, valkeyClient))
-
-		// r.Post("/login", web_api_handlers.LoginHandler(sessionStore, ))
-
-		// r.Post("/signup", web_api_handlers.SignupHandler(sessionStore, ))
-
-		// r.Delete("/logout", web_api_handlers.LogoutHandler(sessionStore, ))
-
-		// r.Get("/reauth", web_api_handlers.ReAuthHandler(sessionStore, ))
-
-		// r.Delete("/delete-account", web_api_handlers.DeleteAccountHandler(sessionStore, ))
-
-		// r.Post("/creator", web_api_handlers.CreateCreatorHandler(sessionStore, ))
-
-		// r.Delete("/creator/{creatorId}", web_api_handlers.DeleteCreatorHandler(sessionStore, ))
-
-		// r.Get("/user-creators", web_api_handlers.GetUserCreatorHandlers(sessionStore, ))
-
-		// r.Post("/writing", web_api_handlers.CreateWritingHandler(sessionStore, ))
-
-		// r.Patch("/writing", web_api_handlers.UpdateWritingHandler(sessionStore, ))
-
-		// r.Get("/my-writing", web_api_handlers.GetMyWritingHandler(sessionStore, ))
-
-		// r.Get("/edit-writing/{writingUUID}", web_api_handlers.GetEditWritingHandler(sessionStore, ))
-
-		// router.Post("/createOTP", handlers.CreateOTPHandler(resendClient, valkeyClient))
-
-		// router.Post("/email", handlers.EmailHandler(resendClient))
-
 	})
 
 	return router
