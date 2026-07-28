@@ -1,4 +1,4 @@
-{{ define "search" }}
+{{ define "search_page" }}
   <!doctype html>
   <html lang="en">
     <head>
@@ -8,7 +8,14 @@
       <title>Document</title>
     </head>
     <body>
+      {{ template "header_component" }}
       {{ template "search_box_component" }}
+      <form action="/search" method="GET">
+        <label for="search">Search</label>
+        <input type="text" name="search" value="{{ .Query }}" />
+        <input type="submit" />
+      </form>
+      <p>{{ .Query }}</p>
     </body>
   </html>
 {{ end }}

@@ -2,20 +2,28 @@ package web_page_handlers
 
 import (
 	"fmt"
+	"freecreate/auth"
 	"freecreate/config"
 	pg_core_queries "freecreate/db/pg_core/queries"
-	"freecreate/logger"
+	"freecreate/lib/logger"
 	web_page_utils "freecreate/web_page_handlers/utils"
 	"html/template"
 	"net/http"
 
 	"github.com/gorilla/csrf"
+	"github.com/gorilla/sessions"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/valkey-io/valkey-go"
 )
 
-func LoginPageHandler(loginTmpl *template.Template, pgxCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries) http.HandlerFunc {
+func LoginPageHandler(sessionStore *sessions.CookieStore, valkeyClient valkey.Client, loginTmpl *template.Template, pgxCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		
+		ctx := r.Context()
+		_, userId, _ := auth.GetUser(ctx, sessionStore, valkeyClient, w, r)
+		if userId != 0 {
+			http.Redirect(w, r, "/profile", 303)
+		}
+
 		switch r.Method {
 		case "GET":
 			handleLoginPageGet(loginTmpl, w, r)
@@ -24,44 +32,43 @@ func LoginPageHandler(loginTmpl *template.Template, pgxCore *pgxpool.Pool, pgCor
 		default:
 			web_page_utils.HandleInvalidWebpageRequestMethod(w, r.Method)
 		}
-		
+
 	}
 }
 
-func renderLoginPage(loginTmpl *template.Template, w http.ResponseWriter, r *http.Request, errors []string, searchQuery string){
-	
-		type PageData struct {
-			LoggedIn bool
-			RequestMethod string
-			CSRFToken template.HTML
-			Errors []string
-			Query string
-		}
+func renderLoginPage(loginTmpl *template.Template, w http.ResponseWriter, r *http.Request, errors []string, searchQuery string) {
 
-		pageData := PageData{
-			LoggedIn: false,
-			RequestMethod: r.Method,
-			CSRFToken: csrf.TemplateField(r),
-			Errors: errors,
-			Query: searchQuery,
-		}
+	type PageData struct {
+		LoggedIn      bool
+		RequestMethod string
+		CSRFToken     template.HTML
+		Errors        []string
+		Query         string
+		OtpRequested  bool
+	}
 
-		w.Header().Set("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0")
-		w.Header().Set("Pragma", "no-cache") // Legacy support for HTTP/1.0
-    	w.Header().Set("Expires", "0")
-		loginTmpl.ExecuteTemplate(w, "login_page", pageData)
+	pageData := PageData{
+		LoggedIn:      false,
+		RequestMethod: r.Method,
+		CSRFToken:     csrf.TemplateField(r),
+		Errors:        errors,
+		Query:         searchQuery,
+		OtpRequested:  false,
+	}
+
+	loginTmpl.ExecuteTemplate(w, "login_page", pageData)
 }
 
-func handleLoginPageGet(loginTmpl *template.Template, w http.ResponseWriter, r *http.Request){
+func handleLoginPageGet(loginTmpl *template.Template, w http.ResponseWriter, r *http.Request) {
 	query := r.URL.Query().Get("search_field")
 	fmt.Println(query)
 	renderLoginPage(loginTmpl, w, r, []string{}, query)
 }
 
-func handleLoginPagePost(loginTmpl *template.Template, w http.ResponseWriter, r *http.Request, pgxCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries){
-	var errs []string;
+func handleLoginPagePost(loginTmpl *template.Template, w http.ResponseWriter, r *http.Request, pgxCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries) {
+	var errs []string
 
-	formAction, formActionErr := web_page_utils.GetFormAction(r);
+	formAction, formActionErr := web_page_utils.GetFormAction(r)
 	if formActionErr != nil {
 		logger.Log(formActionErr)
 		errs = append(errs, formActionErr.Error())
@@ -70,11 +77,11 @@ func handleLoginPagePost(loginTmpl *template.Template, w http.ResponseWriter, r 
 	}
 	fmt.Println(formAction)
 
-	userId, getUserErr := pg_core_queries.GetUserByEmail(pgCoreQueries, pgxCore, "")
+	userId, getUserErr := pg_core_queries.GetUserByEmail(r.Context(), pgCoreQueries, pgxCore, "")
 	if getUserErr != nil {
 		logger.Log(getUserErr)
 		errs = append(errs, getUserErr.Error())
-		renderLoginPage(loginTmpl, w, r, errs,"")
+		renderLoginPage(loginTmpl, w, r, errs, "")
 		return
 	}
 

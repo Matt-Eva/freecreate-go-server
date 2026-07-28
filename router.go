@@ -1,17 +1,14 @@
-package routes
+package main
 
 import (
-	"fmt"
 	"freecreate/config"
 	"freecreate/middleware"
 	"freecreate/web_api_handlers"
 	"freecreate/web_page_handlers"
 	"html/template"
 	"net/http"
-	"os"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/gorilla/csrf"
 	"github.com/gorilla/sessions"
 	"github.com/resend/resend-go/v2"
 	"github.com/valkey-io/valkey-go"
@@ -20,18 +17,7 @@ import (
 func CreateRouter(sessionStore *sessions.CookieStore, pgxPools config.PgxPools, pgCoreQueries config.PgCoreQueries, valkeyClient valkey.Client, resendClient *resend.Client) *chi.Mux {
 	router := chi.NewRouter()
 
-	environment := os.Getenv("ENVIRONMENT")
-
-	csrfKey := os.Getenv("CSRF_KEY")
-	var csrfMiddleware func(http.Handler) http.Handler
-
-	if environment == "DEVELOPMENT" {
-		fmt.Println("DEVELOPMENT")
-		csrfMiddleware = csrf.Protect([]byte(csrfKey), csrf.Secure(false), csrf.TrustedOrigins([]string{"localhost:8080"}))
-	} else {
-		csrfMiddleware = csrf.Protect([]byte(csrfKey))
-	}
-
+	csrfMiddleware := middleware.GenereateCsrfMiddleware()
 	router.Use(csrfMiddleware)
 
 	fileServer := http.FileServer(http.Dir("static"))
@@ -47,10 +33,11 @@ func CreateRouter(sessionStore *sessions.CookieStore, pgxPools config.PgxPools, 
 	// 	r.Get("/*", http.StripPrefix("/static", cachedFileServer).ServeHTTP)
 	// })
 
-	router.Get("/get-csrf", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("X-CSRF-Token", csrf.Token(r))
-		w.Header().Set("Access-Control-Expose-Headers", "X-CSRF-Token")
-	})
+	// router.Get("/get-csrf", func(w http.ResponseWriter, r *http.Request) {
+	// 	fmt.Println("request csrf token")
+	// 	w.Header().Set("X-CSRF-Token", csrf.Token(r))
+	// 	w.Header().Set("Access-Control-Expose-Headers", "X-CSRF-Token")
+	// })
 
 	templates := template.Must(template.ParseGlob("templates/*html"))
 
@@ -59,19 +46,29 @@ func CreateRouter(sessionStore *sessions.CookieStore, pgxPools config.PgxPools, 
 	router.Get("/test", web_page_handlers.TestPageHandler(templates))
 	router.Post("/test", web_page_handlers.TestPageHandler(templates))
 
-	router.Get("/about", web_page_handlers.AboutPageHandler(templates))
+	router.Get("/login", web_page_handlers.LoginPageHandler(sessionStore, valkeyClient, templates, pgxPools.PgCore, pgCoreQueries))
+	
+	// router.Post("/login", web_page_handlers.LoginPageHandler(templates, pgxPools.PgCore, pgCoreQueries))
 
-	router.Get("/login", web_page_handlers.LoginPageHandler(templates, pgxPools.PgCore, pgCoreQueries))
-	router.Post("/login", web_page_handlers.LoginPageHandler(templates, pgxPools.PgCore, pgCoreQueries))
+	router.Get("/signup", web_page_handlers.SignupPageHandler( templates))
 
-	router.Get("/profile", web_page_handlers.ProfilePageHandler(templates))
+
+	router.Get("/about", web_page_handlers.AboutPageHandler(templates, sessionStore, valkeyClient))
+
+	router.Get("/profile", web_page_handlers.ProfilePageHandler(sessionStore, valkeyClient, templates))
 
 	router.Get("/donate", web_page_handlers.DonatePageHandler(templates))
+
+	router.Get("/search", web_page_handlers.SearchPageHandler(templates))
 
 	// ======== JSON Web API Routes =========
 	router.Route("/web-api", func(r chi.Router) {
 
-		r.Post("/test", web_api_handlers.TestHandler())
+		r.Post("/signup/request-otp", web_api_handlers.SignupRequestOtp(sessionStore, valkeyClient, resendClient, pgCoreQueries, pgxPools.PgCore))
+
+		r.Post("/signup/submit-otp", web_api_handlers.SignupSubmitOtp(sessionStore, valkeyClient, pgCoreQueries, pgxPools.PgCore))
+
+		r.Delete("/logout", web_api_handlers.LogoutHandler(sessionStore, valkeyClient))
 
 		// r.Post("/login", web_api_handlers.LoginHandler(sessionStore, ))
 

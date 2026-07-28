@@ -1,12 +1,15 @@
 package web_page_handlers
 
 import (
+	web_page_utils "freecreate/web_page_handlers/utils"
 	"html/template"
 	"net/http"
 )
 
 func HomePageHandler(homeTmpl *template.Template) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		preloadLinks := []string{"/static/globals.css", "/static/header_component.css"}
+		web_page_utils.HandlePreloadLinks(w, preloadLinks)
 
 		type CardContent struct {
 			CardTitle       string

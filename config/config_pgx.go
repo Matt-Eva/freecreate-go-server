@@ -3,7 +3,7 @@ package config
 import (
 	"context"
 	"fmt"
-	"freecreate/logger"
+	"freecreate/lib/logger"
 	"net/url"
 	"os"
 
@@ -13,11 +13,11 @@ import (
 )
 
 type PgxPools struct {
-	PgCore *pgxpool.Pool
+	PgCore    *pgxpool.Pool
 	PgContent *pgxpool.Pool
 }
 
-func ConfigPgx(ctx context.Context, environment string)(PgxPools, error){
+func ConfigPgx(ctx context.Context, environment string) (PgxPools, error) {
 	corePool, coreErr := connectPgx(ctx, environment, os.Getenv("PG_MAIN_DB_URL"), "./db/pg_core/migrations")
 	if coreErr != nil {
 		logger.Log(coreErr)
@@ -31,7 +31,7 @@ func ConfigPgx(ctx context.Context, environment string)(PgxPools, error){
 	}
 
 	pgxPools := PgxPools{
-		PgCore: corePool,
+		PgCore:    corePool,
 		PgContent: contentPool,
 	}
 
@@ -49,7 +49,7 @@ func connectPgx(ctx context.Context, environment string, connEnv string, migrati
 	msg := fmt.Sprintf("successful connection to %s!", migrationsDir)
 	fmt.Println(msg)
 
-	if environment == "PRODUCTION"{
+	if environment == "PRODUCTION" {
 		migrationErr := runDbmateMigrations(connEnv, environment, migrationsDir)
 		if migrationErr != nil {
 			logger.Log(migrationErr)
@@ -64,12 +64,12 @@ func connectPgx(ctx context.Context, environment string, connEnv string, migrati
 }
 
 func runDbmateMigrations(connString string, environment string, migrationsDir string) error {
-	u, _:= url.Parse(connString)
+	u, _ := url.Parse(connString)
 	db := dbmate.New(u)
 
 	db.MigrationsDir = []string{migrationsDir}
-	
-	if environment == "PRODUCTION"{
+
+	if environment == "PRODUCTION" {
 		db.AutoDumpSchema = false
 	}
 
@@ -97,7 +97,7 @@ func runDbmateMigrations(connString string, environment string, migrationsDir st
 // 		logger.Log(migrationErr)
 // 		return nil, migrationErr
 // 	}
-	
+
 // 	return pgxContentDbOnePool, nil
 // }
 

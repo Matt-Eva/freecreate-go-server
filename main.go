@@ -2,11 +2,11 @@ package main
 
 import (
 	"context"
-	"encoding/base64"
 	"encoding/gob"
 	"freecreate/config"
-	"freecreate/logger"
-	"freecreate/routes"
+	"freecreate/lib/logger"
+
+	// "freecreate/routes"
 	"log"
 	"net/http"
 	"os"
@@ -14,11 +14,44 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
 
-	"github.com/gorilla/sessions"
 	"github.com/joho/godotenv"
 )
+
+func initialize(environment string) (*chi.Mux, error) {
+	gob.Register(uuid.UUID{})
+
+	ctx := context.Background()
+
+	sessionStore, sessionErr := config.ConfigSessionStore(environment)
+	if sessionErr != nil {
+		logger.Log(sessionErr)
+		return nil, sessionErr
+	}
+
+	pgxPools, pgxErr := config.ConfigPgx(ctx, environment)
+	if pgxErr != nil {
+		logger.Log(pgxErr)
+		log.Fatal(pgxErr)
+		return nil, pgxErr
+	}
+
+	pgCoreQueries, pgCoreQueryError := config.ConfigPgCoreQueries()
+	if pgCoreQueryError != nil {
+		logger.Log(pgCoreQueryError)
+		return nil, pgCoreQueryError
+	}
+
+	valkeyClient := config.ConfigValkey()
+
+	resendClient := config.InitResend()
+
+	router := CreateRouter(sessionStore, pgxPools, pgCoreQueries, valkeyClient, resendClient)
+
+	return router, nil
+}
 
 func main() {
 	environment := os.Getenv("ENVIRONMENT")
@@ -31,52 +64,11 @@ func main() {
 		environment = "DEVELOPMENT"
 	}
 
-	gob.Register(uuid.UUID{})
-
-	sessionAuthKey, err := base64.StdEncoding.DecodeString(os.Getenv("SESSION_AUTH_KEY"))
+	router, err := initialize(environment)
 	if err != nil {
 		logger.Log(err)
-		log.Fatal(err.Error())
 		return
 	}
-
-	sessionEncryptionKey, err := base64.StdEncoding.DecodeString(os.Getenv("SESSION_ENCRYPTION_KEY"))
-	if err != nil {
-		logger.Log(err)
-		log.Fatal(err.Error())
-		return
-	}
-
-	sessionStore := sessions.NewCookieStore(sessionAuthKey, sessionEncryptionKey)
-
-	if environment == "PRODUCTION" {
-		sessionStore.Options = &sessions.Options{
-			Secure:   true,
-			SameSite: http.SameSiteStrictMode,
-			HttpOnly: true,
-		}
-	}
-
-	ctx := context.Background()
-
-	pgxPools, pgxErr := config.ConfigPgx(ctx, environment)
-	if pgxErr != nil {
-		logger.Log(pgxErr)
-		log.Fatal(pgxErr)
-		return
-	}
-
-	pgCoreQueries, pgCoreQueryError := config.ConfigPgCoreQueries()
-	if pgCoreQueryError != nil {
-		logger.Log(pgCoreQueryError)
-		return
-	}
-
-	valkeyClient := config.ConfigValkey()
-
-	resendClient := config.InitResend()
-
-	router := routes.CreateRouter(sessionStore, pgxPools, pgCoreQueries, valkeyClient, resendClient)
 
 	var srv = &http.Server{
 		Addr:         ":8080",
@@ -87,9 +79,16 @@ func main() {
 	}
 
 	go func() {
+		// if environment == "DEVELOPMENT" {
+		// 	if err := srv.ListenAndServeTLS("cert.pem", "key.pem"); err != nil && err != http.ErrServerClosed {
+		// 		log.Fatalf("Server failed: %v", err)
+		// 	}
+		// } else {
+
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			log.Fatalf("Server failed: %v", err)
 		}
+		// }
 	}()
 
 	sigChan := make(chan os.Signal, 1)
@@ -106,13 +105,6 @@ func main() {
 		log.Fatalf("server failed to shutdown: %v", err)
 	}
 	log.Println("http server shutdown")
-
-	// gormPGDB, err := gormPGClient.DB()
-	// if err != nil {
-	// 	log.Fatalf("could not access gorm pg db: %v", err)
-	// }
-	// gormPGDB.Close()
-	// log.Println("pg db connection shutdown")
 
 	log.Println("main function closing gracefully. Goodbye!")
 }

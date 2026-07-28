@@ -15,6 +15,6 @@ func DonatePageHandler(donateTmpl *template.Template) http.HandlerFunc {
 			LoggedIn: false,
 		}
 
-		donateTmpl.ExecuteTemplate(w, "donate", pageData)
+		donateTmpl.ExecuteTemplate(w, "donate_page", pageData)
 	}
 }
