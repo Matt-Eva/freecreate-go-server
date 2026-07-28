@@ -8,7 +8,7 @@
       <title>Document</title>
     </head>
     <body>
-      {{ template "header_component" }}
+      {{ template "header_component" . }}
       {{ template "search_box_component" }}
       <form action="/search" method="GET">
         <label for="search">Search</label>
