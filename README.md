@@ -26,12 +26,14 @@ Routing: `chi`.
 
 Session management: `gorilla/sessions`.
 
+CSRF Protection: `gorilla/csrf`.
+
 Rich text editor: `Lexical`.
 
 Rendering: Go's `html/template` library. And vanilla CSS and JavaScript :).
 
 Email: `resend`.
 
-CSRF Protection: `gorilla/csrf`.
+Rich Text Editing: Meta's `lexical` editor.
 
 Realtime (for the future): While not yet implemented (or necessary), Kafka will be used for any realtime feature development.
