@@ -15,16 +15,20 @@ func HomePageHandler(homeTmpl *template.Template, sessionStore *sessions.CookieS
 
 		_, userId, _ := auth.GetUser(ctx, sessionStore, valkeyClient, w, r)
 		loggedIn := false
+		loggedInClass := "logged_out"
 		if userId != 0 {
 			loggedIn = true
+			loggedInClass = "logged_in"
 		}
 
 		type PageData struct {
 			LoggedIn bool
+			LoggedInClass string
 		}
 
 		pageData := PageData{
 			LoggedIn: loggedIn,
+			LoggedInClass: loggedInClass,
 		}
 		homeTmpl.ExecuteTemplate(w, "home", pageData)
 	}

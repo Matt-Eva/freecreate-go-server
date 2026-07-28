@@ -1,5 +1,9 @@
 {{ define "footer_component" }}
-  <footer id="footer_component">
-    <nav></nav>
-  </footer>
+  {{ if .LoggedIn }}
+    <footer id="footer_component">
+      <nav id="footer_nav">
+        <a href="/browse">search</a>
+      </nav>
+    </footer>
+  {{ end }}
 {{ end }}

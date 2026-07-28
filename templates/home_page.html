@@ -7,13 +7,13 @@
       {{ template "globals_component" }}
       <script defer src="static/home_page.js"></script>
     </head>
-    <body>
+    <body class="{{ .LoggedInClass }}">
       {{ template "header_component" . }}
 
 
-      <div id="page_container">
+      <div id="page_container" class="{{ .LoggedInClass }}">
         {{ template "sidebar_component" . }}
-        <div id="page_content">
+        <div id="page_content" class="{{ .LoggedInClass }}">
           <p>home</p>
         </div>
       </div>

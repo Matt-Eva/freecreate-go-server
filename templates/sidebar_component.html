@@ -1,3 +1,5 @@
 {{ define "sidebar_component" }}
-  <aside id="sidebar_component"></aside>
+  {{ if .LoggedIn }}
+    <aside id="sidebar_component"></aside>
+  {{ end }}
 {{ end }}
