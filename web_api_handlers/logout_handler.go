@@ -9,10 +9,8 @@ import (
 	"github.com/valkey-io/valkey-go"
 )
 
-
-
-func LogoutHandler(sessionStore *sessions.CookieStore, valkeyClient valkey.Client) http.HandlerFunc{
-	return func (w http.ResponseWriter, r *http.Request){
+func LogoutHandler(sessionStore *sessions.CookieStore, valkeyClient valkey.Client) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
 
 		_, _, getUserErr := auth.GetUser(ctx, sessionStore, valkeyClient, w, r)
@@ -22,8 +20,6 @@ func LogoutHandler(sessionStore *sessions.CookieStore, valkeyClient valkey.Clien
 			return
 		}
 
-		
-		
 		logoutErr := auth.LogoutUser(ctx, sessionStore, valkeyClient, w, r)
 		if logoutErr != nil {
 			logger.Log(logoutErr)

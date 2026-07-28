@@ -68,7 +68,7 @@ func SignupSubmitOtp(sessionStore *sessions.CookieStore, valkeyClient valkey.Cli
 		}
 		fmt.Println("user successfully created!")
 
-		loginUserErr := auth.LoginUser(ctx, session, valkeyClient, userId)
+		loginUserErr := auth.LoginUser(ctx, sessionStore, valkeyClient, r, userId)
 		if loginUserErr != nil {
 			logger.Log(loginUserErr)
 			http.Error(w, loginUserErr.Error(), 500)

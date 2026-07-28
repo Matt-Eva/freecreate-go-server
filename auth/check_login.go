@@ -8,7 +8,7 @@ import (
 	"github.com/gorilla/sessions"
 )
 
-func CheckLogin(sessionStore *sessions.CookieStore, w http.ResponseWriter, r *http.Request)(bool, error){
+func CheckLogin(sessionStore *sessions.CookieStore, w http.ResponseWriter, r *http.Request) (bool, error) {
 	session, _, getSessionErr := GetSession(sessionStore, w, r)
 	if getSessionErr != nil {
 		logger.Log(getSessionErr)
@@ -21,6 +21,6 @@ func CheckLogin(sessionStore *sessions.CookieStore, w http.ResponseWriter, r *ht
 	}
 	fmt.Println("is logged in")
 	fmt.Println(loggedIn)
-	
+
 	return loggedIn, nil
 }

@@ -4,13 +4,20 @@ import (
 	"context"
 	"fmt"
 	"freecreate/lib/logger"
+	"net/http"
 	"time"
 
 	"github.com/gorilla/sessions"
 	"github.com/valkey-io/valkey-go"
 )
 
-func LoginUser(ctx context.Context, session *sessions.Session, valkeyClient valkey.Client, userId int64) error {
+func LoginUser(ctx context.Context, sessionStore *sessions.CookieStore, valkeyClient valkey.Client, r *http.Request, userId int64) error {
+	session, getSessionErr := sessionStore.Get(r, "user-session")
+	if getSessionErr != nil {
+		logger.Log(getSessionErr)
+		return getSessionErr
+	}
+
 	session.Values["logged_in"] = true
 	sessionUuid := session.Values["session_uuid"]
 

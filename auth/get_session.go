@@ -32,7 +32,7 @@ func GetSession(sessionStore *sessions.CookieStore, w http.ResponseWriter, r *ht
 	if !ok {
 		err := errors.New("Could not convert uuid value - destroying session")
 		logger.Log(err)
-		destroyErr := DestroySession(sessionStore, w, r)
+		destroyErr := DestroyUserSession(session, w, r)
 		if destroyErr != nil {
 			logger.Log(destroyErr)
 			return nil, uuid.UUID{}, destroyErr
@@ -40,6 +40,5 @@ func GetSession(sessionStore *sessions.CookieStore, w http.ResponseWriter, r *ht
 		return nil, uuid.UUID{}, err
 	}
 
-	
 	return session, sessionUuid, nil
 }

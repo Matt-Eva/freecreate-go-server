@@ -29,7 +29,6 @@ func SignupRequestOtp(sessionStore *sessions.CookieStore, valkeyClient valkey.Cl
 			return
 		}
 
-
 		type RequestBody struct {
 			Email string `json:"email"`
 		}
@@ -62,7 +61,7 @@ func SignupRequestOtp(sessionStore *sessions.CookieStore, valkeyClient valkey.Cl
 			return
 		}
 
-		session, _, getSessionErr := auth.GetSession(sessionStore, w, r)
+		_, sessionUuid, getSessionErr := auth.CreateGuestSesion(sessionStore, w, r)
 		if getSessionErr != nil {
 			logger.Log(getSessionErr)
 			http.Error(w, getSessionErr.Error(), 500)
@@ -76,7 +75,7 @@ func SignupRequestOtp(sessionStore *sessions.CookieStore, valkeyClient valkey.Cl
 			return
 		}
 
-		storeOtpErr := auth.StoreOtp(ctx, valkeyClient, session, email, otp)
+		storeOtpErr := auth.StoreOtp(ctx, valkeyClient, sessionUuid, email, otp)
 		if storeOtpErr != nil {
 			logger.Log(storeOtpErr)
 			http.Error(w, storeOtpErr.Error(), 500)
@@ -95,7 +94,6 @@ func SignupRequestOtp(sessionStore *sessions.CookieStore, valkeyClient valkey.Cl
 			return
 		}
 
-		session.Save(r, w)
 		w.WriteHeader(http.StatusAccepted)
 	}
 }
