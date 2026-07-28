@@ -22,14 +22,14 @@ func ProfilePageHandler(sessionStore *sessions.CookieStore, valkeyClient valkey.
 			http.Redirect(w, r, "/login", 303)
 			return
 		}
-		
+
 		type PageData struct {
-			LoggedIn bool
+			LoggedIn  bool
 			CsrfToken template.HTML
 		}
 
 		pageData := PageData{
-			LoggedIn: true,
+			LoggedIn:  true,
 			CsrfToken: csrf.TemplateField(r),
 		}
 

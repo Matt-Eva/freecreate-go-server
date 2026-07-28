@@ -1,1 +1,1 @@
-INSERT INTO users (email) VALUES (@email);
+INSERT INTO users (email) VALUES (@email) RETURNING id;

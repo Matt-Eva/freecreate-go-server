@@ -18,7 +18,7 @@ import (
 func SignupSubmitOtp(sessionStore *sessions.CookieStore, valkeyClient valkey.Client, pgCoreQueries config.PgCoreQueries, pgCore *pgxpool.Pool) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("hit submit otp route")
-		session, sessionUuid, getSessionErr := auth.GetSession(sessionStore, w, r)
+		_, sessionUuid, getSessionErr := auth.GetGuestSession(sessionStore, w, r)
 		if getSessionErr != nil {
 			logger.Log(getSessionErr)
 			http.Error(w, getSessionErr.Error(), 500)
@@ -67,8 +67,9 @@ func SignupSubmitOtp(sessionStore *sessions.CookieStore, valkeyClient valkey.Cli
 			return
 		}
 		fmt.Println("user successfully created!")
+		fmt.Println(userId)
 
-		loginUserErr := auth.LoginUser(ctx, session, valkeyClient, userId)
+		loginUserErr := auth.LoginUser(ctx, sessionStore, valkeyClient, r, w, userId)
 		if loginUserErr != nil {
 			logger.Log(loginUserErr)
 			http.Error(w, loginUserErr.Error(), 500)
@@ -76,7 +77,7 @@ func SignupSubmitOtp(sessionStore *sessions.CookieStore, valkeyClient valkey.Cli
 		}
 		fmt.Println("user successfully logged in!")
 
-		session.Save(r, w)
+		
 		fmt.Println("redirecting")
 		http.Redirect(w, r, "/profile", 303)
 	}

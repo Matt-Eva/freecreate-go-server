@@ -1,17 +1,22 @@
 package web_page_handlers
 
 import (
-	web_page_utils "freecreate/web_page_handlers/utils"
+	"freecreate/auth"
 	"html/template"
 	"net/http"
+
+	"github.com/gorilla/sessions"
+	"github.com/valkey-io/valkey-go"
 )
 
-func AboutPageHandler(aboutTmpl *template.Template) http.HandlerFunc {
+func AboutPageHandler(aboutTmpl *template.Template, sessionStore *sessions.CookieStore, valkeyClient valkey.Client) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		preloadLinks := []string{"/static/globals.css", "/static/header_component.css"}
-		web_page_utils.HandlePreloadLinks(w, preloadLinks)
-
-		// time.Sleep(300 * time.Millisecond)
+		ctx := r.Context()
+		_, userId, _ := auth.GetUser(ctx, sessionStore, valkeyClient, w, r)
+		loggedIn := false
+		if userId != 0{
+			loggedIn = true
+		}
 
 		type PageData struct {
 			Title    string
@@ -20,7 +25,7 @@ func AboutPageHandler(aboutTmpl *template.Template) http.HandlerFunc {
 
 		pageData := PageData{
 			Title:    "about",
-			LoggedIn: false,
+			LoggedIn: loggedIn,
 		}
 
 		aboutTmpl.ExecuteTemplate(w, "about_page", pageData)

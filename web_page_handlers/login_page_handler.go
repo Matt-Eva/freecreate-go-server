@@ -2,6 +2,7 @@ package web_page_handlers
 
 import (
 	"fmt"
+	"freecreate/auth"
 	"freecreate/config"
 	pg_core_queries "freecreate/db/pg_core/queries"
 	"freecreate/lib/logger"
@@ -10,11 +11,18 @@ import (
 	"net/http"
 
 	"github.com/gorilla/csrf"
+	"github.com/gorilla/sessions"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/valkey-io/valkey-go"
 )
 
-func LoginPageHandler(loginTmpl *template.Template, pgxCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries) http.HandlerFunc {
+func LoginPageHandler(sessionStore *sessions.CookieStore, valkeyClient valkey.Client, loginTmpl *template.Template, pgxCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		ctx := r.Context()
+		_, userId, _ := auth.GetUser(ctx, sessionStore, valkeyClient, w, r)
+		if userId != 0 {
+			http.Redirect(w, r, "/profile", 303)
+		}
 
 		switch r.Method {
 		case "GET":

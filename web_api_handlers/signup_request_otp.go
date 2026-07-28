@@ -3,6 +3,7 @@ package web_api_handlers
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"freecreate/auth"
 	"freecreate/config"
 	pg_core_queries "freecreate/db/pg_core/queries"
@@ -23,12 +24,11 @@ func SignupRequestOtp(sessionStore *sessions.CookieStore, valkeyClient valkey.Cl
 		// if user already logged in, redirect to profile page
 		ctx := r.Context()
 
-		_,  checkLoginErr := auth.CheckLogin(sessionStore, w, r)
-		if checkLoginErr == nil {
+		_, userId, _ := auth.GetUser(ctx, sessionStore, valkeyClient, w, r)
+		if userId != 0 {
 			http.Redirect(w, r, "/profile", 303)
 			return
 		}
-
 
 		type RequestBody struct {
 			Email string `json:"email"`
@@ -51,7 +51,7 @@ func SignupRequestOtp(sessionStore *sessions.CookieStore, valkeyClient valkey.Cl
 			return
 		}
 
-		_, checkEmailInUseErr := pg_core_queries.GetUserByEmail(ctx, pgCoreQueries, pgCore, email)
+		userId, checkEmailInUseErr := pg_core_queries.GetUserByEmail(ctx, pgCoreQueries, pgCore, email)
 		if checkEmailInUseErr != nil && !errors.Is(checkEmailInUseErr, pgx.ErrNoRows) {
 			logger.Log(checkEmailInUseErr)
 			http.Error(w, checkEmailInUseErr.Error(), 500)
@@ -61,8 +61,9 @@ func SignupRequestOtp(sessionStore *sessions.CookieStore, valkeyClient valkey.Cl
 			http.Error(w, err.Error(), 422)
 			return
 		}
+		fmt.Println(userId)
 
-		session, _, getSessionErr := auth.GetSession(sessionStore, w, r)
+		_, sessionUuid, getSessionErr := auth.CreateGuestSesion(sessionStore, w, r)
 		if getSessionErr != nil {
 			logger.Log(getSessionErr)
 			http.Error(w, getSessionErr.Error(), 500)
@@ -76,7 +77,7 @@ func SignupRequestOtp(sessionStore *sessions.CookieStore, valkeyClient valkey.Cl
 			return
 		}
 
-		storeOtpErr := auth.StoreOtp(ctx, valkeyClient, session, email, otp)
+		storeOtpErr := auth.StoreOtp(ctx, valkeyClient, sessionUuid, email, otp)
 		if storeOtpErr != nil {
 			logger.Log(storeOtpErr)
 			http.Error(w, storeOtpErr.Error(), 500)
@@ -95,7 +96,6 @@ func SignupRequestOtp(sessionStore *sessions.CookieStore, valkeyClient valkey.Cl
 			return
 		}
 
-		session.Save(r, w)
 		w.WriteHeader(http.StatusAccepted)
 	}
 }
