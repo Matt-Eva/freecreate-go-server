@@ -1,0 +1,19 @@
+{{ define "card_content_component" }}
+  <article class="card_content_component">
+    <p
+      class="card_content_title_card"
+      style="background-color: skyblue; color: black;"
+    >
+      {{ .Title }}
+    </p>
+    <h3 class="card_content_title">{{ .Title }}</h3>
+    <p class="card_content_author">{{ .Author }}</p>
+    <p class="card_content_categories">
+      {{ .WritingType }}:
+      {{ range .Genres }}
+        <span>{{ . }}</span>
+      {{ end }}
+    </p>
+    <p class="card_content_description">{{ .Description }}</p>
+  </article>
+{{ end }}
