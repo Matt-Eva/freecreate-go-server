@@ -8,11 +8,20 @@
       <script defer src="static/profile_page.js"></script>
       {{ .CsrfToken }}
     </head>
-    <body>
+    <body class="{{ .LoggedInClass }}">
       {{ template "header_component" . }}
-      <p>profile</p>
-      <button id="logout_button">logout</button>
-      <p id="logout_error_block"></p>
+
+
+      <div id="page_container" class="{{ .LoggedInClass }}">
+        {{ template "sidebar_component" . }}
+        <div id="page_content" class="{{ .LoggedInClass }}">
+          <p>profile</p>
+          <button id="logout_button">logout</button>
+          <p id="logout_error_block"></p>
+        </div>
+      </div>
+
+      {{ template "footer_component" . }}
     </body>
   </html>
 {{ end }}

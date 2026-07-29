@@ -5,40 +5,53 @@
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       {{ template "globals_component" }}
+      <link rel="stylesheet" href="static/login_page.css" />
       <script defer src="static/login_page.js"></script>
       {{ .CsrfToken }}
     </head>
-    <body>
+    <body class="{{ .LoggedInClass }}">
       {{ template "header_component" . }}
-      <p>Enter your email address to receive a One Time Password via email.</p>
-      <p>This password will last for five minutes.</p>
 
-      <form id="request_otp_form">
-        <fieldset id="request_otp_fieldset">
-          <label>Email:</label>
-          <input
-            type="text"
-            placeholder="enter your email address"
-            id="email_input"
-          />
-          <input type="submit" />
-        </fieldset>
-      </form>
-      <p id="request_otp_err_block"></p>
 
-      <div id="submit_otp_container" hidden>
-        <form id="submit_otp_form">
-          <label>Submit One Time Password:</label>
-          <input type="text" id="otp_input" />
-          <input type="submit" />
-        </form>
-        <p id="submit_otp_err_block"></p>
-        <p>
-          Email address incorrect? <button id="reset_button">Start Over</button>
-        </p>
+      <div id="page_container" class="{{ .LoggedInClass }}">
+        {{ template "sidebar_component" . }}
+        <div id="page_content" class="{{ .LoggedInClass }}">
+          <p>
+            Enter your email address to receive a One Time Password via email.
+          </p>
+          <p>This password will last for five minutes.</p>
+
+          <form id="request_otp_form">
+            <fieldset id="request_otp_fieldset">
+              <label>Email:</label>
+              <input
+                type="text"
+                placeholder="enter your email address"
+                id="email_input"
+              />
+              <input type="submit" />
+            </fieldset>
+          </form>
+          <p id="request_otp_err_block"></p>
+
+          <div id="submit_otp_container" hidden>
+            <form id="submit_otp_form">
+              <label>Submit One Time Password:</label>
+              <input type="text" id="otp_input" />
+              <input type="submit" />
+            </form>
+            <p id="submit_otp_err_block"></p>
+            <p>
+              Email address incorrect?
+              <button id="reset_button">Start Over</button>
+            </p>
+          </div>
+
+          <p>Don't have an account? <a href="/signup">Sign up</a>!</p>
+        </div>
       </div>
 
-      <p>Don't have an account? <a href="/signup">Sign up</a>!</p>
+      {{ template "footer_component" . }}
     </body>
   </html>
 {{ end }}

@@ -15,18 +15,22 @@ func AboutPageHandler(aboutTmpl *template.Template, sessionStore *sessions.Cooki
 
 		_, userId, _ := auth.GetUser(ctx, sessionStore, valkeyClient, w, r)
 		loggedIn := false
+		loggedInClass := "logged_out"
 		if userId != 0 {
 			loggedIn = true
+			loggedInClass = "logged_in"
 		}
 
 		type PageData struct {
 			Title    string
 			LoggedIn bool
+			LoggedInClass string
 		}
 
 		pageData := PageData{
 			Title:    "about",
 			LoggedIn: loggedIn,
+			LoggedInClass: loggedInClass,
 		}
 
 		aboutTmpl.ExecuteTemplate(w, "about_page", pageData)

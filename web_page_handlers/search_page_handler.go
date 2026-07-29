@@ -15,8 +15,10 @@ func SearchPageHandler(searchTmpl *template.Template, sessionStore *sessions.Coo
 
 		_, userId, _ := auth.GetUser(ctx, sessionStore, valkeyClient, w, r)
 		loggedIn := false
+		loggedInClass := "logged_out"
 		if userId != 0 {
 			loggedIn = true
+			loggedInClass = "logged_in"
 		}
 
 		query := r.URL.Query()
@@ -25,10 +27,12 @@ func SearchPageHandler(searchTmpl *template.Template, sessionStore *sessions.Coo
 		type PageData struct {
 			Query    string
 			LoggedIn bool
+			LoggedInClass string
 		}
 
 		var pageData PageData
 		pageData.LoggedIn = loggedIn
+		pageData.LoggedInClass = loggedInClass
 
 		if len(searchParams) > 0 {
 			pageData.Query = searchParams[0]

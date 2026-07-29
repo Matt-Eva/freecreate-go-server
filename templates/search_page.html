@@ -7,15 +7,24 @@
       {{ template "globals_component" }}
       <title>Document</title>
     </head>
-    <body>
+    <body class="{{ .LoggedInClass }}">
       {{ template "header_component" . }}
-      {{ template "search_box_component" }}
-      <form action="/search" method="GET">
-        <label for="search">Search</label>
-        <input type="text" name="search" value="{{ .Query }}" />
-        <input type="submit" />
-      </form>
-      <p>{{ .Query }}</p>
+
+
+      <div id="page_container" class="{{ .LoggedInClass }}">
+        {{ template "sidebar_component" . }}
+        <div id="page_content" class="{{ .LoggedInClass }}">
+          {{ template "search_box_component" }}
+          <form action="/search" method="GET">
+            <label for="search">Search</label>
+            <input type="text" name="search" value="{{ .Query }}" />
+            <input type="submit" />
+          </form>
+          <p>{{ .Query }}</p>
+        </div>
+      </div>
+
+      {{ template "footer_component" . }}
     </body>
   </html>
 {{ end }}

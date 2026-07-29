@@ -24,11 +24,13 @@ func ProfilePageHandler(sessionStore *sessions.CookieStore, valkeyClient valkey.
 		type PageData struct {
 			LoggedIn  bool
 			CsrfToken template.HTML
+			LoggedInClass string
 		}
 
 		pageData := PageData{
 			LoggedIn:  true,
 			CsrfToken: csrf.TemplateField(r),
+			LoggedInClass: "logged_in",
 		}
 
 		profileTmpl.ExecuteTemplate(w, "profile", pageData)

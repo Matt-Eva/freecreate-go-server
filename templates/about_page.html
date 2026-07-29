@@ -6,9 +6,19 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       {{ template "globals_component" }}
     </head>
-    <body id="{{ .BodyId }}">
+    <body class="{{ .LoggedInClass }}">
       {{ template "header_component" . }}
-      <p>about</p>
+
+
+      <div id="page_container" class="{{ .LoggedInClass }}">
+        {{ template "sidebar_component" . }}
+        <div id="page_content" class="{{ .LoggedInClass }}">
+          <p>about</p>
+          <p>{{ .WritingType }}</p>
+        </div>
+      </div>
+
+      {{ template "footer_component" . }}
     </body>
   </html>
 {{ end }}
