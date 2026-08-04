@@ -68,7 +68,7 @@ This means that we should embrace refactoring as part of the process of writing 
 
 It's very similar to writing - there may be some novelists, essayists, journalists, or critics who can just execute an absolutely perfect first draft. But the reality is that the vast majority of writers will churn out a semi-coherent first draft, then spend a much longer time combing through and editing and restructuring.
 
-Take this approach with writing code. If you're doing something new, just start making something! Then, as you gain a better understanding of what your making, or start running into issues created by how you've been writing your code, refactor it into a cleaner, better structure that employs appropriate abstraction and separation of concerns.
+Take this approach with writing code. If you're doing something new, just start making something! Then, as you gain a better understanding of what you're making, or start running into issues created by how you've been writing your code, refactor it into a cleaner, better structure that employs appropriate abstraction and separation of concerns.
 
 Don't be a stubborn purist. Recognize, and adhere to, the value of good code philosophy, but don't choose some "camp" out of ideological zeal - stay open, stay humble, and embrace improvement and enlightenment.
 
@@ -82,7 +82,19 @@ Extensibility - adding new features, expanding to new use cases, and ultimately 
 
 These two principles are key to developing long-lasting projects that can and will grow, in multiple capacities.
 
-To make things highly maintainable (and extensib)
+## Reliability
+
+Your code doesn't break easily. And if it does, it's quick and easy to find out why.
+
+## Performance
+
+This one is pretty self-explanatory. But basically, you want to aim for optimal performance balanced against these other principles. Nobody like a slow app or a slow website.
+
+However, If you find yourself compromising your other principles by adding needless complexity for the sake of squeezing out some last little drop of "performance", you've strayed from the path.
+
+## In Summary
+
+The choices and concepts you will encounter throughout the rest of this guide are all representations of these core philosophies and practices. This is still a work in progress, so if you see room for improvement, your suggestions are most welcome!
 
 # Programming Languages (and More)
 
