@@ -19,16 +19,16 @@
   border: 1px solid black;
   border-radius: 5px;
   display: grid;
-  height: 282px;
+  height: 302px;
   width: 600px;
   margin: 0px 15px 0px 0px;
   grid-template-columns: 200px 400px;
-  grid-template-rows: 60px 30px 30px 160px;
+  grid-template-rows: 60px 30px 30px 20px 160px;
 }
 
 .card_content_title_card {
-  grid-row: 1 / span 4;
-
+  grid-row: 1 / span 5;
+  grid-column: 1;
   padding: 5px;
   border-top-left-radius: 5px;
   border-bottom-left-radius: 5px;
@@ -48,6 +48,10 @@
   padding: 5px;
 }
 
+.card_content_link {
+  margin-left: 5px;
+}
+
 .card_content_categories {
   grid-row: 3;
   grid-column: 2;
@@ -56,7 +60,7 @@
 }
 
 .card_content_description {
-  grid-row: 4;
+  grid-row: 5;
   grid-column: 2;
   line-height: 1.5;
   padding: 5px;
