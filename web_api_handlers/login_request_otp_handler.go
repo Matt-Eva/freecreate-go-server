@@ -37,7 +37,8 @@ func LoginRequestOtpHandler(sessionStore *sessions.CookieStore, valkeyClient val
 		jErr := json.NewDecoder(r.Body).Decode(&body)
 		if jErr != nil {
 			logger.Log(jErr)
-			http.Error(w, jErr.Error(), http.StatusUnprocessableEntity)
+			msg := "There was an issue processing that request."
+			http.Error(w, msg, http.StatusUnprocessableEntity)
 			return
 		}
 
