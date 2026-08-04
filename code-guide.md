@@ -10,7 +10,7 @@ First and foremost, code with calm.
 
 Don't rush. Don't panic. Be curious. Be patient. Take breaks. Persist. Think big. Be free. Be diligent. Be meticulous.
 
-In other words, code slow and code happy.
+In other words, code slow, code thoughtfully, and code happy.
 
 In addition to that, FreeCreate's codebase and architectural choices are guided by four foundational goals:
 
@@ -28,9 +28,27 @@ In accordance with these goals, there are also a few fundamental coding practice
 - Abstraction
 - Separation of Concerns
 
+## Maintainability and Extensibility
+
+Maintainability - how easy it is to work within an existing codebase, implement changes and updates, understand past code, and manage dependencies.
+
+Extensibility - how easy it is to add new features, expand into new use cases, and ultimately evolve the project / codebase as time progresses.
+
+These two principles are key to developing long-lasting projects that can and will grow, in multiple capacities.
+
+## Reliability
+
+Your code doesn't break easily. And if it does, it's quick and easy to find out why. And easy to fix!
+
+## Performance
+
+This one is pretty self-explanatory. But basically, you want to aim for optimal performance balanced against these other principles. Nobody likes a slow app or a slow website.
+
+However, If you find yourself compromising your other principles by adding needless complexity for the sake of squeezing out some last little drop of "performance", you've strayed from the path.
+
 ## Coding Practices
 
-You may feel that there is some tension between some of these practices.
+You may feel that there is some tension between some of coding practices listed above.
 
 For example, Simplicity, Clarity, Specificty, and Locality of Behavior may initially seem at odds with Abstraction and Separation of Concerns.
 
@@ -39,7 +57,7 @@ Indeed, we could even split these foundational philosophies into two groups
 Preferred:
 
 - Simplicity
-- Clarify
+- Clarity
 - Specificity
 - Locality of Behavior
 
@@ -50,7 +68,7 @@ Essential:
 
 What does that mean? Did that clear up the picture at all? How can some things be preferred and others be essential?
 
-Basically, when writing software, we should <em>favor</em> writing things in a simple, clear, specific manner with minimal abstraction or opaque code-cleverness, keeping all relevant behavior local to its actual end purpose - it's better to have code that works together to accomplish the same thing live closely together. Separating it out into unecessary packages, hemming and hawing over function length or DRYness, or pursuing some sort of "clever" (aka often difficult) solution are all red herring pitfalls that waste time and can make code harder to work with, write, and debug.
+Basically, when writing software, we should <em>favor</em> writing things in a simple, clear, specific manner with minimal abstraction or opaque code-cleverness, keeping all relevant behavior local to its actual purpose - it's better to have code that works together to accomplish the same thing be in the same place. Separating it out into unecessary packages, hemming and hawing over function length or DRYness, or pursuing some sort of "clever" (aka often difficult) solution are all red herring pitfalls that waste time and can make code harder to work with, write, and debug.
 
 HOWEVER!!!
 
@@ -71,26 +89,6 @@ It's very similar to writing - there may be some novelists, essayists, journalis
 Take this approach with writing code. If you're doing something new, just start making something! Then, as you gain a better understanding of what you're making, or start running into issues created by how you've been writing your code, refactor it into a cleaner, better structure that employs appropriate abstraction and separation of concerns.
 
 Don't be a stubborn purist. Recognize, and adhere to, the value of good code philosophy, but don't choose some "camp" out of ideological zeal - stay open, stay humble, and embrace improvement and enlightenment.
-
-## Maintainability and Extensibility
-
-What does Maintainability mean? What does Extensibility mean?
-
-Maintainability - working within an existing codebase, implementing changes and updates, understanding past code, and managing dependencies.
-
-Extensibility - adding new features, expanding to new use cases, and ultimately evolving the project / codebase as time progresses.
-
-These two principles are key to developing long-lasting projects that can and will grow, in multiple capacities.
-
-## Reliability
-
-Your code doesn't break easily. And if it does, it's quick and easy to find out why.
-
-## Performance
-
-This one is pretty self-explanatory. But basically, you want to aim for optimal performance balanced against these other principles. Nobody like a slow app or a slow website.
-
-However, If you find yourself compromising your other principles by adding needless complexity for the sake of squeezing out some last little drop of "performance", you've strayed from the path.
 
 ## In Summary
 
