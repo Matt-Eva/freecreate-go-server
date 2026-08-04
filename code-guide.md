@@ -1,6 +1,6 @@
 # Code Guide
 
-This document serves as a guide through the various tools, technologies, and programming conventions employed by this codebase.
+This document serves as a guide for the various tools, technologies, and programming conventions employed by this codebase.
 
 Please read to familiarize yourself with the standard patterns and practices, and to gain a basic understanding of the various languages used in this codebase.
 
@@ -28,7 +28,9 @@ In accordance with these goals, there are also a few fundamental coding practice
 - Abstraction
 - Separation of Concerns
 
-You may feel that there is some tension between some of these philosophies.
+## Coding Practices
+
+You may feel that there is some tension between some of these practices.
 
 For example, Simplicity, Clarity, Specificty, and Locality of Behavior may initially seem at odds with Abstraction and Separation of Concerns.
 
@@ -56,11 +58,19 @@ Abstraction and Separation of Concerns are two ESSENTIAL components of writing g
 
 Heck, every programming language itself is an Abstraction - or did you want to build your website with machine code? (Honestly, if you do that, more power to you, follow your heart!)
 
-If we forgo intelligently applying abstraction and separation of concerns in our codebase, it can become endlessly verbose, frustratingly repetitive, brittle, because of tightly coupled code, and ultimately very hard to maintain, update, or build on top of.
+If we forgo intelligently applying abstraction and separation of concerns in our codebase, it can become endlessly verbose, frustratingly repetitive, brittle, and ultimately very hard to maintain, update, or build on top of.
 
 So what are we to do?
 
-Well, as you write code, prefer keeping things simple, clear, specific, and local. Whenever you're diving into some new feature, start by writing your code this way. Yes, it's helpful to take a minute and assess your problem and see if an abstraction would be helpful or if certain things
+Well, as you write code, prefer keeping things simple, clear, specific, and local. Whenever you're diving into some new feature, start by writing your code this way. Yes, it's helpful to take a minute and assess your problem and see if an abstraction would be helpful or if certain things should be de-coupled from the get go, but don't seek out abstraction. If an abstraction is useful or necessary, it will reveal itself to you as you write your code.
+
+This means that we should embrace refactoring as part of the process of writing code. Not that there is some need to refactor an entire codebase on a routine basis (in fact, I personally would like to avoid doing that whenever possible), but rather than we should refactor our code as we're building out something new.
+
+It's very similar to writing - there may be some novelists, essayists, journalists, or critics who can just execute an absolutely perfect first draft. But the reality is that the vast majority of writers will churn out a semi-coherent first draft, then spend a much longer time combing through and editing and restructuring.
+
+Take this approach with writing code. If you're doing something new, just start making something! Then, as you gain a better understanding of what your making, or start running into issues created by how you've been writing your code, refactor it into a cleaner, better structure that employs appropriate abstraction and separation of concerns.
+
+Don't be a stubborn purist. Recognize, and adhere to, the value of good code philosophy, but don't choose some "camp" out of ideological zeal - stay open, stay humble, and embrace improvement and enlightenment.
 
 ## Maintainability and Extensibility
 
