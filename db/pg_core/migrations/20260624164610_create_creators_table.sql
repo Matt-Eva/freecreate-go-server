@@ -4,7 +4,7 @@ CREATE TABLE creators (
     uuid UUID DEFAULT gen_random_uuid(),
     user_id BIGINT,
     name VARCHAR(100),
-    FOREIGN KEY (user_id) REFERENCES users(id)
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 CREATE INDEX idx_creators_user_id ON creators(user_id);
