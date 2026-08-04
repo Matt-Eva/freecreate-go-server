@@ -2,10 +2,12 @@ package auth
 
 import (
 	"crypto/rand"
+	"freecreate/lib/api_error"
 	"math/big"
+	"net/http"
 )
 
-func GenerateOtp() (string, error) {
+func GenerateOtp() (string, *api_error.Error) {
 	//specify which characters to include in the one time password
 	chars := "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
@@ -14,9 +16,16 @@ func GenerateOtp() (string, error) {
 	for i := range b {
 		num, err := rand.Int(rand.Reader, big.NewInt(int64(len(chars))))
 		if err != nil {
-			return "", err
+			apiErr := &api_error.Error{
+				Code: http.StatusInternalServerError,
+				Message: api_error.InteralServerErrorMessage,
+				Error: err,
+			}
+			return "", apiErr
 		}
+
 		b[i] = chars[num.Int64()]
 	}
-	return string(b), nil
+	
+	return string(b), &api_error.Error{}
 }
