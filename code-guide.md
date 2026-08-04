@@ -106,11 +106,11 @@ Go is the primary language used to built FreeCreate. The web server is written i
 
 ### JavaScript
 
-FreeCreate is also built use JavaScript. While we do use a bundler - Vite - for bundling necessary pacakages and serving them to our users (as of now, the only package we're bundling and serving is the open source `Lexical` rich text editor, created by Meta), the rest of our JavaScript is written as standard JavaScript. No React, no TypeScript, just basic JavaScript. More on that later.
+FreeCreate is also built use JavaScript. While we do use a bundler - Vite - for bundling necessary packages and serving them to our users (as of now, the only package we're bundling and serving is the open source rich text editor, `Lexical`, created by Meta), the rest of our JavaScript is written as standard JavaScript. No React, no TypeScript, just basic JavaScript. More on that later.
 
 ## Markup Language - HTML
 
-HTML is the standard markup language for structuring websites. FreeCreate's website is written using plain HTML, rendered via Go's `html/template` package. You will see some Go code interpolated in these HTML files, to handled conditional rendering, render arrays of data, and so on.
+HTML is the standard markup language for structuring websites. FreeCreate's website is written using plain HTML, rendered via Go's `html/template` package. You will see some Go code interpolated in these HTML files, to handle conditional rendering, rendering of arrays of data, and other programmatic functions.
 
 ## Styling Language - CSS
 
@@ -142,7 +142,8 @@ While many platforms reach for NoSQL databases in order to solve the problem of 
 - Core DB:
   - Where most of FreeCreate's data lives, particularly data that will many relationships with records in other tables.
   - Primarily, these will be users, creators, their "writing", their writings' "chapters", join tables connecting users to writing in various ways, and any metadata / descriptive data to assist with querying.
-  - The goal is to keep the volume of individual records low, to allow for scale without the need to shard the database due to data volume.
+  - The goal is to keep the size of individual records low, to allow for scale without the need to shard the database due to data volume.
+  - The goal is to keep this database unsharded as long as possible.
 
 - Content DB(s):
   - While writing, chapters of writing, and associated metadata will all be stored in the Core DB, the actual content of writing and chapters will be stored in a separate Postgres database.
