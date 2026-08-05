@@ -21,9 +21,9 @@ func StoreOtp(ctx context.Context, valkeyClient valkey.Client, sessionUuid uuid.
 		err := errors.New(msg)
 
 		apiErr := &api_error.Error{
-			Code: http.StatusUnprocessableEntity,
+			Code:    http.StatusUnprocessableEntity,
 			Message: msg,
-			Error: err,
+			Error:   err,
 		}
 
 		return apiErr
@@ -42,9 +42,9 @@ func StoreOtp(ctx context.Context, valkeyClient valkey.Client, sessionUuid uuid.
 		logger.Log(storeOtpErr)
 
 		apiErr := &api_error.Error{
-			Code: http.StatusInternalServerError,
+			Code:    http.StatusInternalServerError,
 			Message: api_error.InteralServerErrorMessage,
-			Error: storeOtpErr,
+			Error:   storeOtpErr,
 		}
 
 		return apiErr

@@ -1,9 +1,9 @@
 package api_error
 
 type Error struct {
-	Code int
+	Code    int
 	Message string
-	Error error
+	Error   error
 }
 
 var InteralServerErrorMessage = "There was an issue processing that request."

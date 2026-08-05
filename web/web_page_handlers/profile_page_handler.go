@@ -1,7 +1,7 @@
 package web_page_handlers
 
 import (
-	"freecreate/web_auth"
+	"freecreate/web/web_auth"
 	"html/template"
 	"net/http"
 
@@ -22,14 +22,14 @@ func ProfilePageHandler(sessionStore *sessions.CookieStore, valkeyClient valkey.
 		}
 
 		type PageData struct {
-			LoggedIn  bool
-			CsrfToken template.HTML
+			LoggedIn      bool
+			CsrfToken     template.HTML
 			LoggedInClass string
 		}
 
 		pageData := PageData{
-			LoggedIn:  true,
-			CsrfToken: csrf.TemplateField(r),
+			LoggedIn:      true,
+			CsrfToken:     csrf.TemplateField(r),
 			LoggedInClass: "logged_in",
 		}
 

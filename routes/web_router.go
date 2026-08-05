@@ -2,9 +2,9 @@ package routes
 
 import (
 	"freecreate/config"
-	"freecreate/middleware"
-	"freecreate/web_api_handlers"
-	"freecreate/web_page_handlers"
+	"freecreate/web/middleware"
+	"freecreate/web/web_api_handlers"
+	"freecreate/web/web_page_handlers"
 	"html/template"
 	"net/http"
 
@@ -25,7 +25,7 @@ func ConfigureWebRouter(router chi.Router, sessionStore *sessions.CookieStore, v
 		fileServer := http.FileServer(http.Dir("static"))
 		cachedFileServer := middleware.CacheControlHandler(fileServer)
 
-		router.Handle("/static/*", http.StripPrefix("/static/", cachedFileServer))
+		router.Handle("/web/static/*", http.StripPrefix("/web/static/", cachedFileServer))
 
 		templates := template.Must(template.ParseGlob("templates/*html"))
 

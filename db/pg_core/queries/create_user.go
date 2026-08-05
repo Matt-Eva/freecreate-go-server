@@ -30,9 +30,9 @@ func CreateUser(ctx context.Context, pgCoreQueries config.PgCoreQueries, pgCore 
 		logger.Log(queryErr)
 
 		apiErr := &api_error.Error{
-			Code: http.StatusInternalServerError,
+			Code:    http.StatusInternalServerError,
 			Message: api_error.InteralServerErrorMessage,
-			Error: queryErr,
+			Error:   queryErr,
 		}
 
 		return 0, apiErr

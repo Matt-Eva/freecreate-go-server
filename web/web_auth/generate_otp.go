@@ -17,15 +17,15 @@ func GenerateOtp() (string, *api_error.Error) {
 		num, err := rand.Int(rand.Reader, big.NewInt(int64(len(chars))))
 		if err != nil {
 			apiErr := &api_error.Error{
-				Code: http.StatusInternalServerError,
+				Code:    http.StatusInternalServerError,
 				Message: api_error.InteralServerErrorMessage,
-				Error: err,
+				Error:   err,
 			}
 			return "", apiErr
 		}
 
 		b[i] = chars[num.Int64()]
 	}
-	
+
 	return string(b), nil
 }

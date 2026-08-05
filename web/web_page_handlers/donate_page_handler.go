@@ -1,7 +1,7 @@
 package web_page_handlers
 
 import (
-	"freecreate/web_auth"
+	"freecreate/web/web_auth"
 	"html/template"
 	"net/http"
 
@@ -9,7 +9,7 @@ import (
 	"github.com/valkey-io/valkey-go"
 )
 
-func AboutPageHandler(aboutTmpl *template.Template, sessionStore *sessions.CookieStore, valkeyClient valkey.Client) http.HandlerFunc {
+func DonatePageHandler(donateTmpl *template.Template, sessionStore *sessions.CookieStore, valkeyClient valkey.Client) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
 
@@ -22,23 +22,15 @@ func AboutPageHandler(aboutTmpl *template.Template, sessionStore *sessions.Cooki
 		}
 
 		type PageData struct {
-			Title    string
-			LoggedIn bool
+			LoggedIn      bool
 			LoggedInClass string
 		}
 
 		pageData := PageData{
-			Title:    "about",
-			LoggedIn: loggedIn,
+			LoggedIn:      loggedIn,
 			LoggedInClass: loggedInClass,
 		}
 
-		aboutTmpl.ExecuteTemplate(w, "about_page", pageData)
+		donateTmpl.ExecuteTemplate(w, "donate_page", pageData)
 	}
-}
-
-func write103Header(w http.ResponseWriter) {
-	w.Header().Add("Link", "</static/globals.css>; rel=preload; as=style")
-	w.Header().Add("Link", "</static/header_component.css>; rel=preload; as=style")
-	w.WriteHeader(103)
 }

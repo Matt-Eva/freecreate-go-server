@@ -24,9 +24,9 @@ func GetUserByEmail(ctx context.Context, pgCoreQueries config.PgCoreQueries, pgx
 
 	if errors.Is(queryErr, pgx.ErrNoRows) {
 		apiErr := &api_error.Error{
-			Code: http.StatusNotFound,
+			Code:    http.StatusNotFound,
 			Message: "We could not find a user with that email address",
-			Error: queryErr,
+			Error:   queryErr,
 		}
 
 		return 0, apiErr
@@ -34,9 +34,9 @@ func GetUserByEmail(ctx context.Context, pgCoreQueries config.PgCoreQueries, pgx
 		logger.Log(queryErr)
 
 		apiErr := &api_error.Error{
-			Code: http.StatusInternalServerError,
+			Code:    http.StatusInternalServerError,
 			Message: api_error.InteralServerErrorMessage,
-			Error: queryErr,
+			Error:   queryErr,
 		}
 
 		return 0, apiErr

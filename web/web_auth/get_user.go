@@ -20,9 +20,9 @@ func GetUser(ctx context.Context, sessionStore *sessions.CookieStore, valkeyClie
 		logger.Log(getSessionErr)
 
 		apiErr := &api_error.Error{
-			Code: http.StatusInternalServerError,
+			Code:    http.StatusInternalServerError,
 			Message: api_error.InteralServerErrorMessage,
-			Error: getSessionErr,
+			Error:   getSessionErr,
 		}
 
 		return nil, 0, apiErr
@@ -44,9 +44,9 @@ func GetUser(ctx context.Context, sessionStore *sessions.CookieStore, valkeyClie
 		}
 
 		apiErr := &api_error.Error{
-			Code: http.StatusInternalServerError,
+			Code:    http.StatusInternalServerError,
 			Message: api_error.InteralServerErrorMessage,
-			Error: err,
+			Error:   err,
 		}
 
 		return nil, 0, apiErr
@@ -57,16 +57,16 @@ func GetUser(ctx context.Context, sessionStore *sessions.CookieStore, valkeyClie
 	userIdString, getUserErr := valkeyClient.Do(ctx, valkeyClient.B().Get().Key(authKey).Build()).ToString()
 	if getUserErr != nil {
 		logger.Log(getUserErr)
-		
+
 		destroySessionErr := DestroyUserSession(ctx, sessionStore, valkeyClient, w, r)
 		if destroySessionErr != nil {
 			return nil, 0, destroySessionErr
 		}
 
 		apiErr := &api_error.Error{
-			Code: http.StatusInternalServerError,
+			Code:    http.StatusInternalServerError,
 			Message: api_error.InteralServerErrorMessage,
-			Error: getUserErr,
+			Error:   getUserErr,
 		}
 
 		return nil, 0, apiErr
@@ -82,9 +82,9 @@ func GetUser(ctx context.Context, sessionStore *sessions.CookieStore, valkeyClie
 		}
 
 		apiErr := &api_error.Error{
-			Code: http.StatusInternalServerError,
+			Code:    http.StatusInternalServerError,
 			Message: api_error.InteralServerErrorMessage,
-			Error: parseIdErr,
+			Error:   parseIdErr,
 		}
 
 		return nil, 0, apiErr

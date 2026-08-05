@@ -18,9 +18,9 @@ func DestroyUserSession(ctx context.Context, sessionStore *sessions.CookieStore,
 		logger.Log(getSessionErr)
 
 		apiErr := &api_error.Error{
-			Code: http.StatusInternalServerError,
+			Code:    http.StatusInternalServerError,
 			Message: api_error.InteralServerErrorMessage,
-			Error: getSessionErr,
+			Error:   getSessionErr,
 		}
 
 		return apiErr
@@ -54,14 +54,14 @@ func DestroyUserSession(ctx context.Context, sessionStore *sessions.CookieStore,
 	finalErrs := errors.Join(errs...)
 	if finalErrs != nil {
 		apiErr := &api_error.Error{
-			Code: http.StatusInternalServerError,
+			Code:    http.StatusInternalServerError,
 			Message: api_error.InteralServerErrorMessage,
-			Error: finalErrs,
+			Error:   finalErrs,
 		}
-		
+
 		return apiErr
 	}
-	
+
 	return nil
 }
 
@@ -71,9 +71,9 @@ func DestroyGuestSession(sessionStore *sessions.CookieStore, w http.ResponseWrit
 		logger.Log(getSessionErr)
 
 		apiErr := &api_error.Error{
-			Code: http.StatusInternalServerError,
+			Code:    http.StatusInternalServerError,
 			Message: api_error.InteralServerErrorMessage,
-			Error: getSessionErr,
+			Error:   getSessionErr,
 		}
 
 		return apiErr
@@ -87,10 +87,10 @@ func DestroyGuestSession(sessionStore *sessions.CookieStore, w http.ResponseWrit
 		logger.Log(saveSessionErr)
 
 		apiErr := &api_error.Error{
-				Code: http.StatusInternalServerError,
-				Message: api_error.InteralServerErrorMessage,
-				Error: saveSessionErr,
-			}
+			Code:    http.StatusInternalServerError,
+			Message: api_error.InteralServerErrorMessage,
+			Error:   saveSessionErr,
+		}
 
 		return apiErr
 	}

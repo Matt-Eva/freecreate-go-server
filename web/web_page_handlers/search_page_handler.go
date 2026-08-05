@@ -1,7 +1,7 @@
 package web_page_handlers
 
 import (
-	"freecreate/web_auth"
+	"freecreate/web/web_auth"
 	"html/template"
 	"net/http"
 
@@ -25,8 +25,8 @@ func SearchPageHandler(searchTmpl *template.Template, sessionStore *sessions.Coo
 		searchParams := query["search"]
 
 		type PageData struct {
-			Query    string
-			LoggedIn bool
+			Query         string
+			LoggedIn      bool
 			LoggedInClass string
 		}
 

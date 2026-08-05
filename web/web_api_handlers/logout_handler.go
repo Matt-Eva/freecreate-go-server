@@ -1,8 +1,7 @@
 package web_api_handlers
 
 import (
-	"freecreate/lib/logger"
-	"freecreate/web_auth"
+	"freecreate/web/web_auth"
 	"net/http"
 
 	"github.com/gorilla/sessions"
@@ -15,15 +14,15 @@ func LogoutHandler(sessionStore *sessions.CookieStore, valkeyClient valkey.Clien
 
 		_, _, getUserErr := web_auth.GetUser(ctx, sessionStore, valkeyClient, w, r)
 		if getUserErr != nil {
-			logger.Log(getUserErr)
-			http.Error(w, getUserErr.Error(), 500)
+
+			http.Error(w, getUserErr.Message, getUserErr.Code)
 			return
 		}
 
 		logoutErr := web_auth.LogoutUser(ctx, sessionStore, valkeyClient, w, r)
 		if logoutErr != nil {
-			logger.Log(logoutErr)
-			http.Error(w, logoutErr.Error(), 500)
+
+			http.Error(w, logoutErr.Message, logoutErr.Code)
 			return
 		}
 

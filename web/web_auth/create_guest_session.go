@@ -14,9 +14,9 @@ func CreateGuestSesion(sessionStore *sessions.CookieStore, w http.ResponseWriter
 	if err != nil {
 		logger.Log(err)
 		apiErr := api_error.Error{
-			Code: http.StatusInternalServerError,
+			Code:    http.StatusInternalServerError,
 			Message: api_error.InteralServerErrorMessage,
-			Error: err,
+			Error:   err,
 		}
 		return nil, uuid.UUID{}, &apiErr
 	}
@@ -25,9 +25,9 @@ func CreateGuestSesion(sessionStore *sessions.CookieStore, w http.ResponseWriter
 	if uuidErr != nil {
 		logger.Log(uuidErr)
 		apiErr := api_error.Error{
-			Code: http.StatusInternalServerError,
+			Code:    http.StatusInternalServerError,
 			Message: api_error.InteralServerErrorMessage,
-			Error: err,
+			Error:   err,
 		}
 		return nil, uuid.UUID{}, &apiErr
 	}
@@ -38,9 +38,9 @@ func CreateGuestSesion(sessionStore *sessions.CookieStore, w http.ResponseWriter
 	if saveErr != nil {
 		logger.Log(saveErr)
 		apiErr := api_error.Error{
-			Code: http.StatusInternalServerError,
+			Code:    http.StatusInternalServerError,
 			Message: api_error.InteralServerErrorMessage,
-			Error: err,
+			Error:   err,
 		}
 		return nil, uuid.UUID{}, &apiErr
 	}

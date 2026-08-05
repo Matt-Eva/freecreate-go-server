@@ -10,11 +10,11 @@ func ValidateEmail(email string) *api_error.Error {
 	if email == "" {
 		msg := "Email cannot be empty."
 		err := errors.New(msg)
-		
+
 		apiErr := &api_error.Error{
-			Code: http.StatusUnprocessableEntity,
+			Code:    http.StatusUnprocessableEntity,
 			Message: msg,
-			Error: err,
+			Error:   err,
 		}
 
 		return apiErr

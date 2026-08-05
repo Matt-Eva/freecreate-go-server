@@ -1,7 +1,7 @@
 package web_page_handlers
 
 import (
-	"freecreate/web_auth"
+	"freecreate/web/web_auth"
 	"html/template"
 	"net/http"
 
@@ -24,56 +24,54 @@ func HomePageHandler(homeTmpl *template.Template, sessionStore *sessions.CookieS
 
 		writingType := chi.URLParam(r, "writing_type")
 
-		type CardContent struct{
-			Title string
-			Author string
+		type CardContent struct {
+			Title       string
+			Author      string
 			WritingType string
-			Genres []string
+			Genres      []string
 			Description string
 		}
 
 		type CardContentCategory struct {
 			Category string
-			Content []CardContent
+			Content  []CardContent
 		}
 
 		type PageData struct {
-			LoggedIn bool
-			LoggedInClass string
-			WritingType string
+			LoggedIn              bool
+			LoggedInClass         string
+			WritingType           string
 			CardContentCategories []CardContentCategory
 		}
 
 		cardContentCategories := []CardContentCategory{}
-		
-		for i := 0; i < 50; i++{
+
+		for i := 0; i < 50; i++ {
 			cardContentCategory := CardContentCategory{
 				Category: "Fiction",
-				Content: []CardContent{},
+				Content:  []CardContent{},
 			}
 
-			for i:= 0; i <50; i++{
+			for i := 0; i < 50; i++ {
 				cardContent := CardContent{
-					Title: "test",
-					Author: "test",
+					Title:       "test",
+					Author:      "test",
 					WritingType: "Short Story",
-					Genres: []string{"Drama", "Fantasy", "Romance"},
+					Genres:      []string{"Drama", "Fantasy", "Romance"},
 					Description: "This is a scintillating description! We want it to be about 1000 characters in length. How long do you think it will take to reach 1000 character? And if we made it even further beyond space and time? How about if we got to 200 characters? Huh? About 250? Maybe we should consider bumping it up to 300?",
 				}
 				cardContentCategory.Content = append(cardContentCategory.Content, cardContent)
 			}
-			
+
 			cardContentCategories = append(cardContentCategories, cardContentCategory)
 		}
 
 		pageData := PageData{
-			LoggedIn: loggedIn,
-			LoggedInClass: loggedInClass,
-			WritingType: writingType,
+			LoggedIn:              loggedIn,
+			LoggedInClass:         loggedInClass,
+			WritingType:           writingType,
 			CardContentCategories: cardContentCategories,
-
 		}
-
 
 		homeTmpl.ExecuteTemplate(w, "home", pageData)
 	}

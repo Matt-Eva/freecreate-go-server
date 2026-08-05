@@ -19,9 +19,9 @@ func LoginUser(ctx context.Context, sessionStore *sessions.CookieStore, valkeyCl
 		logger.Log(getSessionErr)
 
 		apiErr := &api_error.Error{
-			Code: http.StatusInternalServerError,
+			Code:    http.StatusInternalServerError,
 			Message: api_error.InteralServerErrorMessage,
-			Error: getSessionErr,
+			Error:   getSessionErr,
 		}
 
 		return apiErr
@@ -32,9 +32,9 @@ func LoginUser(ctx context.Context, sessionStore *sessions.CookieStore, valkeyCl
 		logger.Log(newUuidErr)
 
 		apiErr := &api_error.Error{
-			Code: http.StatusInternalServerError,
+			Code:    http.StatusInternalServerError,
 			Message: api_error.InteralServerErrorMessage,
-			Error: newUuidErr,
+			Error:   newUuidErr,
 		}
 
 		return apiErr
@@ -50,9 +50,9 @@ func LoginUser(ctx context.Context, sessionStore *sessions.CookieStore, valkeyCl
 		logger.Log(storeUserErr)
 
 		apiErr := &api_error.Error{
-			Code: http.StatusInternalServerError,
+			Code:    http.StatusInternalServerError,
 			Message: api_error.InteralServerErrorMessage,
-			Error: storeUserErr,
+			Error:   storeUserErr,
 		}
 
 		return apiErr
@@ -63,9 +63,9 @@ func LoginUser(ctx context.Context, sessionStore *sessions.CookieStore, valkeyCl
 		logger.Log(saveSessionErr)
 
 		apiErr := &api_error.Error{
-			Code: http.StatusInternalServerError,
+			Code:    http.StatusInternalServerError,
 			Message: api_error.InteralServerErrorMessage,
-			Error: saveSessionErr,
+			Error:   saveSessionErr,
 		}
 
 		return apiErr

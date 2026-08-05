@@ -24,9 +24,9 @@ func ValidateOtp(ctx context.Context, sessionUuid uuid.UUID, valkeyClient valkey
 		err := errors.New(msg)
 
 		apiErr := &api_error.Error{
-			Code: http.StatusUnprocessableEntity,
+			Code:    http.StatusUnprocessableEntity,
 			Message: msg,
-			Error: err,
+			Error:   err,
 		}
 
 		return apiErr
@@ -35,9 +35,9 @@ func ValidateOtp(ctx context.Context, sessionUuid uuid.UUID, valkeyClient valkey
 		err := errors.New(msg)
 
 		apiErr := &api_error.Error{
-			Code: http.StatusUnprocessableEntity,
+			Code:    http.StatusUnprocessableEntity,
 			Message: msg,
-			Error: err,
+			Error:   err,
 		}
 
 		return apiErr
@@ -50,9 +50,9 @@ func ValidateOtp(ctx context.Context, sessionUuid uuid.UUID, valkeyClient valkey
 		logger.Log(getOtpErr)
 
 		apiErr := &api_error.Error{
-			Code: http.StatusInternalServerError,
+			Code:    http.StatusInternalServerError,
 			Message: api_error.InteralServerErrorMessage,
-			Error: getOtpErr,
+			Error:   getOtpErr,
 		}
 
 		return apiErr
@@ -63,11 +63,11 @@ func ValidateOtp(ctx context.Context, sessionUuid uuid.UUID, valkeyClient valkey
 		err := errors.New(msg)
 
 		apiErr := &api_error.Error{
-			Code: http.StatusUnprocessableEntity,
+			Code:    http.StatusUnprocessableEntity,
 			Message: msg,
-			Error: err,
+			Error:   err,
 		}
-		
+
 		return apiErr
 	}
 
