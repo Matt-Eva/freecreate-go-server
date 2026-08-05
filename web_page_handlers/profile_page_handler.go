@@ -1,7 +1,7 @@
 package web_page_handlers
 
 import (
-	"freecreate/auth"
+	"freecreate/web_auth"
 	"html/template"
 	"net/http"
 
@@ -15,7 +15,7 @@ func ProfilePageHandler(sessionStore *sessions.CookieStore, valkeyClient valkey.
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
 
-		_, userId, _ := auth.GetUser(ctx, sessionStore, valkeyClient, w, r)
+		_, userId, _ := web_auth.GetUser(ctx, sessionStore, valkeyClient, w, r)
 		if userId == 0 {
 			http.Redirect(w, r, "/login", 303)
 			return

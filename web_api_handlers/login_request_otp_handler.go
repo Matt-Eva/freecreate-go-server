@@ -3,12 +3,13 @@ package web_api_handlers
 import (
 	"encoding/json"
 	"errors"
-	"freecreate/auth"
+
 	"freecreate/config"
 	pg_core_queries "freecreate/db/pg_core/queries"
 	pg_core_validators "freecreate/db/pg_core/validators"
 	email_handler "freecreate/email"
 	"freecreate/lib/logger"
+	"freecreate/web_auth"
 	"net/http"
 
 	"github.com/gorilla/sessions"
@@ -22,7 +23,7 @@ func LoginRequestOtpHandler(sessionStore *sessions.CookieStore, valkeyClient val
 		// if user already logged in, redirect to profile page
 		ctx := r.Context()
 
-		_, userId, _ := auth.GetUser(ctx, sessionStore, valkeyClient, w, r)
+		_, userId, _ := web_auth.GetUser(ctx, sessionStore, valkeyClient, w, r)
 		if userId != 0 {
 			http.Redirect(w, r, "/profile", 303)
 			return
@@ -58,20 +59,20 @@ func LoginRequestOtpHandler(sessionStore *sessions.CookieStore, valkeyClient val
 			return
 		}
 
-		_, sessionUuid, getSessionErr := auth.CreateGuestSesion(sessionStore, w, r)
+		_, sessionUuid, getSessionErr := web_auth.CreateGuestSesion(sessionStore, w, r)
 		if getSessionErr != nil {
 			http.Error(w, getSessionErr.Message, getSessionErr.Code)
 			return
 		}
 
-		otp, genOtpErr := auth.GenerateOtp()
+		otp, genOtpErr := web_auth.GenerateOtp()
 		if genOtpErr != nil {
 			logger.Log(genOtpErr)
 			http.Error(w, genOtpErr.Error(), 500)
 			return
 		}
 
-		storeOtpErr := auth.StoreOtp(ctx, valkeyClient, sessionUuid, email, otp)
+		storeOtpErr := web_auth.StoreOtp(ctx, valkeyClient, sessionUuid, email, otp)
 		if storeOtpErr != nil {
 			logger.Log(storeOtpErr)
 			http.Error(w, storeOtpErr.Error(), 500)

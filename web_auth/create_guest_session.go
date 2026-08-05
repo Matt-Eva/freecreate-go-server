@@ -1,4 +1,4 @@
-package auth
+package web_auth
 
 import (
 	"freecreate/lib/api_error"

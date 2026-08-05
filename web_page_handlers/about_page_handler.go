@@ -1,7 +1,7 @@
 package web_page_handlers
 
 import (
-	"freecreate/auth"
+	"freecreate/web_auth"
 	"html/template"
 	"net/http"
 
@@ -13,7 +13,7 @@ func AboutPageHandler(aboutTmpl *template.Template, sessionStore *sessions.Cooki
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
 
-		_, userId, _ := auth.GetUser(ctx, sessionStore, valkeyClient, w, r)
+		_, userId, _ := web_auth.GetUser(ctx, sessionStore, valkeyClient, w, r)
 		loggedIn := false
 		loggedInClass := "logged_out"
 		if userId != 0 {

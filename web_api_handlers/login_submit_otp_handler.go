@@ -4,11 +4,12 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"freecreate/auth"
+
 	"freecreate/config"
 	pg_core_queries "freecreate/db/pg_core/queries"
 	pg_core_validators "freecreate/db/pg_core/validators"
 	"freecreate/lib/logger"
+	"freecreate/web_auth"
 	"net/http"
 
 	"github.com/gorilla/sessions"
@@ -19,7 +20,7 @@ import (
 func LoginSubmitOtpHandler(sessionStore *sessions.CookieStore, valkeyClient valkey.Client, pgCoreQueries config.PgCoreQueries, pgCore *pgxpool.Pool) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("hit login submit otp route")
-		_, sessionUuid, getSessionErr := auth.GetGuestSession(sessionStore, w, r)
+		_, sessionUuid, getSessionErr := web_auth.GetGuestSession(sessionStore, w, r)
 		if getSessionErr != nil {
 			logger.Log(getSessionErr)
 			http.Error(w, getSessionErr.Error(), 500)
@@ -53,7 +54,7 @@ func LoginSubmitOtpHandler(sessionStore *sessions.CookieStore, valkeyClient valk
 
 		otp := body.Otp
 
-		validateOtpErr := auth.ValidateOtp(ctx, sessionUuid, valkeyClient, email, otp)
+		validateOtpErr := web_auth.ValidateOtp(ctx, sessionUuid, valkeyClient, email, otp)
 		if validateOtpErr != nil {
 			logger.Log(validateOtpErr)
 			http.Error(w, validateOtpErr.Error(), 500)
@@ -69,7 +70,7 @@ func LoginSubmitOtpHandler(sessionStore *sessions.CookieStore, valkeyClient valk
 			return
 		}
 
-		loginUserErr := auth.LoginUser(ctx, sessionStore, valkeyClient, r, w, userId)
+		loginUserErr := web_auth.LoginUser(ctx, sessionStore, valkeyClient, r, w, userId)
 		if loginUserErr != nil {
 			logger.Log(loginUserErr)
 			http.Error(w, loginUserErr.Error(), 500)
