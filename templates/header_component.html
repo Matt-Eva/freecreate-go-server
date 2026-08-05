@@ -1,15 +1,19 @@
 {{ define "header_component" }}
-  <header>
-    <h1 class="headerTitle"><a href="/">FreeCreate</a></h1>
-    <a href="/">browse</a>
-    <a href="/about">about</a>
-    <a href="/donate">donate</a>
-    <a href="/test">test</a>
-    {{ if .LoggedIn }}
-      <a href="/profile">profile</a>
-    {{ else }}
-      <a href="/login">login</a>
-      <!-- <button id="login-modal-toggle">login</button> -->
-    {{ end }}
+  <header id="header_component">
+    <h1 class="header_title"><a href="/">FreeCreate</a></h1>
+    <nav id="header_nav">
+      <a href="/" class="conditional_link">browse</a>
+      <a href="/search" class="conditional_link">search</a>
+      <a href="/about">about</a>
+      <a href="/donate">donate</a>
+      <a href="/my-writing" class="conditional_link">my writing</a>
+      <a href="/my-library" class="conditional_link">my library</a>
+      {{ if .LoggedIn }}
+        <a href="/profile" class="end_link">profile</a>
+      {{ else }}
+        <a href="/login" class="end_link">login</a>
+        <!-- <button id="login-modal-toggle">login</button> -->
+      {{ end }}
+    </nav>
   </header>
 {{ end }}

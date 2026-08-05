@@ -5,3 +5,5 @@ freecreate
 /config/profanity.go
 /js_bundle/tmp
 node_modules/
+cert.pem
+key.pem

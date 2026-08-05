@@ -1,25 +1,55 @@
 package auth
 
-// import (
-// 	pgModels "freecreate/gorm_models"
-// 	"net/http"
+import (
+	"context"
+	"errors"
+	"fmt"
+	"freecreate/lib/logger"
+	"net/http"
+	"strconv"
 
-// 	"github.com/gorilla/sessions"
-// 	"gorm.io/gorm"
-// )
+	"github.com/google/uuid"
+	"github.com/gorilla/sessions"
+	"github.com/valkey-io/valkey-go"
+)
 
-// func GetUser(sessionStore *sessions.CookieStore, gormPGClient *gorm.DB, w http.ResponseWriter, r *http.Request) (uint, error) {
-// 	sessionUUID, aErr := CheckSession(sessionStore, w, r)
-// 	if aErr != nil {
-// 		return 0, aErr
-// 	}
+func GetUser(ctx context.Context, sessionStore *sessions.CookieStore, valkeyClient valkey.Client, w http.ResponseWriter, r *http.Request) (session *sessions.Session, userId int, error error) {
+	session, getSessionErr := sessionStore.Get(r, "user-session")
+	if getSessionErr != nil {
+		logger.Log(getSessionErr)
+		return nil, 0, getSessionErr
+	}
 
-// 	var userId uint
+	uuidVal := session.Values["session_uuid"]
+	if uuidVal == nil {
+		return nil, 0, nil
+	}
 
-// 	uErr := gormPGClient.Model(pgModels.User{}).Select("id").Where("session_uuid = ?", sessionUUID).First(&userId).Error
-// 	if uErr != nil {
-// 		return 0, uErr
-// 	}
+	sessionUuid, ok := uuidVal.(uuid.UUID)
+	if !ok {
+		err := errors.New("session uuid could not be converted to uuid")
+		logger.Log(err)
+		DestroyUserSession(session, w, r)
+		return nil, 0, err
+	}
 
-// 	return userId, nil
-// }
+	authKey := fmt.Sprintf("auth_key:%s", sessionUuid)
+
+	userIdString, getUserErr := valkeyClient.Do(ctx, valkeyClient.B().Get().Key(authKey).Build()).ToString()
+	if getUserErr != nil {
+		logger.Log(getUserErr)
+		err := errors.New("could not retrive user id")
+		DestroyUserSession(session, w, r)
+		return nil, 0, err
+	}
+
+	userId, parseIdErr := strconv.Atoi(userIdString)
+	if parseIdErr != nil {
+		err := errors.New("could not convert userid string to int64")
+		logger.Log(err)
+		DestroyUserSession(session, w, r)
+		return nil, 0, err
+	}
+
+	return session, userId, nil
+}

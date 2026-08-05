@@ -1,0 +1,10 @@
+{{ define "browse_card_container_component" }}
+  <div class="browse_card_container_component">
+    <h2>{{ .Category }}</h2>
+    <div class="browse_card_content_container">
+      {{ range .Content }}
+        {{ template "card_content_component" . }}
+      {{ end }}
+    </div>
+  </div>
+{{ end }}

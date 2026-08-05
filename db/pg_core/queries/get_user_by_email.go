@@ -1,14 +1,30 @@
 package pg_core_queries
 
 import (
-	"fmt"
+	"context"
+	"errors"
 	"freecreate/config"
+	"freecreate/lib/logger"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-func GetUserByEmail(pgCoreQueries config.PgCoreQueries, pgxCore *pgxpool.Pool, email string)(int, error){
+func GetUserByEmail(ctx context.Context, pgCoreQueries config.PgCoreQueries, pgxCore *pgxpool.Pool, email string) (int64, error) {
+
 	query := pgCoreQueries.GetUserByEmail()
-	fmt.Println(query)
-	return 0, nil
+	queryArgs := pgx.NamedArgs{
+		"email": email,
+	}
+
+	var userId int64
+	queryErr := pgxCore.QueryRow(ctx, query, queryArgs).Scan(&userId)
+	if errors.Is(queryErr, pgx.ErrNoRows) {
+		return 0, queryErr
+	} else if queryErr != nil {
+		logger.Log(queryErr)
+		return 0, queryErr
+	}
+
+	return userId, nil
 }

@@ -1,0 +1,28 @@
+{{ define "card_content_component" }}
+  <article class="card_content_component">
+    <p
+      class="card_content_title_card"
+      style="background-color: skyblue; color: black;"
+    >
+      {{ .Title }}
+    </p>
+    <h3 class="card_content_title">{{ .Title }}</h3>
+    <a href="/creator" class="card_content_author">{{ .Author }}</a>
+    <a href="/read" class="card_content_link">read</a>
+    <p class="card_content_categories">
+      <span>{{ .WritingType }}:</span>
+
+      {{ if eq (len .Genres) 1 }}
+        <span>{{ index .Genres 0 }}</span>
+      {{ else if eq (len .Genres) 2 }}
+        <span>{{ index .Genres 0 }} - </span>
+        <span>{{ index .Genres 1 }}</span>
+      {{ else if eq (len .Genres) 3 }}
+        <span>{{ index .Genres 0 }} - </span>
+        <span>{{ index .Genres 1 }} - </span>
+        <span>{{ index .Genres 2 }}</span>
+      {{ end }}
+    </p>
+    <p class="card_content_description">{{ .Description }}</p>
+  </article>
+{{ end }}

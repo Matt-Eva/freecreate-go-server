@@ -4,10 +4,24 @@
     <head>
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      {{ template "globals" }}
+      {{ template "globals_component" }}
+      <script defer src="static/profile_page.js"></script>
+      {{ .CsrfToken }}
     </head>
-    <body>
-      {{ template "header" . }} profile
+    <body class="{{ .LoggedInClass }}">
+      {{ template "header_component" . }}
+
+
+      <div id="page_container" class="{{ .LoggedInClass }}">
+        {{ template "sidebar_component" . }}
+        <div id="page_content" class="{{ .LoggedInClass }}">
+          <p>profile</p>
+          <button id="logout_button">logout</button>
+          <p id="logout_error_block"></p>
+        </div>
+      </div>
+
+      {{ template "footer_component" . }}
     </body>
   </html>
 {{ end }}

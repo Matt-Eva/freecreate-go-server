@@ -2,11 +2,11 @@ package web_page_utils
 
 import (
 	"errors"
-	"freecreate/logger"
+	"freecreate/lib/logger"
 	"net/http"
 )
 
-func GetFormAction(r *http.Request)(string, error){
+func GetFormAction(r *http.Request) (string, error) {
 	parseFormErr := r.ParseForm()
 	if parseFormErr != nil {
 		logger.Log(parseFormErr)
@@ -14,7 +14,7 @@ func GetFormAction(r *http.Request)(string, error){
 	}
 
 	formAction := r.FormValue("form_action")
-	if formAction == ""{
+	if formAction == "" {
 		err := errors.New("form action is empty string")
 		logger.Log(err)
 		return "", err

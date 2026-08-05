@@ -4,30 +4,25 @@
     <head>
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
       {{ template "globals_component" }}
-
-
-      <script defer src="static/home_page.js"></script>
+      <link rel="stylesheet" href="/static/home_page.css" />
     </head>
-
-    <body>
+    <body class="{{ .LoggedInClass }}">
       {{ template "header_component" . }}
 
 
-      <div id="lexical-editor"></div>
+      <div id="page_container" class="{{ .LoggedInClass }}">
+        {{ template "sidebar_component" . }}
+        <div id="page_content" class="{{ .LoggedInClass }}">
+          {{ range .CardContentCategories }}
+            {{ template "browse_card_container_component" . }}
+          {{ else }}
+            <p>There is no data to show</p>
+          {{ end }}
+        </div>
+      </div>
 
-      <button id="post-hello">post</button>
-
-      <p>will this reload?</p>
-      <p>and what about this?</p>
-
-      <!-- {{ range .LoadedContent }}
-        {{ template "contentCard"
-          .
-        }}
-      {{ end }}
-       -->
+      {{ template "footer_component" . }}
     </body>
   </html>
 {{ end }}

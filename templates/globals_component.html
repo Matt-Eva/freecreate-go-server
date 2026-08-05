@@ -1,9 +1,12 @@
 {{ define "globals_component" }}
+  <title>FreeCreate</title>
+
   <!-- observe below commented out link for preloading -->
   <!-- <link rel="preload" href="static/globals.css" as="style" onload="this.rel='stylesheet'"> -->
-  <link rel="stylesheet" href="static/globals.css" />
-  <link rel="stylesheet" href="static/header_component.css" />
-  <title>FreeCreate</title>
-  <script defer src="static/header_component.js"></script>
-  <script defer type="module" src="static/bundle.js"></script>
+
+  <link rel="stylesheet" href="/static/globals.css" />
+  
+  <script defer type="module" src="/static/bundle.js"></script>
+  
+  <meta id="meta_logged_in">{{ .LoggedIn }}</meta>
 {{ end }}
