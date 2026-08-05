@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"freecreate/lib/api_error"
 	"freecreate/lib/logger"
 	"net/http"
 	"strconv"
@@ -13,11 +14,18 @@ import (
 	"github.com/valkey-io/valkey-go"
 )
 
-func GetUser(ctx context.Context, sessionStore *sessions.CookieStore, valkeyClient valkey.Client, w http.ResponseWriter, r *http.Request) (session *sessions.Session, userId int, error error) {
+func GetUser(ctx context.Context, sessionStore *sessions.CookieStore, valkeyClient valkey.Client, w http.ResponseWriter, r *http.Request) (session *sessions.Session, userId int, err *api_error.Error) {
 	session, getSessionErr := sessionStore.Get(r, "user-session")
 	if getSessionErr != nil {
 		logger.Log(getSessionErr)
-		return nil, 0, getSessionErr
+
+		apiErr := &api_error.Error{
+			Code: http.StatusInternalServerError,
+			Message: api_error.InteralServerErrorMessage,
+			Error: getSessionErr,
+		}
+
+		return nil, 0, apiErr
 	}
 
 	uuidVal := session.Values["session_uuid"]
@@ -29,8 +37,19 @@ func GetUser(ctx context.Context, sessionStore *sessions.CookieStore, valkeyClie
 	if !ok {
 		err := errors.New("session uuid could not be converted to uuid")
 		logger.Log(err)
-		DestroyUserSession(session, w, r)
-		return nil, 0, err
+
+		destroySessionErr := DestroyUserSession(ctx, sessionStore, valkeyClient, w, r)
+		if destroySessionErr != nil {
+			return nil, 0, destroySessionErr
+		}
+
+		apiErr := &api_error.Error{
+			Code: http.StatusInternalServerError,
+			Message: api_error.InteralServerErrorMessage,
+			Error: err,
+		}
+
+		return nil, 0, apiErr
 	}
 
 	authKey := fmt.Sprintf("auth_key:%s", sessionUuid)
@@ -38,17 +57,37 @@ func GetUser(ctx context.Context, sessionStore *sessions.CookieStore, valkeyClie
 	userIdString, getUserErr := valkeyClient.Do(ctx, valkeyClient.B().Get().Key(authKey).Build()).ToString()
 	if getUserErr != nil {
 		logger.Log(getUserErr)
-		err := errors.New("could not retrive user id")
-		DestroyUserSession(session, w, r)
-		return nil, 0, err
+		
+		destroySessionErr := DestroyUserSession(ctx, sessionStore, valkeyClient, w, r)
+		if destroySessionErr != nil {
+			return nil, 0, destroySessionErr
+		}
+
+		apiErr := &api_error.Error{
+			Code: http.StatusInternalServerError,
+			Message: api_error.InteralServerErrorMessage,
+			Error: getUserErr,
+		}
+
+		return nil, 0, apiErr
 	}
 
 	userId, parseIdErr := strconv.Atoi(userIdString)
 	if parseIdErr != nil {
-		err := errors.New("could not convert userid string to int64")
-		logger.Log(err)
-		DestroyUserSession(session, w, r)
-		return nil, 0, err
+		logger.Log(parseIdErr)
+
+		destroySessionErr := DestroyUserSession(ctx, sessionStore, valkeyClient, w, r)
+		if destroySessionErr != nil {
+			return nil, 0, destroySessionErr
+		}
+
+		apiErr := &api_error.Error{
+			Code: http.StatusInternalServerError,
+			Message: api_error.InteralServerErrorMessage,
+			Error: parseIdErr,
+		}
+
+		return nil, 0, apiErr
 	}
 
 	return session, userId, nil

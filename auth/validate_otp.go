@@ -5,39 +5,70 @@ import (
 	"errors"
 	"fmt"
 	pg_core_validators "freecreate/db/pg_core/validators"
+	"freecreate/lib/api_error"
 	"freecreate/lib/logger"
+	"net/http"
 
 	"github.com/google/uuid"
 	"github.com/valkey-io/valkey-go"
 )
 
-func ValidateOtp(ctx context.Context, sessionUuid uuid.UUID, valkeyClient valkey.Client, email string, otp string) error {
+func ValidateOtp(ctx context.Context, sessionUuid uuid.UUID, valkeyClient valkey.Client, email string, otp string) *api_error.Error {
 	emailValidationErr := pg_core_validators.ValidateEmail(email)
 	if emailValidationErr != nil {
-		logger.Log(emailValidationErr)
 		return emailValidationErr
 	}
 
 	if otp == "" {
-		err := errors.New("otp cannot be empty")
-		logger.Log(err)
-		return err
+		msg := "otp cannot be empty"
+		err := errors.New(msg)
+
+		apiErr := &api_error.Error{
+			Code: http.StatusUnprocessableEntity,
+			Message: msg,
+			Error: err,
+		}
+
+		return apiErr
 	} else if len(otp) != 8 {
-		err := errors.New("otp is invalid length")
-		return err
+		msg := "otp is invalid length"
+		err := errors.New(msg)
+
+		apiErr := &api_error.Error{
+			Code: http.StatusUnprocessableEntity,
+			Message: msg,
+			Error: err,
+		}
+
+		return apiErr
 	}
 
 	otpKey := fmt.Sprintf("%s:%s", sessionUuid, email)
+
 	retrievedOtp, getOtpErr := valkeyClient.Do(ctx, valkeyClient.B().Get().Key(otpKey).Build()).ToString()
 	if getOtpErr != nil {
 		logger.Log(getOtpErr)
-		return getOtpErr
+
+		apiErr := &api_error.Error{
+			Code: http.StatusInternalServerError,
+			Message: api_error.InteralServerErrorMessage,
+			Error: getOtpErr,
+		}
+
+		return apiErr
 	}
 
 	if retrievedOtp != otp {
-		err := errors.New("Either your email or one time password are invalid.")
-		logger.Log(err)
-		return err
+		msg := "Either your email or one time password are invalid."
+		err := errors.New(msg)
+
+		apiErr := &api_error.Error{
+			Code: http.StatusUnprocessableEntity,
+			Message: msg,
+			Error: err,
+		}
+		
+		return apiErr
 	}
 
 	return nil

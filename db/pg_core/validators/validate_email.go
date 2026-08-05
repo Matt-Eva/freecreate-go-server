@@ -2,14 +2,22 @@ package pg_core_validators
 
 import (
 	"errors"
-	"freecreate/lib/logger"
+	"freecreate/lib/api_error"
+	"net/http"
 )
 
-func ValidateEmail(email string) error {
+func ValidateEmail(email string) *api_error.Error {
 	if email == "" {
-		err := errors.New("Email cannot be empty!")
-		logger.Log(err)
-		return err
+		msg := "Email cannot be empty."
+		err := errors.New(msg)
+		
+		apiErr := &api_error.Error{
+			Code: http.StatusUnprocessableEntity,
+			Message: msg,
+			Error: err,
+		}
+
+		return apiErr
 	}
 
 	return nil

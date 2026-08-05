@@ -45,40 +45,34 @@ func SignupRequestOtp(sessionStore *sessions.CookieStore, valkeyClient valkey.Cl
 		email := body.Email
 		emailValidationErr := pg_core_validators.ValidateEmail(email)
 		if emailValidationErr != nil {
-			logger.Log(emailValidationErr)
-			http.Error(w, emailValidationErr.Error(), http.StatusUnprocessableEntity)
+			http.Error(w, emailValidationErr.Message, http.StatusUnprocessableEntity)
 			return
 		}
 
 		_, checkEmailInUseErr := pg_core_queries.GetUserByEmail(ctx, pgCoreQueries, pgCore, email)
-		if checkEmailInUseErr != nil && !errors.Is(checkEmailInUseErr, pgx.ErrNoRows) {
-			logger.Log(checkEmailInUseErr)
-			http.Error(w, checkEmailInUseErr.Error(), 500)
+		if checkEmailInUseErr != nil && !errors.Is(checkEmailInUseErr.Error, pgx.ErrNoRows) {
+			http.Error(w, checkEmailInUseErr.Message, checkEmailInUseErr.Code)
 			return
 		} else if checkEmailInUseErr == nil {
-			err := errors.New("Email address already in use.")
-			http.Error(w, err.Error(), 422)
+			http.Error(w, "Email address already in use.", http.StatusUnprocessableEntity)
 			return
 		}
 
 		_, sessionUuid, getSessionErr := auth.CreateGuestSesion(sessionStore, w, r)
 		if getSessionErr != nil {
-			logger.Log(getSessionErr)
-			http.Error(w, getSessionErr.Error(), 500)
+			http.Error(w, getSessionErr.Message, getSessionErr.Code)
 			return
 		}
 
 		otp, genOtpErr := auth.GenerateOtp()
 		if genOtpErr != nil {
-			logger.Log(genOtpErr)
-			http.Error(w, genOtpErr.Error(), 500)
+			http.Error(w, genOtpErr.Message, genOtpErr.Code)
 			return
 		}
 
 		storeOtpErr := auth.StoreOtp(ctx, valkeyClient, sessionUuid, email, otp)
 		if storeOtpErr != nil {
-			logger.Log(storeOtpErr)
-			http.Error(w, storeOtpErr.Error(), 500)
+			http.Error(w, storeOtpErr.Message, storeOtpErr.Code)
 			return
 		}
 
@@ -89,7 +83,7 @@ func SignupRequestOtp(sessionStore *sessions.CookieStore, valkeyClient valkey.Cl
 				http.Error(w, err.Error(), 422)
 				return
 			}
-			logger.Log(sendEmailErr)
+
 			http.Error(w, sendEmailErr.Error(), 422)
 			return
 		}

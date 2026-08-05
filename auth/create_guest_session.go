@@ -45,5 +45,5 @@ func CreateGuestSesion(sessionStore *sessions.CookieStore, w http.ResponseWriter
 		return nil, uuid.UUID{}, &apiErr
 	}
 
-	return session, sessionUuid, &api_error.Error{}
+	return session, sessionUuid, nil
 }

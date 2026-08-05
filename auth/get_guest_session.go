@@ -14,7 +14,12 @@ func GetGuestSession(sessionStore *sessions.CookieStore, w http.ResponseWriter, 
 	session, err := sessionStore.Get(r, "guest-session")
 	if err != nil {
 		logger.Log(err)
-		return nil, uuid.UUID{}, &api_error.Error{}
+		apiErr := &api_error.Error{
+			Code: http.StatusInternalServerError,
+			Message: api_error.InteralServerErrorMessage,
+			Error: err,
+		}
+		return nil, uuid.UUID{}, apiErr
 	}
 
 	sessionUuid, ok := session.Values["session_uuid"].(uuid.UUID)
@@ -22,7 +27,7 @@ func GetGuestSession(sessionStore *sessions.CookieStore, w http.ResponseWriter, 
 		err := errors.New("Could not convert uuid value - destroying session")
 		logger.Log(err)
 
-		destroyErr := DestroyGuestSession(session, w, r)
+		destroyErr := DestroyGuestSession(sessionStore, w, r)
 		if destroyErr != nil {
 			return nil, uuid.UUID{}, destroyErr
 		}
@@ -36,5 +41,5 @@ func GetGuestSession(sessionStore *sessions.CookieStore, w http.ResponseWriter, 
 		return nil, uuid.UUID{}, apiErr
 	}
 
-	return session, sessionUuid, &api_error.Error{}
+	return session, sessionUuid, nil
 }

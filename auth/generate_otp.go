@@ -27,5 +27,5 @@ func GenerateOtp() (string, *api_error.Error) {
 		b[i] = chars[num.Int64()]
 	}
 	
-	return string(b), &api_error.Error{}
+	return string(b), nil
 }

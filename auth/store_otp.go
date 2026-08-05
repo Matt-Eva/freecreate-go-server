@@ -5,24 +5,32 @@ import (
 	"errors"
 	"fmt"
 	pg_core_validators "freecreate/db/pg_core/validators"
+	"freecreate/lib/api_error"
 	"freecreate/lib/logger"
+	"net/http"
 	"time"
 
 	"github.com/google/uuid"
 	"github.com/valkey-io/valkey-go"
 )
 
-func StoreOtp(ctx context.Context, valkeyClient valkey.Client, sessionUuid uuid.UUID, email string, otp string) error {
+func StoreOtp(ctx context.Context, valkeyClient valkey.Client, sessionUuid uuid.UUID, email string, otp string) *api_error.Error {
 
 	if len(otp) != 8 {
-		err := errors.New("Sorry, that is not a valid One Time Password. One time password must be at least 8 characters.")
-		logger.Log(err)
-		return err
+		msg := "Sorry, that is not a valid One Time Password. One time password must be at least 8 characters."
+		err := errors.New(msg)
+
+		apiErr := &api_error.Error{
+			Code: http.StatusUnprocessableEntity,
+			Message: msg,
+			Error: err,
+		}
+
+		return apiErr
 	}
 
 	emailErr := pg_core_validators.ValidateEmail(email)
 	if emailErr != nil {
-		logger.Log(emailErr)
 		return emailErr
 	}
 
@@ -32,13 +40,14 @@ func StoreOtp(ctx context.Context, valkeyClient valkey.Client, sessionUuid uuid.
 	storeOtpErr := valkeyClient.Do(ctx, valkeyClient.B().Set().Key(otpKey).Value(otp).Ex(12*time.Hour).Build()).Error()
 	if storeOtpErr != nil {
 		logger.Log(storeOtpErr)
-		return storeOtpErr
-	}
 
-	_, getOtpErr := valkeyClient.Do(ctx, valkeyClient.B().Get().Key(otpKey).Build()).ToString()
-	if getOtpErr != nil {
-		logger.Log(getOtpErr)
-		return getOtpErr
+		apiErr := &api_error.Error{
+			Code: http.StatusInternalServerError,
+			Message: api_error.InteralServerErrorMessage,
+			Error: storeOtpErr,
+		}
+
+		return apiErr
 	}
 
 	return nil
