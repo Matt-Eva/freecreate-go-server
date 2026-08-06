@@ -22,12 +22,12 @@ func ConfigureWebRouter(router chi.Router, sessionStore *sessions.CookieStore, v
 		csrfMiddleware := middleware.GenereateCsrfMiddleware()
 		router.Use(csrfMiddleware)
 
-		fileServer := http.FileServer(http.Dir("static"))
+		fileServer := http.FileServer(http.Dir("internal/web/static"))
 		cachedFileServer := middleware.CacheControlHandler(fileServer)
 
-		router.Handle("/web/static/*", http.StripPrefix("/web/static/", cachedFileServer))
+		router.Handle("/internal/web/static/*", http.StripPrefix("/internal/web/static/", cachedFileServer))
 
-		templates := template.Must(template.ParseGlob("templates/*html"))
+		templates := template.Must(template.ParseGlob("internal/web/templates/*html"))
 
 		// ========= Web Page Handlers =========
 

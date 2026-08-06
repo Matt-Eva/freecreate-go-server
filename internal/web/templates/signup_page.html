@@ -6,8 +6,8 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <title>Document</title>
       {{ template "globals_component" }}
-      <script defer src="static/signup_page.js"></script>
-      <link rel="stylesheet" href="static/signup_page.css" />
+      <script defer src="/internal/web/static/signup_page.js"></script>
+      <link rel="stylesheet" href="/internal/web/static/signup_page.css" />
       {{ .CsrfToken }}
     </head>
     <body class="{{ .LoggedInClass}}">
