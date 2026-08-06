@@ -3,8 +3,9 @@ package main
 import (
 	"context"
 	"encoding/gob"
-	"freecreate/config"
-	"freecreate/lib/logger"
+	"freecreate/internal/config"
+	"freecreate/internal/lib/logger"
+	"freecreate/internal/routes"
 
 	// "freecreate/routes"
 	"log"
@@ -48,7 +49,7 @@ func initialize(environment string) (*chi.Mux, error) {
 
 	resendClient := config.InitResend()
 
-	router := CreateRouter(sessionStore, pgxPools, pgCoreQueries, valkeyClient, resendClient)
+	router := routes.CreateRouter(sessionStore, pgxPools, pgCoreQueries, valkeyClient, resendClient)
 
 	return router, nil
 }
