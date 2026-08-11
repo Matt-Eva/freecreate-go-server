@@ -7,7 +7,7 @@ export default defineConfig({
 
   build: {
     // Points the output to your Go project's static folder
-    outDir: resolve(__dirname, "../static"),
+    outDir: resolve(__dirname, "../static/js"),
 
     // CRITICAL: Prevents Vite from deleting your existing non-bundled css/js files
     emptyOutDir: false,
