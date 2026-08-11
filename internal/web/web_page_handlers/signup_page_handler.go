@@ -21,11 +21,13 @@ func SignupPageHandler(signupTmpl *template.Template, sessionStore *sessions.Coo
 
 		type PageData struct {
 			CsrfToken     template.HTML
+			LoggedIn bool
 			LoggedInClass string
 		}
 
 		pageData := PageData{
 			CsrfToken:     csrf.TemplateField(r),
+			LoggedIn: false,
 			LoggedInClass: "logged_out",
 		}
 
