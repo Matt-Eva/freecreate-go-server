@@ -1,0 +1,35 @@
+.browse_card_container_component {
+  height: 620px;
+  margin: 0px 0px 30px 0px;
+  display: grid;
+  grid-template-rows: 30px 310px;
+  grid-template-columns: 100%;
+}
+
+.browse_card_container_component .browse_card_content_container {
+  height: 610px;
+  display: flex;
+  align-items: center;
+  flex-wrap: no-wrap;
+  flex-direction: row;
+  overflow-x: auto;
+}
+
+@media (min-width: 820px) {
+  .browse_card_container_component {
+    height: 620px;
+    margin: 0px 0px 30px 0px;
+    display: grid;
+    grid-template-rows: 30px 310px;
+    grid-template-columns: 100%;
+  }
+
+  .browse_card_container_component .browse_card_content_container {
+    height: 610px;
+    display: flex;
+    align-items: center;
+    flex-wrap: no-wrap;
+    flex-direction: row;
+    overflow-x: auto;
+  }
+}

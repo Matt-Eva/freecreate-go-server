@@ -5,7 +5,15 @@
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       {{ template "globals_component" }}
-      <link rel="stylesheet" href="/internal/web/static/home_page.css" />
+      <link rel="stylesheet" href="/internal/web/static/css/home_page.css" />
+      <link
+        rel="stylesheet"
+        href="/internal/web/static/css/browse_card_container_component.css"
+      />
+      <link
+        rel="stylesheet"
+        href="/internal/web/static/css/card_content_component.css"
+      />
     </head>
     <body class="{{ .LoggedInClass }}">
       {{ template "header_component" . }}
