@@ -2,8 +2,8 @@
 CREATE TABLE creators (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     uuid UUID DEFAULT gen_random_uuid(),
-    user_id BIGINT,
-    name VARCHAR(100),
+    user_id BIGINT NOT NULL,
+    name VARCHAR(100) NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 

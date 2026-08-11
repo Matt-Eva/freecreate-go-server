@@ -14,32 +14,6 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- Name: creators; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.creators (
-    id bigint NOT NULL,
-    uuid uuid DEFAULT gen_random_uuid(),
-    user_id bigint,
-    name character varying(100)
-);
-
-
---
--- Name: creators_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-ALTER TABLE public.creators ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
-    SEQUENCE NAME public.creators_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1
-);
-
-
---
 -- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -75,14 +49,6 @@ ALTER TABLE public.users ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
 
 
 --
--- Name: creators creators_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.creators
-    ADD CONSTRAINT creators_pkey PRIMARY KEY (id);
-
-
---
 -- Name: schema_migrations schema_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -107,32 +73,10 @@ ALTER TABLE ONLY public.users
 
 
 --
--- Name: idx_creators_user_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX idx_creators_user_id ON public.creators USING btree (user_id);
-
-
---
--- Name: idx_creators_uuid; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX idx_creators_uuid ON public.creators USING btree (uuid);
-
-
---
 -- Name: idx_users_uuid; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX idx_users_uuid ON public.users USING btree (uuid);
-
-
---
--- Name: creators creators_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.creators
-    ADD CONSTRAINT creators_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
 
 --
@@ -145,5 +89,4 @@ ALTER TABLE ONLY public.creators
 --
 
 INSERT INTO public.schema_migrations (version) VALUES
-    ('20260623031619'),
-    ('20260624164610');
+    ('20260623031619');

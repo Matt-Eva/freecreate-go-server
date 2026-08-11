@@ -5,15 +5,28 @@
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <title>Document</title>
-      {{ template "globals_component" }}
+      {{ template "globals_component" . }}
+      <script defer src="/internal/web/static/js/my_creators_page.js"></script>
+      {{ .CsrfToken }}
     </head>
-    <body>
+    <body class="{{ .LoggedInClass }}">
       {{ template "header_component" . }}
 
 
-      <div id="page_container">
+      <div id="page_container" class="{{ .LoggedInClass }}">
         {{ template "sidebar_component" . }}
-        <div id="page_content"></div>
+        <div id="page_content" class="{{ .LoggedInClass }}">
+          <p>mycreators</p>
+          <div>
+            <h2>Add New Creator Profile</h2>
+            <form id="create_creator_form">
+              <label for="create_creator_name_input">Creator Name:</label>
+              <input id="create_creator_name_input" type="text" />
+              <input type="submit" />
+            </form>
+            <p id="create_creator_message_block"></p>
+          </div>
+        </div>
       </div>
 
       {{ template "footer_component" . }}

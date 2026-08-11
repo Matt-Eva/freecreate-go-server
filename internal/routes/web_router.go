@@ -46,21 +46,23 @@ func ConfigureWebRouter(router chi.Router, sessionStore *sessions.CookieStore, v
 
 		router.Get("/search", web_page_handlers.SearchPageHandler(templates, sessionStore, valkeyClient))
 
-		router.Get("/my-creators", web_page_handlers.MyCreatorsPageHandler())
+		router.Get("/my-creators", web_page_handlers.MyCreatorsPageHandler(templates, sessionStore, valkeyClient))
 
 		// ======== JSON Web API Routes =========
 
 		router.Route("/web-api", func(r chi.Router) {
 
-			r.Post("/login/request-otp", web_api_handlers.LoginRequestOtpHandler(sessionStore, valkeyClient, resendClient, pgCoreQueries, pgxPools.PgCore))
-
-			r.Post("/login/submit-otp", web_api_handlers.LoginSubmitOtpHandler(sessionStore, valkeyClient, pgCoreQueries, pgxPools.PgCore))
-
 			r.Post("/signup/request-otp", web_api_handlers.SignupRequestOtp(sessionStore, valkeyClient, resendClient, pgCoreQueries, pgxPools.PgCore))
 
 			r.Post("/signup/submit-otp", web_api_handlers.SignupSubmitOtp(sessionStore, valkeyClient, pgCoreQueries, pgxPools.PgCore))
 
+			r.Post("/login/request-otp", web_api_handlers.LoginRequestOtpHandler(sessionStore, valkeyClient, resendClient, pgCoreQueries, pgxPools.PgCore))
+
+			r.Post("/login/submit-otp", web_api_handlers.LoginSubmitOtpHandler(sessionStore, valkeyClient, pgCoreQueries, pgxPools.PgCore))
+
 			r.Delete("/logout", web_api_handlers.LogoutHandler(sessionStore, valkeyClient))
+
+			// r.Post("/creator", web_api_)
 		})
 
 	})
