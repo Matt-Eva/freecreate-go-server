@@ -27,7 +27,7 @@ func CreateCreator(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries conf
 
 	validateCreatorErr := pg_core_validators.ValidateCreator(namedArgs)
 	if validateCreatorErr != nil {
-		return newCreator{}, validateCreatorErr
+		return CreatedCreator{}, validateCreatorErr
 	}
 
 	var name string
@@ -43,13 +43,13 @@ func CreateCreator(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries conf
 			Error: createCreatorErr,
 		}
 
-		return newCreator{}, apiErr
+		return CreatedCreator{}, apiErr
 	}
 
-	newCreator := newCreator{
+	createdCreator := CreatedCreator{
 		Name: name,
 		UUID: uuid,
 	}
 
-	return newCreator, nil
+	return createdCreator, nil
 }
