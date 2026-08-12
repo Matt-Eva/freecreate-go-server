@@ -6,4 +6,4 @@ type Error struct {
 	Error   error
 }
 
-var InteralServerErrorMessage = "There was an issue processing that request."
+var InteralServerErrorMessage = "There was an issue processing your request."
