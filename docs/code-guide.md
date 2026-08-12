@@ -4,13 +4,20 @@ This document serves as a guide for the various tools, technologies, and program
 
 Please read to familiarize yourself with the standard patterns and practices, and to gain a basic understanding of the various languages used in this codebase.
 
+# Table of Contents
+
+1. [Code Philosophy](#code-philosophy)
+2. [Programming Languages - Overview](#programming-languages-and-more)
+3. [Databases - Overview](#databases)
+4. [Dbmate](#dbmate)
+
 # Code Philosophy
 
 First and foremost, code with calm.
 
-Don't rush. Don't panic. Be curious. Be patient. Take breaks. Persist. Think big. Be free. Be diligent. Be meticulous.
+Don't rush. Don't panic. Be curious. Be patient. Take breaks. Persist. Think big. Be free. Be diligent. Be methodical.
 
-In other words, code slow, code thoughtfully, and code happy.
+In other words, code slow, code thoughtfully, and code happy :).
 
 In addition to that, FreeCreate's codebase and architectural choices are guided by four foundational goals:
 
@@ -46,6 +53,8 @@ This one is pretty self-explanatory. But basically, you want to aim for optimal 
 
 However, If you find yourself compromising your other principles by adding needless complexity for the sake of squeezing out some last little drop of "performance", you've strayed from the path.
 
+There may be edge cases where this is truly worthwhile, but err on the side of caution and temperance.
+
 ## Coding Practices
 
 You may feel that there is some tension between some of coding practices listed above.
@@ -76,7 +85,7 @@ Abstraction and Separation of Concerns are two ESSENTIAL components of writing g
 
 Heck, every programming language itself is an Abstraction - or did you want to build your website with machine code? (Honestly, if you do that, more power to you, follow your heart!)
 
-If we forgo intelligently applying abstraction and separation of concerns in our codebase, it can become endlessly verbose, frustratingly repetitive, brittle, and ultimately very hard to maintain, update, or build on top of.
+If we forgo intelligently applying abstraction and separation of concerns in our codebase, it can become endlessly verbose, frustratingly repetitive, brittle, and ultimately very hard to maintain, update, or build on top of. Separating out core, repetitive functionality makes your code MORE robust and EASIER to work with. Breaking long, complicated functions into more tolerable bite-sized pieces can make them easier to comprehend and manage. Isolating and decoupling independent pieces of your code base from each other allows developers to work better in parallel and keeps your code easier to update and expand.
 
 So what are we to do?
 
@@ -93,6 +102,8 @@ Don't be a stubborn purist. Recognize, and adhere to, the value of good code phi
 ## In Summary
 
 The choices and concepts you will encounter throughout the rest of this guide are all representations of these core philosophies and practices. This is still a work in progress, so if you see room for improvement, your suggestions are most welcome!
+
+[Top](#table-of-contents)
 
 # Programming Languages (and More)
 
@@ -121,6 +132,8 @@ FreeCreate uses plain CSS for its styling. (You may be noticing a theme here.) I
 FreeCreate's main database, horizontally scalable content store, and horizontally scalable donations store are all handled by Postgres instances. All queries are written in `SQL`, the standard query language for relational databases.
 
 While we also do use Valkey as an in-memory cache database, communication with valkey is handled by the Go driver for valkey, `valkey-go`, maintained by Valkey itself. This code is essentially Go code, so there is not a need to learn a specific query language, although understanding the fundamentals of how queries are executed and constructed will still be necessary.
+
+[Top](#table-of-contents)
 
 # Databases
 
@@ -151,9 +164,15 @@ While many platforms reach for NoSQL databases in order to solve the problem of 
   - The assumption is that there will need to be a need for multiple content db's to account for the volume of written content (this is a far-off future but a possible one)
   - For that reason, each chapter with which content is associated will be given a "shard key" - essentially the name of the database in which its content will be stored.
   - This pattern replicates the sharding pattern found in true sharded databases, but without the management overhead.
-  - Connection to multiple content DBs will simply be handled by multiple
+  - Connection to multiple content DBs will simply be handled by multiple pgx driver instances.
 
-## Valkey - Caching
+- Donations DB(s):
+  - The Donations DB follows the same pattern as the Content DB - instead of storing donations in the core database, they are stored in separate postgres instances.
+  - The rationale for doing this for donations is that they could potentially grow to infinite number, or at least very high volume, and are not needed as part of relational querying. A donation will still be allocated to a piece of content's "rank", but it most likely won't be needed for specific relational queries. And, if it is needed, using the embedded uuid of its related pieces of data from the core db should still be relatively efficient.
+
+## Valkey - Cache
+
+Caching - for session data as well as query caching - will be managed by Valkey, which is an open source redis spinoff. You can read more about it below in the dedicated section on Valkey.
 
 ## Realtime (for the future!)
 
@@ -161,6 +180,26 @@ FreeCreate does not currently have any need for realtime features, but in the ev
 
 Timescale would be convenient, given that it is just Postgres with an extension, and can be managed / queried using traditional postgres techniques.
 
+Cassandra or Scylla will likely be a little more robust, as they are designed to operate as a sharded, scalable cluster, 
+
 ## Search Engine - Open Search?
 
 FreeCreate's search functionality does not currently employ a full-scale search engine, but when it does it plans to use Open Search.
+
+[Top](#table-of-contents)
+
+# Dbmate
+
+to create a migration in a specific folder using dbmate, run the command `dbmate -d "./[location of my folder]" new [name_of_my_migration_file]`. This will create a new, timestamped migration in the folder of your choosing.
+
+Example:
+
+`dbmate -d "./internal/db/pg_core/migrations" new create_users`.
+
+Commands for migrating up and rolling back migrations for specific databases are located in the `cmd` folder.
+
+Please make sure to enable the permissions of these scripts to ensure you're able to run them.
+
+Example command:
+
+`./internal/cmd/migrate_pg_core.sh`

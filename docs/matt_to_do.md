@@ -1,6 +1,7 @@
 # To-Do
 
-- Setup Login Route
+- Refactor bash migration commands to be developer agnostic (works on any machine) []
+- Setup Login Route [x]
 - Reformat Auth Flow [x]
   - We can have two types of sessions
     - One is the guest session, which is only used by the login and signup pages for storing the otp and creating a session uuid for doing so
