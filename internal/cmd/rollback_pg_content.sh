@@ -1,4 +1,9 @@
 #!/bin/bash
+
+export $(grep -v '^#' .env | xargs)
+
 echo "rolling back pg content"
 
-dbmate -d "./db/pg_content/migrations" -s "./db/pg_content/schema.sql" --url "postgres://matte:code@localhost:5432/freecreate_go_writing_content?sslmode=disable" rollback
+echo $PG_CONTENT_DB_ONE_URL
+
+dbmate -d "./internal/db/pg_content/migrations" -s "./internal/db/pg_content/schema.sql" --url $PG_CONTENT_DB_ONE_URL rollback

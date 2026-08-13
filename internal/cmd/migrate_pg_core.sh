@@ -1,4 +1,8 @@
 #!/bin/bash
+export $(grep -v '^#' .env | xargs)
+
 echo "running pg core migration"
 
-dbmate -d "./db/pg_core/migrations" -s "./db/pg_core/schema.sql" --url "postgres://matte:code@localhost:5432/freecreate_go?sslmode=disable" migrate
+echo $PG_MAIN_DB_URL
+
+dbmate -d "./internal/db/pg_core/migrations" -s "./internal/db/pg_core/schema.sql" --url $PG_MAIN_DB_URL migrate

@@ -55,7 +55,7 @@ CREATE TABLE public.schema_migrations (
 CREATE TABLE public.users (
     id bigint NOT NULL,
     uuid uuid DEFAULT gen_random_uuid(),
-    email character varying(255),
+    email character varying(255) NOT NULL,
     created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP
 );
 
