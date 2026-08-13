@@ -53,12 +53,12 @@ func ConfigPgCoreQueries() (PgCoreQueries, error) {
 	}
 	q.createCreator = string(createCreator)
 
-	getMyCreator, getMyCreatorsErr := os.ReadFile(filepath.Join("./internal/db/pg_core/query_files", "get_my_creators.sql"))
+	getMyCreators, getMyCreatorsErr := os.ReadFile(filepath.Join("./internal/db/pg_core/query_files", "get_my_creators.sql"))
 	if getMyCreatorsErr != nil {
 		logger.Log(getMyCreatorsErr)
 		return q, getMyCreatorsErr
 	}
-	q.createCreator = string(getMyCreator)
+	q.getMyCreators = string(getMyCreators)
 
 	msg := "Pg core queries loaded."
 	fmt.Println(msg)

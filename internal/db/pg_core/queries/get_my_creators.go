@@ -3,7 +3,6 @@ package pg_core_queries
 import (
 	"context"
 	"errors"
-	"fmt"
 	"freecreate/internal/config"
 	"freecreate/internal/lib/api_error"
 	"freecreate/internal/lib/logger"
@@ -26,6 +25,7 @@ func GetMyCreators(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries conf
 	}
 
 	queryResult, queryErr := pgCore.Query(ctx, query, namedArgs)
+
 	if errors.Is(queryErr, pgx.ErrNoRows){
 		return []MyCreator{}, nil
 	} else if queryErr != nil {
@@ -39,7 +39,16 @@ func GetMyCreators(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries conf
 		return []MyCreator{}, apiErr
 	}
 
-	fmt.Println(queryResult)
+	var myCreators []MyCreator
 
-	return []MyCreator{}, nil
+	for queryResult.Next(){		
+		var myCreator MyCreator
+		scanErr := queryResult.Scan(&myCreator)
+		if scanErr != nil {
+			logger.Log(scanErr)
+		}
+		myCreators = append(myCreators, myCreator)
+	}
+	
+	return myCreators, nil
 }

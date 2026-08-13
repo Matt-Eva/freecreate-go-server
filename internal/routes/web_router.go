@@ -32,6 +32,7 @@ func ConfigureWebRouter(router chi.Router, sessionStore *sessions.CookieStore, v
 		// ========= Web Page Handlers =========
 
 		router.Get("/", web_page_handlers.HomePageHandler(templates, sessionStore, valkeyClient))
+		
 		router.Get("/browse/{writing_type}", web_page_handlers.HomePageHandler(templates, sessionStore, valkeyClient))
 
 		router.Get("/login", web_page_handlers.LoginPageHandler(sessionStore, valkeyClient, templates))
