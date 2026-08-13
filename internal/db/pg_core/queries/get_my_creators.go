@@ -13,12 +13,12 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-type MyCreator struct {
+type MyCreatorsStruct struct {
 	Name string
 	UUID uuid.UUID
 }
 
-func GetMyCreators(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries, userId int64) ([]MyCreator, *api_error.Error) {
+func GetMyCreators(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries, userId int64) ([]MyCreatorsStruct, *api_error.Error) {
 	query := pgCoreQueries.GetMyCreators()
 	namedArgs := pgx.NamedArgs{
 		"user_id": userId,
@@ -27,7 +27,7 @@ func GetMyCreators(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries conf
 	queryResult, queryErr := pgCore.Query(ctx, query, namedArgs)
 
 	if errors.Is(queryErr, pgx.ErrNoRows){
-		return []MyCreator{}, nil
+		return []MyCreatorsStruct{}, nil
 	} else if queryErr != nil {
 		logger.Log(queryErr)
 
@@ -36,13 +36,13 @@ func GetMyCreators(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries conf
 			Message: api_error.InteralServerErrorMessage,
 			Error: queryErr,
 		}
-		return []MyCreator{}, apiErr
+		return []MyCreatorsStruct{}, apiErr
 	}
 
-	var myCreators []MyCreator
+	var myCreators []MyCreatorsStruct
 
 	for queryResult.Next(){		
-		var myCreator MyCreator
+		var myCreator MyCreatorsStruct
 		scanErr := queryResult.Scan(&myCreator)
 		if scanErr != nil {
 			logger.Log(scanErr)

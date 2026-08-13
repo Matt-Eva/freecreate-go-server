@@ -12,6 +12,7 @@ type PgCoreQueries struct {
 	createUser     string
 	createCreator  string
 	getMyCreators  string
+	getMyCreator string
 }
 
 func (q PgCoreQueries) GetUserByEmail() string {
@@ -28,6 +29,10 @@ func (q PgCoreQueries) CreateCreator() string {
 
 func (q PgCoreQueries) GetMyCreators() string {
 	return q.getMyCreators
+}
+
+func (q PgCoreQueries) GetMyCreator()string {
+	return q.getMyCreator
 }
 
 func ConfigPgCoreQueries() (PgCoreQueries, error) {
@@ -59,6 +64,13 @@ func ConfigPgCoreQueries() (PgCoreQueries, error) {
 		return q, getMyCreatorsErr
 	}
 	q.getMyCreators = string(getMyCreators)
+
+	getMyCreator, getMyCreatorErr := os.ReadFile(filepath.Join("./internal/db/pg_core/query_files", "get_my_creator.sql"))
+	if getMyCreatorErr != nil {
+		logger.Log(getMyCreatorsErr)
+		return q, getMyCreatorsErr
+	}
+	q.getMyCreator = string(getMyCreator)
 
 	msg := "Pg core queries loaded."
 	fmt.Println(msg)

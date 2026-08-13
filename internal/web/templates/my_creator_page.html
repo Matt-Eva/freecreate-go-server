@@ -7,13 +7,16 @@
       <title>Document</title>
       {{ template "globals_component" }}
     </head>
-    <body>
+    <body class="{{ .LoggedInClass }}">
       {{ template "header_component" . }}
 
 
-      <div id="page_container">
+      <div id="page_container" class="{{ .LoggedInClass }}">
         {{ template "sidebar_component" . }}
-        <div id="page_content"></div>
+        <div id="page_content" class="{{ .LoggedInClass }}">
+          <p>{{ .MyCreator.Name }}</p>
+          <p>{{ .MyCreator.UUID }}</p>
+        </div>
       </div>
 
       {{ template "footer_component" . }}
