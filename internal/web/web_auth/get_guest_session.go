@@ -22,6 +22,10 @@ func GetGuestSession(sessionStore *sessions.CookieStore, w http.ResponseWriter, 
 		return nil, uuid.UUID{}, apiErr
 	}
 
+	if session.Values["session_uuid"] == nil {
+		return nil, uuid.UUID{}, &api_error.Error{}
+	}
+
 	sessionUuid, ok := session.Values["session_uuid"].(uuid.UUID)
 	if !ok {
 		err := errors.New("Could not convert uuid value - destroying session")

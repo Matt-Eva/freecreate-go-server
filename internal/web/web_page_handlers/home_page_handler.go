@@ -1,6 +1,7 @@
 package web_page_handlers
 
 import (
+	"freecreate/internal/lib/logger"
 	"freecreate/internal/web/web_auth"
 	"html/template"
 	"net/http"
@@ -20,6 +21,8 @@ func HomePageHandler(homeTmpl *template.Template, sessionStore *sessions.CookieS
 		if userId != 0 {
 			loggedIn = true
 			loggedInClass = "logged_in"
+			_, guestSessionErr := web_auth.CheckGuestSession(sessionStore, w, r)
+			logger.Log(guestSessionErr.Error)
 		}
 
 		writingType := chi.URLParam(r, "writing_type")

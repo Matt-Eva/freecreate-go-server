@@ -1,6 +1,7 @@
 package web_page_handlers
 
 import (
+	"freecreate/internal/lib/logger"
 	"freecreate/internal/web/web_auth"
 	"html/template"
 	"net/http"
@@ -19,6 +20,8 @@ func SearchPageHandler(searchTmpl *template.Template, sessionStore *sessions.Coo
 		if userId != 0 {
 			loggedIn = true
 			loggedInClass = "logged_in"
+			_, guestSessionErr := web_auth.CheckGuestSession(sessionStore, w, r)
+			logger.Log(guestSessionErr.Error)
 		}
 
 		query := r.URL.Query()
