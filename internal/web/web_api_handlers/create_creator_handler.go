@@ -2,6 +2,7 @@ package web_api_handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"freecreate/internal/config"
 	pg_core_queries "freecreate/internal/db/pg_core/queries"
 	"freecreate/internal/lib/api_error"
@@ -63,7 +64,10 @@ func CreateCreatorHandler(sessionStore *sessions.CookieStore, valkeyClient valke
 			return
 		}
 
-		w.Header().Set("Content-Type", "application/json")
+		fmt.Println("creator successfully created! Returning response")
+		fmt.Println(jsonRes)
+
+		// w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusCreated)
 		w.Write(jsonRes)
 	}

@@ -45,7 +45,16 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     try {
+      console.log("running create creator");
       const res = await fetch("/web-api/creator", requestObject);
+      console.log("create creator finishined running");
+      if (!res.ok) {
+        const err = await res.text();
+        throw new Error(err);
+      }
+      console.log("response ok");
+      const data = await res.json();
+      console.log(data);
     } catch (error) {
       console.error(error);
       renderCreateCreatorMessage(error.message);

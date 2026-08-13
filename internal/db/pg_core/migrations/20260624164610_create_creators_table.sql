@@ -9,6 +9,7 @@ CREATE TABLE creators (
 
 CREATE INDEX idx_creators_user_id ON creators(user_id);
 CREATE INDEX idx_creators_uuid ON creators(uuid);
+CREATE UNIQUE INDEX idx_creators_name_user_id ON creators(user_id, name);
 
 -- migrate:down
 

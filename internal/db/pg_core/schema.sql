@@ -107,6 +107,13 @@ ALTER TABLE ONLY public.users
 
 
 --
+-- Name: idx_creators_name_user_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX idx_creators_name_user_id ON public.creators USING btree (user_id, name);
+
+
+--
 -- Name: idx_creators_user_id; Type: INDEX; Schema: public; Owner: -
 --
 

@@ -62,7 +62,7 @@ func ConfigureWebRouter(router chi.Router, sessionStore *sessions.CookieStore, v
 
 			r.Delete("/logout", web_api_handlers.LogoutHandler(sessionStore, valkeyClient))
 
-			// r.Post("/creator", web_api_)
+			r.Post("/creator", web_api_handlers.CreateCreatorHandler(sessionStore, valkeyClient, pgxPools.PgCore, pgCoreQueries))
 		})
 
 	})
