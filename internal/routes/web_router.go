@@ -46,7 +46,7 @@ func ConfigureWebRouter(router chi.Router, sessionStore *sessions.CookieStore, v
 
 		router.Get("/search", web_page_handlers.SearchPageHandler(templates, sessionStore, valkeyClient))
 
-		router.Get("/my-creators", web_page_handlers.MyCreatorsPageHandler(templates, sessionStore, valkeyClient))
+		router.Get("/my-creators", web_page_handlers.MyCreatorsPageHandler(templates, sessionStore, valkeyClient, pgxPools.PgCore, pgCoreQueries))
 
 		// ======== JSON Web API Routes =========
 

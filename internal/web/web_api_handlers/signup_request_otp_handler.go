@@ -13,7 +13,6 @@ import (
 	"net/http"
 
 	"github.com/gorilla/sessions"
-	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/resend/resend-go/v2"
 	"github.com/valkey-io/valkey-go"
@@ -51,7 +50,7 @@ func SignupRequestOtp(sessionStore *sessions.CookieStore, valkeyClient valkey.Cl
 		}
 
 		_, checkEmailInUseErr := pg_core_queries.GetUserByEmail(ctx, pgCoreQueries, pgCore, email)
-		if checkEmailInUseErr != nil && !errors.Is(checkEmailInUseErr.Error, pgx.ErrNoRows) {
+		if checkEmailInUseErr != nil && checkEmailInUseErr.Code != http.StatusNotFound {
 			http.Error(w, checkEmailInUseErr.Message, checkEmailInUseErr.Code)
 			return
 		} else if checkEmailInUseErr == nil {

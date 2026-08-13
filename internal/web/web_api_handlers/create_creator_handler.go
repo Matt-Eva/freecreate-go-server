@@ -49,14 +49,14 @@ func CreateCreatorHandler(sessionStore *sessions.CookieStore, valkeyClient valke
 
 		type Response struct {
 			UUID uuid.UUID `json:"uuid"`
-			Name string `json:"name"`
+			Name string    `json:"name"`
 		}
 
-		res := Response {
+		res := Response{
 			UUID: createdCreator.UUID,
 			Name: createdCreator.Name,
 		}
-		
+
 		jsonRes, err := json.Marshal(res)
 		if err != nil {
 			logger.Log(err)

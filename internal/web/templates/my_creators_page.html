@@ -7,6 +7,10 @@
       <title>Document</title>
       {{ template "globals_component" . }}
       <script defer src="/internal/web/static/js/my_creators_page.js"></script>
+      <link
+        rel="stylesheet"
+        href="/internal/web/static/css/my_creators_page.css"
+      />
       {{ .CsrfToken }}
     </head>
     <body class="{{ .LoggedInClass }}">
@@ -16,7 +20,6 @@
       <div id="page_container" class="{{ .LoggedInClass }}">
         {{ template "sidebar_component" . }}
         <div id="page_content" class="{{ .LoggedInClass }}">
-          <p>mycreators</p>
           <div>
             <h2>Add New Creator Profile</h2>
             <form id="create_creator_form">
@@ -25,6 +28,18 @@
               <input type="submit" />
             </form>
             <p id="create_creator_message_block"></p>
+          </div>
+
+          <div>
+            <h2>My Creators</h2>
+            <div>
+              {{ range .MyCreators }}
+                <article>
+                  <p>{{ .Name }}</p>
+                  <a href="/profile/creator/{{ .UUID }}">view</a>
+                </article>
+              {{ end }}
+            </div>
           </div>
         </div>
       </div>
