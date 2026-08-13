@@ -6,10 +6,19 @@ Please read to familiarize yourself with the standard patterns and practices, an
 
 # Table of Contents
 
-1. [Code Philosophy](#code-philosophy)
-2. [Programming Languages - Overview](#programming-languages-and-more)
-3. [Databases - Overview](#databases)
-4. [Dbmate](#dbmate)
+- [Code Philosophy](#code-philosophy)
+- [Programming Languages - Overview](#programming-languages-and-more)
+- [Databases - Overview](#databases)
+- [Requisit Tooling](#requisite-tooling)
+- [Codebase Structure](#codebase-structure)
+- [Go](#go)
+- [Error Handling in Go](#error-handling-in-go)
+- [JavaScript](#javascript)
+- [Error Handling in JavaScript](#error-handling-in-javascript)
+- [Postgres](#postgres)
+- [SQL](#sql)
+- [Dbmate](#dbmate)
+- [Valkey](#valkey)
 
 # Code Philosophy
 
@@ -187,6 +196,41 @@ Cassandra or Scylla will likely be a little more robust, as they are designed to
 FreeCreate's search functionality does not currently employ a full-scale search engine, but when it does it plans to use Open Search.
 
 [Top](#table-of-contents)
+
+# Requisite Tooling
+
+[Top](#table-of-contents)
+
+# Postgres
+
+## Interacting with your local postgres instance
+To access your postgres installation locally, you can run the following command: `psql postgres`.
+
+This will give you access to your entire local postgres instance.
+
+To see all available databases for your local instance, enter the command `\l`.
+
+To access a specific database, enter the command `psql [your_database_name]`.
+
+Once in your specific database instance, enter the command `\dt` to view all tables.
+
+To view information about a specific table within your databae, run the command `\d [your_table_name]`.
+
+## Creating Requisite Databases
+
+To create the necessary databases you'll need for development, first enter your local postgres instance: `psql postgres`.
+
+Then, we'll create the requisite databases using the `CREATE DATABASE` command:
+
+- `CREATE DATABASE freecreate;`
+- `CREATE DATABASE freecreate_writing_content_one;`
+- `CREATE DATABASE freecreate_donations_one;`
+
+The reason we're adding "one" to the end of our writing content and donations databases is to accomodate for the possibility of multiple content and donations databases.
+
+Once you've created your databases, make sure to add the following environment variables to your `.env` file (make sure this file is also in your .gitignore):
+
+- 
 
 # Dbmate
 

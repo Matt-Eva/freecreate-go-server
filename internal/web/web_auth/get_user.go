@@ -14,7 +14,7 @@ import (
 	"github.com/valkey-io/valkey-go"
 )
 
-func GetUser(ctx context.Context, sessionStore *sessions.CookieStore, valkeyClient valkey.Client, w http.ResponseWriter, r *http.Request) (session *sessions.Session, userId int, err *api_error.Error) {
+func GetUser(ctx context.Context, sessionStore *sessions.CookieStore, valkeyClient valkey.Client, w http.ResponseWriter, r *http.Request) (session *sessions.Session, userId int64, err *api_error.Error) {
 	session, getSessionErr := sessionStore.Get(r, "user-session")
 	if getSessionErr != nil {
 		logger.Log(getSessionErr)
@@ -72,7 +72,7 @@ func GetUser(ctx context.Context, sessionStore *sessions.CookieStore, valkeyClie
 		return nil, 0, apiErr
 	}
 
-	userId, parseIdErr := strconv.Atoi(userIdString)
+	userId, parseIdErr := strconv.ParseInt(userIdString, 10, 64)
 	if parseIdErr != nil {
 		logger.Log(parseIdErr)
 
