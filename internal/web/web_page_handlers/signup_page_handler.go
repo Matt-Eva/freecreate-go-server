@@ -34,7 +34,3 @@ func SignupPageHandler(signupTmpl *template.Template, sessionStore *sessions.Coo
 		signupTmpl.ExecuteTemplate(w, "signup_page", pageData)
 	}
 }
-
-func renderSignupPage(signupTmpl *template.Template, w http.ResponseWriter, r *http.Request) {
-
-}
