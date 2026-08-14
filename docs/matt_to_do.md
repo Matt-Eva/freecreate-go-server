@@ -1,6 +1,9 @@
-# To-Do
+# Matt To-Do
 
-- Refactor bash migration commands to be developer agnostic (works on any machine) []
+- Note query pattern for updating views / rank / rel_rank.
+- Confirm GIN index generation technique for writing.
+- Look into Docker for cross-developer template / build []
+- Refactor bash migration commands to be developer agnostic (works on any machine) [x]
 - Setup Login Route [x]
 - Reformat Auth Flow [x]
   - We can have two types of sessions
