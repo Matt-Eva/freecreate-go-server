@@ -19,6 +19,7 @@ Please read to familiarize yourself with the standard patterns and practices, an
 - [SQL](#sql)
 - [Dbmate](#dbmate)
 - [Valkey](#valkey)
+- [Queries](#Queries)
 
 # Code Philosophy
 
@@ -247,3 +248,14 @@ Please make sure to enable the permissions of these scripts to ensure you're abl
 Example command:
 
 `./internal/cmd/migrate_pg_core.sh`
+
+# Queries
+
+The following is a comprehensive list of queries made by the platform, as well as strategies for handling them.
+
+## Writing
+
+Writing will need to be queried in a variety of ways.
+
+- Individual pieces of writing will need to be loaded, along with its creators and chapters, for both viewing and editing
+- For writing that is loaded for editing, it will need to load both published and unpublished chatpers.

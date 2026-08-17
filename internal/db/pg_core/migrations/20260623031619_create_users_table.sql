@@ -1,9 +1,11 @@
 -- migrate:up
 CREATE TABLE users (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    uuid UUID DEFAULT gen_random_uuid(),
+    uuid UUID NOT NULL DEFAULT uuidv7(),
     email VARCHAR(255) UNIQUE NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    username VARCHAR(100) UNIQUE,
+    reading_history BOOLEAN DEFAULT false,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE INDEX idx_users_uuid ON users(uuid);
