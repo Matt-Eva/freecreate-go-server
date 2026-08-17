@@ -4,6 +4,7 @@ CREATE TABLE creators (
     uuid UUID NOT NULL DEFAULT uuidv7(),
     user_id BIGINT NOT NULL,
     name VARCHAR(100) NOT NULL,
+    creator_handle VARCHAR(100) UNIQUE,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 

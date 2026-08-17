@@ -117,3 +117,23 @@ Problem: For pages where we want to have multiple post requests available withou
 Aka, just default to using JavaScript.
 
 We got there folks!
+
+# Database index + view increment strategy 
+
+Database rank index update strategy
+
+Have several fields that keep track of pending updates:
+
+Pending rank change - for changing the total rank. Keeps track of everything - views, flags, likes, etc
+
+Pending view change - keeps track of just view change to calculate rel rank
+
+Pending positive change - keeps track of all non user positive interactions and the impact they will have on the change
+
+When an update runs, check the values of these fields. If they cause a shift in rank or rel rank that reaches a certain percentile threshold change of the record’s relative rank or absolute rank, trigger an update on the rank itself, which will cause an index update.
+
+If the rank change is not significant enough to trigger an update for this item, it simply won’t, preventing excessive high writes to the index
+
+Ensure that this logic runs in the database itself such that the database’s queuing mechanisms work correctly. Running this logic api side will result in multiple attempts at a parallel write, which will cause conflict.
+
+For the view counter, set up Valkey to increment the writes, then use a lua script as a way to check and flush the writes to a postgres instance when they reach a certain threshold.

@@ -27,7 +27,8 @@ CREATE TABLE public.creators (
     id bigint NOT NULL,
     uuid uuid DEFAULT uuidv7() NOT NULL,
     user_id bigint NOT NULL,
-    name character varying(100) NOT NULL
+    name character varying(100) NOT NULL,
+    creator_handle character varying(100)
 );
 
 
@@ -127,6 +128,14 @@ ALTER TABLE public.writings ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
     NO MAXVALUE
     CACHE 1
 );
+
+
+--
+-- Name: creators creators_creator_handle_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.creators
+    ADD CONSTRAINT creators_creator_handle_key UNIQUE (creator_handle);
 
 
 --
