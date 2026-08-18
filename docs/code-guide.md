@@ -9,8 +9,8 @@ Please read to familiarize yourself with the standard patterns and practices, an
 - [Code Philosophy](#code-philosophy)
 - [Programming Languages - Overview](#programming-languages-and-more)
 - [Databases - Overview](#databases)
-- [Requisit Tooling](#requisite-tooling)
-- [Codebase Structure](#codebase-structure)
+- [Requisite Tooling](#requisite-tooling)
+- [Codebase Structure and Team Roles](#codebase-structure-and-team-roles)
 - [Go](#go)
 - [Error Handling in Go](#error-handling-in-go)
 - [JavaScript](#javascript)
@@ -199,6 +199,81 @@ FreeCreate's search functionality does not currently employ a full-scale search 
 [Top](#table-of-contents)
 
 # Requisite Tooling
+
+[Top](#table-of-contents)
+
+# Codebase Structure
+
+## Entry Points
+
+There are three main entry points to the codebase that the API is designed to handle - web, desktop, and mobile.
+
+Currently, web is being handled with traditional SSR and javascript, while desktop is being handled by Electron and mobile is being handled by React Native.
+
+Each of these entrypoints will have separate API endpoints. This is to simplify the workings of different teams across different platforms, as well as keep the code simpler and easier to extend, tweak, and build on.
+
+For example, each different platform will likely have a different auth strategy - giving each platform its own sub-api, router, and set of handlers will make it easier to incorporate and manage those different auth strategies.
+
+As mentioned, this also makes it much easier for different teams to work in parallel. If a feature needs to be changed or created for react-native, the team handling the react-native frontend and API endpoints and handlers can easily do so without accidentally compromising the code of the electron team or the web team.
+
+## Query Handlers and Shared Functionality
+
+However, some code can and should be shared across all teams. 
+
+This functionality is separated and shared to ensure that there is a Single Way of Doing Something for certain types of actions - this is the "business logic" of the application.
+
+For example, there should be one and only one function for generating OTPs. Similarly, logic for sending email should be extrapolated out into its own shared package.
+
+This not only ensures consistent user experience, but enforces the intended design patterns of the codebase and makes the codebase more resilient to errors.
+
+This may slow down developers somewhat, but we actually WANT that in these instances. For cases, we want to be thoughtful, deliberate, and careful when making any changes, to ensure we stay bug-free and deliver a uniform user experience.
+
+### Query Handlers
+
+This is particularly true for handling database logic - creation queries, search queries, update queries, etc.
+
+When it comes to interacting with the database(s) and cache(s), there should be ONE way to interact with them.
+
+Moreover, sometimes a single "query" - like a search query - may actually involve a whole number of queries, or could potentially run a host of various queries.
+
+To ensure that these occur in the correct order and follow the correct patterns every time, it's better to extrapolate this logic out into consolidated, shared functions, rather than trying to replicate them across every platform. We don't want "web search" to somehow differ from "desktop search" in its functionality - search should be search.
+
+Moreover, the schema is pretty complex. Having an established query interface that can be more easily dropped into and integrated with api endpoints makes it easier for the developers of various platforms to create and integrate features. Instead of everybody having to be masters of the schema and query patterns in addition to being masters of their own platform, they can focus more on delivering features and developing competence in their domain.
+
+This also allows a person - or team - to focus solely on become schema and query experts. The schema is a bit complicated - and will only become moreso with time - although much of that complexity is just due to information / table volume and variety rather than innate complexity. 
+
+This team can then also spend more time thinking about and working on ways to improve data storage and optimize queries, whether considering scale, performance, or feature buildout.
+
+## Team Structure
+
+Given this pattern, this would be the ideal team structure:
+
+Graphic Design / UI / UX Design:
+- This team can focus entirely on look and layout. 
+- They may dabble in some CSS or at least become experts in determining color codes to ensure universal experience cross platform
+
+Web Team (Fullstack, Frontend Emphasis):
+- Handles web API endpoints and Auth (Go), as well as frontend (Go templates + JavaScript).
+- Implements the CSS rules that will create the look and layout implemented by the design team.
+
+Mobile Team (React-Native) (Fullstack, Frontend Emphasis):
+- Handles Mobile API endpoints and Auth, as well as frontend (React-Native or other frontend mobile language / framework - Swift (IOS), Kotlin (Android), Flutter (cross-platform), etc.).
+- Also implements whatever visual instructions - CSS analog - needed to create the look and layout created by the design team.
+
+Desktop Team (Electrion) (Fullstack, Frontend Emphasis):
+- Handles Desktop API endpoints and Auth, as well as desktop frontend (Electron, Tauri, etc.)
+- Implements styling instructions - CSS analog - needed to create the look and layout created by the design team.
+
+Backend Team - System Architecture, Database Administration, Query Handling, and Business Logic
+- This team is reponsible for designing and implementing the database structure, overall backend application structure - caching, storage, horizontal scaling, realtime (eventually), etc. - and query handling for all of these various operations.
+- They will also handle other cross-team backend functionality, like email sending, otp generation, and the like.
+- If other teams want a feature implemented, or have questions about a feature, they should reach out to this team. They should NOT jump into this portion of the codebase and start making changes.
+- This team will need to have a rock solid understanding of how the application is designed to function, and should have a certain level of awareness of the other team's needs, so that they can help serve as a go-between between the different platform teams
+- Note from Matt: 
+  - I'm probably going to be the one handling this role for the time being, as I currently have the most in-depth knowledge of planned features and the overall schema.
+  - There's definitely opportunity to hop in and contribute here, but the learning curve will likely be a little bit steeper and the implementation will need to be a little bit stricter.
+  - 
+
 
 [Top](#table-of-contents)
 
