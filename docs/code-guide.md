@@ -10,9 +10,10 @@ Please read to familiarize yourself with the standard patterns and practices, an
 - [Programming Languages - Overview](#programming-languages-and-more)
 - [Databases - Overview](#databases)
 - [Requisite Tooling](#requisite-tooling)
-- [Codebase Structure and Team Roles](#codebase-structure-and-team-roles)
+- [Codebase Structure](#codebase-structure)
+- [Team Roles](#team-roles)
 - [Go](#go)
-- [Error Handling in Go](#error-handling-in-go)
+- [Error Handling in Our Go Code](#error-handling-in-our-go-code)
 - [JavaScript](#javascript)
 - [Error Handling in JavaScript](#error-handling-in-javascript)
 - [Postgres](#postgres)
@@ -32,7 +33,7 @@ In other words, code slow, code thoughtfully, and code happy :).
 In addition to that, FreeCreate's codebase and architectural choices are guided by four foundational goals:
 
 1. Maintainability
-2. Exentsibility
+2. Extensibility
 3. Reliability
 4. Performance
 
@@ -56,6 +57,8 @@ These two principles are key to developing long-lasting projects that can and wi
 ## Reliability
 
 Your code doesn't break easily. And if it does, it's quick and easy to find out why. And easy to fix!
+
+It also performs consistently - certain functions are well defined and do not deviate, regardless of when or where they are called.
 
 ## Performance
 
@@ -95,19 +98,27 @@ Abstraction and Separation of Concerns are two ESSENTIAL components of writing g
 
 Heck, every programming language itself is an Abstraction - or did you want to build your website with machine code? (Honestly, if you do that, more power to you, follow your heart!)
 
-If we forgo intelligently applying abstraction and separation of concerns in our codebase, it can become endlessly verbose, frustratingly repetitive, brittle, and ultimately very hard to maintain, update, or build on top of. Separating out core, repetitive functionality makes your code MORE robust and EASIER to work with. Breaking long, complicated functions into more tolerable bite-sized pieces can make them easier to comprehend and manage. Isolating and decoupling independent pieces of your code base from each other allows developers to work better in parallel and keeps your code easier to update and expand.
+If we forgo intelligently applying abstraction and separation of concerns in our codebase, it can become endlessly verbose, frustratingly repetitive, brittle, and ultimately very hard to maintain, update, or build on top of. 
+
+Separating out core, repetitive functionality makes your code MORE robust and EASIER to work with. 
+
+Breaking long, complicated functions into more tolerable bite-sized pieces can make them easier to comprehend and manage. 
+
+Isolating and decoupling independent pieces of your code base from each other allows developers to work better in parallel and keeps your code easier to update and expand. It also makes it much more reliable and predictable.
 
 So what are we to do?
 
-Well, as you write code, prefer keeping things simple, clear, specific, and local. Whenever you're diving into some new feature, start by writing your code this way. Yes, it's helpful to take a minute and assess your problem and see if an abstraction would be helpful or if certain things should be de-coupled from the get go, but don't seek out abstraction. If an abstraction is useful or necessary, it will reveal itself to you as you write your code.
+Well, as you write code, prefer keeping things simple, clear, specific, and local. Whenever you're diving into some new feature, start by writing your code this way. Yes, it's helpful to take a minute and assess your problem and see if an abstraction would be helpful or if certain things should be de-coupled from the get-go, but don't seek out abstraction. If an abstraction is useful or necessary, it will reveal itself to you as you write your code.
 
-This means that we should embrace refactoring as part of the process of writing code. Not that there is some need to refactor an entire codebase on a routine basis (in fact, I personally would like to avoid doing that whenever possible), but rather than we should refactor our code as we're building out something new.
+This means that we should embrace refactoring as part of the process of writing code. Not that there is some need to refactor an entire codebase on a routine basis (in fact, I personally would like to avoid doing that whenever possible - Matt), but rather that we should refactor our code as we're building out something new.
 
 It's very similar to writing - there may be some novelists, essayists, journalists, or critics who can just execute an absolutely perfect first draft. But the reality is that the vast majority of writers will churn out a semi-coherent first draft, then spend a much longer time combing through and editing and restructuring.
 
 Take this approach with writing code. If you're doing something new, just start making something! Then, as you gain a better understanding of what you're making, or start running into issues created by how you've been writing your code, refactor it into a cleaner, better structure that employs appropriate abstraction and separation of concerns.
 
 Don't be a stubborn purist. Recognize, and adhere to, the value of good code philosophy, but don't choose some "camp" out of ideological zeal - stay open, stay humble, and embrace improvement and enlightenment.
+
+That being said, there are DEFINITELY some patterns and conventions to the code base that you should follow, for your own sake and the sake of all others. BUT, you can always write your code first, get it working, then make sure it follows conventions (and is still working). Just don't forget to update it to follow the conventions. (PLEASE.)
 
 ## In Summary
 
@@ -244,7 +255,7 @@ This also allows a person - or team - to focus solely on become schema and query
 
 This team can then also spend more time thinking about and working on ways to improve data storage and optimize queries, whether considering scale, performance, or feature buildout.
 
-## Team Structure
+# Team Roles
 
 Given this pattern, this would be the ideal team structure:
 
@@ -271,9 +282,92 @@ Backend Team - System Architecture, Database Administration, Query Handling, and
 - This team will need to have a rock solid understanding of how the application is designed to function, and should have a certain level of awareness of the other team's needs, so that they can help serve as a go-between between the different platform teams
 - Note from Matt: 
   - I'm probably going to be the one handling this role for the time being, as I currently have the most in-depth knowledge of planned features and the overall schema.
-  - There's definitely opportunity to hop in and contribute here, but the learning curve will likely be a little bit steeper and the implementation will need to be a little bit stricter.
-  - 
+  - There's definitely opportunity to hop in and contribute here, but the learning curve will likely be a little bit steeper and the implementation will need to be a little bit stricter (aka I will probably want to have more oversight of any feature being implemented).
+  - I also can tend to get a little carried away with schema design (in a GOOD way, I promise), and it can get a little bit nuts back there. If you want to dive into the muck with me, you're welcome to! But be warned...
 
+
+[Top](#table-of-contents)
+
+# Go 
+
+[Top](#table-of-contents)
+
+# Error Handling in Our Go Code
+
+As mentioned in the above Go section, Go treats errors as values, and has the native `error` type.
+
+This is great, but there is one downside and one consideration:
+
+1. The Downside: 
+  - Go's errors don't automatically do stack tracing when they occur. You can print them, and get the error and corresponding message, but only doing that doesn't really give you a clue as to where exactly the error occurred in your codebase. This is really frustrating, and I don't like it (Matt).
+  - However, we've fortunately been able to build our OWN stacktrace logger. Yay!
+  - This is in the `/lib/logger` folder and is the `logger` pacakge.
+  - To log an error, just pass a native go error type to `logger.Log()`, and you'll get your handy-dandy error with the corresponding stack trace. All is well :).
+
+2. The Consideration:
+  - Typically, Go errors propogate up through the function chain - a function generates an error and passes it to its parent function, which passes it to its parent function, and so on and so forth until we get to our API handler and our user endpoint.
+  - This is also great - it's the whole errors as values philosophy - but we also don't want to be sending native error messages back to the frontend, where they may be communicated to our users. Those errors might have sensitive data! Nooooo!
+  - Instead, we've created our own `api_error` error type - you can find it in the `/lib/api_error` folder.
+  - `api_error`s have three fields: 
+    - `Code` - the http.status code that should be sent back to the frontend based on the nature of the error that occurred - `http.StatusInternalServerError`, `http.StatusNotFound`, etc.
+    - `Message` - this will be the user facing message that we DO want to display to the user.
+    - `Error` - this will be the error that triggered this `api_error` in the first place. Currently, there isn't a plan to do anything with it, but it seems prudent to make it part of the `api_error` in case it becomes handy for debugging at a future point.
+
+## How We Handle Errors
+
+Given these two considerations, the way we handle errors is as follows:
+
+1. Functions that we ourselves are writing do not return a native Go `error` type.
+    - Instead, they return a pointer to an `api_error.Error`.
+      - Why a pointer and not the struct itself? So that we can follow Go's built in `if err != nil {}` pattern! This is idiomatic to Go, and we want to preserve that convention.
+2. When an error is triggered by something that goes wrong, we log that native Go `error`:
+    - `logger.Log(err)`
+3. Then, we construct our `api_error`:
+    - ```Go
+      logger.Log(err)
+
+      apiErr := &api_error.Error{
+        Code: http.StatusInternalServerError,
+        Message: api_error.InternalServerErrorMessage,
+        Error: err,
+      }
+
+      return apiErr
+    
+4. This error propogates up the function chain until it finally reaches the api endpoint. There, we send the message back, as well as the Code:
+    - ```Go
+      apiErr := package.MyFunction(parameters)
+      if apiErr != nil{
+        http.Error(w, apiErr.Message, apiErr.Code)
+        return
+      }
+
+And voila! We've logged our error where it originally occurred, which is good for us developers, and we've also communicated the correct status code and message to our frontend users.
+
+One thing you may have noticed is that the `apiErr` created in the example uses a pre-established message defined in the `api_error` package.
+
+Currently, there is only one such pre-established message, which is reserved for the 500, "internal server error" messages.
+
+These errors occur when something has gone wrong on the server itself (or with the database, etc.), and as such, we want to have a single, consistent message to display to users when these types of errors occur.
+
+There may be more to come, but in other instances you'll write your own error messages:
+
+```Go
+if err != nil {
+  logger.Log(err)
+  
+  msg :="We could not find a user with that email address."
+
+  apiErr := &api_error.Error{
+    Code: http.StatusNotFound,
+    Message: msg,
+    Error: err,
+  }
+
+  return apiErr
+}
+
+```
 
 [Top](#table-of-contents)
 

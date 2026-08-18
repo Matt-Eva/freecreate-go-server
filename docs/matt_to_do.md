@@ -1,8 +1,10 @@
 # Matt To-Do
 
-- Note query pattern for updating views / rank / rel_rank.
-- Confirm GIN index generation technique for writing.
 - Look into Docker for cross-developer template / build []
+- List nice to have tooling / extensions for working with VS Code []
+- List all requisite dependencies for running freecreate []
+- Note query pattern for updating views / rank / rel_rank. [x]
+- Confirm GIN index generation technique for writing. [x]
 - Refactor bash migration commands to be developer agnostic (works on any machine) [x]
 - Setup Login Route [x]
 - Reformat Auth Flow [x]
