@@ -6,6 +6,10 @@ Eventually, the hope is to have FreeCreate host all forms of content - from art,
 
 Together, we can make the internet a beautiful place!
 
+## Code Guide
+
+To get a working knowledge of the codebase and its various languages, tools, and design philosophies, please read the `code-guide` document within the `docs` folder.
+
 ## Written in Go
 
 I'm currently building FreeCreate in parallel right now, following two separate paradigms, for my own edification.
