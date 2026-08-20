@@ -3,6 +3,7 @@ package web_page_handlers
 import (
 	"freecreate/internal/config"
 	pg_core_queries "freecreate/internal/db/pg_core/queries"
+	"freecreate/internal/web/web_auth"
 	"html/template"
 	"net/http"
 
@@ -16,13 +17,11 @@ func MyCreatorPageHandler(templates *template.Template, sessionStore *sessions.C
 	return func (w http.ResponseWriter, r *http.Request){
 		ctx := r.Context()
 
-		// _, userId, _ := web_auth.GetUser(ctx, sessionStore, valkeyClient, w, r)
-		// if userId == 0 {
-		// 	http.Redirect(w, r, "/login", 303)
-		// 	return
-		// }
-
-		userId := int64(1)
+		userId, _ := web_auth.CheckAuthentication(ctx, sessionStore, valkeyClient, w, r)
+		if userId == 0 {
+			http.Redirect(w, r, "/login", 303)
+			return
+		}
 
 		creatorUuid := chi.URLParam(r, "creator_uuid")
 

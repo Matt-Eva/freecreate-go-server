@@ -29,6 +29,10 @@ func ConfigureWebRouter(router chi.Router, sessionStore *sessions.CookieStore, v
 
 		templates := template.Must(template.ParseGlob("internal/web/templates/*html"))
 
+		// ========= Example Page Handler ======
+
+		router.Get("/example", web_page_handlers.ExamplePageHandler(templates, sessionStore, valkeyClient, pgxPools.PgCore, pgCoreQueries))
+
 		// ========= Web Page Handlers =========
 
 		// == Public Pages ==

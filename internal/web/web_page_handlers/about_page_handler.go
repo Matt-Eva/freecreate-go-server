@@ -1,7 +1,6 @@
 package web_page_handlers
 
 import (
-	"freecreate/internal/lib/logger"
 	"freecreate/internal/web/web_auth"
 	"html/template"
 	"net/http"
@@ -14,17 +13,14 @@ func AboutPageHandler(aboutTmpl *template.Template, sessionStore *sessions.Cooki
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
 
-		_, userId, _ := web_auth.GetUser(ctx, sessionStore, valkeyClient, w, r)
+		userId, _ := web_auth.CheckAuthentication(ctx, sessionStore, valkeyClient, w, r)
 
 		loggedIn := false
 		loggedInClass := "logged_out"
 		if userId != 0 {
 			loggedIn = true
 			loggedInClass = "logged_in"
-		} else {
-				_, guestSessionErr := web_auth.CheckGuestSession(sessionStore, w, r)
-			logger.Log(guestSessionErr.Error)
-		}
+		} 
 
 		type PageData struct {
 			Title         string

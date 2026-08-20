@@ -66,7 +66,6 @@ body.logged_out {
 
 #sidebar_component {
   display: none;
-  padding: 0px 5px 0px 0px;
 }
 
 /* Page container styles */
@@ -128,6 +127,7 @@ body.logged_out {
     grid-row: 1;
     height: 100%;
     width: 100%;
+    padding: 0px 5px 0px 0px;
   }
 
   /* footer styles */

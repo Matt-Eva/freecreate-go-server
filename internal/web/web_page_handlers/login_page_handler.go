@@ -13,7 +13,7 @@ import (
 func LoginPageHandler(sessionStore *sessions.CookieStore, valkeyClient valkey.Client, loginTmpl *template.Template) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
-		_, userId, _ := web_auth.GetUser(ctx, sessionStore, valkeyClient, w, r)
+		userId, _ := web_auth.CheckAuthentication(ctx, sessionStore, valkeyClient, w, r)
 		if userId != 0 {
 			http.Redirect(w, r, "/profile", 303)
 			return

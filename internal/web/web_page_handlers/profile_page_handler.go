@@ -15,7 +15,7 @@ func ProfilePageHandler(sessionStore *sessions.CookieStore, valkeyClient valkey.
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
 
-		_, userId, _ := web_auth.GetUser(ctx, sessionStore, valkeyClient, w, r)
+		userId, _ := web_auth.CheckAuthentication(ctx, sessionStore, valkeyClient, w, r)
 		if userId == 0 {
 			http.Redirect(w, r, "/login", 303)
 			return
