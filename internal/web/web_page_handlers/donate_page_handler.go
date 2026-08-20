@@ -20,6 +20,8 @@ func DonatePageHandler(donateTmpl *template.Template, sessionStore *sessions.Coo
 		if userId != 0 {
 			loggedIn = true
 			loggedInClass = "logged_in"
+			
+		} else {
 			_, guestSessionErr := web_auth.CheckGuestSession(sessionStore, w, r)
 			logger.Log(guestSessionErr.Error)
 		}

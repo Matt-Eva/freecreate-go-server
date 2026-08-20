@@ -1,6 +1,7 @@
 package web_page_handlers
 
 import (
+	"freecreate/internal/lib/logger"
 	"freecreate/internal/web/web_auth"
 	"html/template"
 	"net/http"
@@ -17,6 +18,9 @@ func SignupPageHandler(signupTmpl *template.Template, sessionStore *sessions.Coo
 		if userId != 0 {
 			http.Redirect(w, r, "/profile", 303)
 			return
+		} else {
+			_, guestSessionErr := web_auth.CheckGuestSession(sessionStore, w, r)
+			logger.Log(guestSessionErr.Error)
 		}
 
 		type PageData struct {

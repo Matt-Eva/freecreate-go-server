@@ -21,7 +21,8 @@ func AboutPageHandler(aboutTmpl *template.Template, sessionStore *sessions.Cooki
 		if userId != 0 {
 			loggedIn = true
 			loggedInClass = "logged_in"
-			_, guestSessionErr := web_auth.CheckGuestSession(sessionStore, w, r)
+		} else {
+				_, guestSessionErr := web_auth.CheckGuestSession(sessionStore, w, r)
 			logger.Log(guestSessionErr.Error)
 		}
 
