@@ -15,6 +15,7 @@ Please read to familiarize yourself with the standard patterns and practices, an
 - [Go](#go)
 - [Error Handling in Our Go Code](#error-handling-in-our-go-code)
 - [JavaScript](#javascript)
+- [FreeCreate JavaScript Conventions](#freecreate-javascript-conventions)
 - [Error Handling in JavaScript](#error-handling-in-javascript)
 - [Postgres](#postgres)
 - [SQL](#sql)
@@ -370,6 +371,10 @@ if err != nil {
 ```
 
 [Top](#table-of-contents)
+
+# JavaScript
+
+# FreeCreate JavaScript Conventions
 
 # Postgres
 
