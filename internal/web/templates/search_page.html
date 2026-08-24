@@ -14,7 +14,7 @@
       <div id="page_container" class="{{ .LoggedInClass }}">
         {{ template "sidebar_component" . }}
         <div id="page_content" class="{{ .LoggedInClass }}">
-          {{ template "search_box_component" }}
+          {{ template "category_search_box_component" }}
           <form action="/search" method="GET">
             <label for="search">Search</label>
             <input type="text" name="search" value="{{ .Query }}" />
