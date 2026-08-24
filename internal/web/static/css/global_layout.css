@@ -58,7 +58,7 @@ body.logged_out {
   margin-left: auto;
 }
 
-#header_nav .conditional_link {
+#header_title_desktop {
   display: none;
 }
 
@@ -103,7 +103,15 @@ body.logged_out {
   /* header styles */
 
   #header_nav .conditional_link {
-    display: inline-block;
+    display: none;
+  }
+
+  #header_title_desktop {
+    display: block;
+  }
+
+  #header_title_mobile {
+    display: none;
   }
 
   /* page container styles */
