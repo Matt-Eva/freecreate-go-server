@@ -46,13 +46,13 @@ func HomePageHandler(homeTmpl *template.Template, sessionStore *sessions.CookieS
 
 		cardContentCategories := []CardContentCategory{}
 
-		for i := 0; i < 50; i++ {
+		for i := 0; i < 10; i++ {
 			cardContentCategory := CardContentCategory{
 				Category: "Fiction",
 				Content:  []CardContent{},
 			}
 
-			for i := 0; i < 50; i++ {
+			for i := 0; i < 25; i++ {
 				cardContent := CardContent{
 					Title:       "test",
 					Author:      "test",
