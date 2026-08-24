@@ -14,7 +14,7 @@ import (
 	"github.com/valkey-io/valkey-go"
 )
 
-func GetUser(ctx context.Context, sessionStore *sessions.CookieStore, valkeyClient valkey.Client, w http.ResponseWriter, r *http.Request) (session *sessions.Session, userId int64, err *api_error.Error) {
+func GetUser(ctx context.Context, sessionStore *sessions.CookieStore, valkeyClient valkey.Client, w http.ResponseWriter, r *http.Request) (sessionUuid uuid.UUID, userId int64, err *api_error.Error) {
 	session, getSessionErr := sessionStore.Get(r, "user-session")
 	if getSessionErr != nil {
 		logger.Log(getSessionErr)
@@ -25,12 +25,12 @@ func GetUser(ctx context.Context, sessionStore *sessions.CookieStore, valkeyClie
 			Error:   getSessionErr,
 		}
 
-		return nil, 0, apiErr
+		return uuid.Nil, 0, apiErr
 	}
 
 	uuidVal := session.Values["session_uuid"]
 	if uuidVal == nil {
-		return nil, 0, nil
+		return uuid.Nil, 0, nil
 	}
 
 	sessionUuid, ok := uuidVal.(uuid.UUID)
@@ -40,7 +40,7 @@ func GetUser(ctx context.Context, sessionStore *sessions.CookieStore, valkeyClie
 
 		destroySessionErr := DestroyUserSession(ctx, sessionStore, valkeyClient, w, r)
 		if destroySessionErr != nil {
-			return nil, 0, destroySessionErr
+			return uuid.Nil, 0, destroySessionErr
 		}
 
 		apiErr := &api_error.Error{
@@ -49,7 +49,7 @@ func GetUser(ctx context.Context, sessionStore *sessions.CookieStore, valkeyClie
 			Error:   err,
 		}
 
-		return nil, 0, apiErr
+		return uuid.Nil, 0, apiErr
 	}
 
 	authKey := fmt.Sprintf("auth_key:%s", sessionUuid)
@@ -60,7 +60,7 @@ func GetUser(ctx context.Context, sessionStore *sessions.CookieStore, valkeyClie
 
 		destroySessionErr := DestroyUserSession(ctx, sessionStore, valkeyClient, w, r)
 		if destroySessionErr != nil {
-			return nil, 0, destroySessionErr
+			return uuid.Nil, 0, destroySessionErr
 		}
 
 		apiErr := &api_error.Error{
@@ -69,7 +69,7 @@ func GetUser(ctx context.Context, sessionStore *sessions.CookieStore, valkeyClie
 			Error:   getUserErr,
 		}
 
-		return nil, 0, apiErr
+		return uuid.Nil, 0, apiErr
 	}
 
 	userId, parseIdErr := strconv.ParseInt(userIdString, 10, 64)
@@ -78,7 +78,7 @@ func GetUser(ctx context.Context, sessionStore *sessions.CookieStore, valkeyClie
 
 		destroySessionErr := DestroyUserSession(ctx, sessionStore, valkeyClient, w, r)
 		if destroySessionErr != nil {
-			return nil, 0, destroySessionErr
+			return uuid.Nil, 0, destroySessionErr
 		}
 
 		apiErr := &api_error.Error{
@@ -87,8 +87,8 @@ func GetUser(ctx context.Context, sessionStore *sessions.CookieStore, valkeyClie
 			Error:   parseIdErr,
 		}
 
-		return nil, 0, apiErr
+		return uuid.Nil, 0, apiErr
 	}
 
-	return session, userId, nil
+	return sessionUuid, userId, nil
 }

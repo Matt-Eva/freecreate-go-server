@@ -8,6 +8,7 @@ import (
 	"html/template"
 	"net/http"
 
+	"github.com/gorilla/csrf"
 	"github.com/gorilla/sessions"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/valkey-io/valkey-go"
@@ -80,6 +81,7 @@ func ExamplePageHandler(template *template.Template, sessionStore *sessions.Cook
 			UniversalPageData: UniversalPageData {
 				LoggedIn: loggedIn,
 				LoggedInClass: loggedInClass,
+				CsrfToken: csrf.TemplateField(r),
 			},
 			PageValues: queryResult,
 		}

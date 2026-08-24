@@ -21,6 +21,25 @@
 
 
       <!-- 
+        We will also create a page level stylesheet for any css needed on this page.
+        Please place all css links above any javascript links, to ensure that these files are requested and loaded first.
+      -->
+      <link
+        rel="stylesheet"
+        href="./internal/web/static/css/example_page.css"
+      />
+
+      <!-- 
+        We will likely also have css. Unlike JavaScript, it's encouraged to create component
+        specific CSS files, and mandatory if that component is to be used on multiple web pages.
+        We may include may be links to several component level css files.
+       -->
+      <link
+        rel="stylesheet"
+        href="./internal/web/static/css/example_component.css"
+      />
+
+      <!-- 
         If we need specific javascript for this page, create the corresponding page file
         and import it as below.
        -->
@@ -29,32 +48,15 @@
       <!-- 
         While we would ideally like to handle all javascript functionality for a page within its 
         single page_js file, in case it becomes necessary or prudent we can extrapolate javascript
-        functionality to the component specific level. (I have not yet encountered a need for this,
-        so please discuss before doing this - Matt.)
+        functionality to the component specific level. This should be considered if a single page.js file 
+        is becoming truly too long or complicated.
        -->
-
       <script
         defer
-        src="./internal/web/static/js/exampel_component.js"
+        src="./internal/web/static/js/example_component.js"
       ></script>
 
-      <!-- 
-        The same is true if we need specific css for this page.
-      -->
-      <link
-        rel="stylesheet"
-        href="./internal/web/static/css/example_page.css"
-      />
-
-      <!-- 
-        We will likely have css specific to a component. Unlike JavaScript, it's encouraged to create component
-        specific CSS files, and mandatory if that component is to be used on multiple web pages.
-        There may be links to several component level css files.
-       -->
-      <link
-        rel="stylesheet"
-        href="./internal/web/statics/css/exampel_component.css"
-      />
+      {{ .CsrfToken }}
     </head>
     <!-- 
         The body of any page will always have the class "{{ .LoggedInClass }}". 
@@ -88,6 +90,15 @@
             {{ template "example_component" . }}
           {{ end }}
 
+
+          <form id="example_post_form">
+            <label for="example_post_form_input">Example Input:</label>
+            <input type="text" id="example_post_form_input" />
+            <inpute type="submit" />
+          </form>
+          <p id="example_post_form_message_block"></p>
+
+          <div id="fetched_data_container"></div>
         </div>
       </div>
 
