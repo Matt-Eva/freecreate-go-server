@@ -1,6 +1,7 @@
 package web_page_handlers
 
 import (
+	"fmt"
 	"freecreate/internal/web/web_auth"
 	"html/template"
 	"net/http"
@@ -23,6 +24,7 @@ func BrowsePageHandler(template *template.Template, sessionStore *sessions.Cooki
 		}
 
 		writingType := chi.URLParam(r, "writing_type")
+		fmt.Println("writingType:", writingType)
 
 		type CardContent struct {
 			Title       string
