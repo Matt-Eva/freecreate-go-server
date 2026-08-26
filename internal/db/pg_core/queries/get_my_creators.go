@@ -26,22 +26,22 @@ func GetMyCreators(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries conf
 
 	queryResult, queryErr := pgCore.Query(ctx, query, namedArgs)
 
-	if errors.Is(queryErr, pgx.ErrNoRows){
+	if errors.Is(queryErr, pgx.ErrNoRows) {
 		return []MyCreatorsStruct{}, nil
 	} else if queryErr != nil {
 		logger.Log(queryErr)
 
 		apiErr := &api_error.Error{
-			Code: http.StatusInternalServerError,
+			Code:    http.StatusInternalServerError,
 			Message: api_error.InteralServerErrorMessage,
-			Error: queryErr,
+			Error:   queryErr,
 		}
 		return []MyCreatorsStruct{}, apiErr
 	}
 
 	var myCreators []MyCreatorsStruct
 
-	for queryResult.Next(){		
+	for queryResult.Next() {
 		var myCreator MyCreatorsStruct
 		scanErr := queryResult.Scan(&myCreator)
 		if scanErr != nil {
@@ -49,6 +49,6 @@ func GetMyCreators(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries conf
 		}
 		myCreators = append(myCreators, myCreator)
 	}
-	
+
 	return myCreators, nil
 }

@@ -26,16 +26,15 @@ type ExampleQueryReturnValue struct {
 
 // ========= Query Handler Logic ===================
 
-
-func HandleExampleQuery(ctx context.Context, valkeyClient valkey.Client, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries)(ExampleQueryReturnValues, *api_error.Error){
+func HandleExampleQuery(ctx context.Context, valkeyClient valkey.Client, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries) (ExampleQueryReturnValues, *api_error.Error) {
 	var returnValues ExampleQueryReturnValues
 
-	for i := 0; i < 10; i++{
+	for i := 0; i < 10; i++ {
 		returnValue := ExampleQueryReturnValue{
 			ExampleName: "Example",
 			ExampleUUID: uuid.New(),
 		}
-		
+
 		returnValues.ExampleParams = append(returnValues.ExampleParams, returnValue)
 	}
 

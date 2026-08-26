@@ -1,3 +1,3 @@
 package query_handlers
 
-func HandleCreateUser(){}
+func HandleCreateUser() {}

@@ -13,12 +13,12 @@ import (
 func SignupPageHandler(signupTmpl *template.Template, sessionStore *sessions.CookieStore, valkeyClient valkey.Client) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
-		
+
 		userId, _ := web_auth.CheckAuthentication(ctx, sessionStore, valkeyClient, w, r)
 		if userId != 0 {
 			http.Redirect(w, r, "/profile", 303)
 			return
-		} 
+		}
 
 		type PageData struct {
 			CsrfToken     template.HTML

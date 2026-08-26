@@ -19,22 +19,22 @@ type MyCreatorStruct struct {
 	UUID uuid.UUID
 }
 
-func GetMyCreator(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries, creatorUuid string, userId int64)(MyCreatorStruct, *api_error.Error){
+func GetMyCreator(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries, creatorUuid string, userId int64) (MyCreatorStruct, *api_error.Error) {
 	query := pgCoreQueries.GetMyCreator()
 	fmt.Println(query)
 	namedArgs := pgx.NamedArgs{
 		"user_id": userId,
-		"uuid": creatorUuid,
+		"uuid":    creatorUuid,
 	}
 
 	var myCreator MyCreatorStruct
 
 	queryErr := pgCore.QueryRow(ctx, query, namedArgs).Scan(&myCreator)
-	if errors.Is(queryErr, pgx.ErrNoRows){
+	if errors.Is(queryErr, pgx.ErrNoRows) {
 		apiErr := &api_error.Error{
-			Code: http.StatusNotFound,
+			Code:    http.StatusNotFound,
 			Message: "Hmm, we couldn't find the creator you're looking for...",
-			Error: queryErr,
+			Error:   queryErr,
 		}
 
 		return myCreator, apiErr
@@ -42,9 +42,9 @@ func GetMyCreator(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries confi
 		logger.Log(queryErr)
 
 		apiErr := &api_error.Error{
-			Code: http.StatusInternalServerError,
+			Code:    http.StatusInternalServerError,
 			Message: api_error.InteralServerErrorMessage,
-			Error: queryErr,
+			Error:   queryErr,
 		}
 
 		return myCreator, apiErr

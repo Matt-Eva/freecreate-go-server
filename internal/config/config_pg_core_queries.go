@@ -12,7 +12,7 @@ type PgCoreQueries struct {
 	createUser     string
 	createCreator  string
 	getMyCreators  string
-	getMyCreator string
+	getMyCreator   string
 }
 
 func (q PgCoreQueries) GetUserByEmail() string {
@@ -31,7 +31,7 @@ func (q PgCoreQueries) GetMyCreators() string {
 	return q.getMyCreators
 }
 
-func (q PgCoreQueries) GetMyCreator()string {
+func (q PgCoreQueries) GetMyCreator() string {
 	return q.getMyCreator
 }
 

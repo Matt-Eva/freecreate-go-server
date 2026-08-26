@@ -37,19 +37,20 @@ func ConfigureWebRouter(router chi.Router, sessionStore *sessions.CookieStore, v
 
 		// == Public Pages ==
 		router.Get("/", web_page_handlers.HomePageHandler(templates, sessionStore, valkeyClient))
-		
-		router.Get("/browse/{writing_type}", web_page_handlers.HomePageHandler(templates, sessionStore, valkeyClient))
 
 		router.Get("/login", web_page_handlers.LoginPageHandler(sessionStore, valkeyClient, templates))
 
 		router.Get("/signup", web_page_handlers.SignupPageHandler(templates, sessionStore, valkeyClient))
-		
+
 		router.Get("/about", web_page_handlers.AboutPageHandler(templates, sessionStore, valkeyClient))
-		
+
 		router.Get("/donate", web_page_handlers.DonatePageHandler(templates, sessionStore, valkeyClient))
-		
+
 		router.Get("/search", web_page_handlers.SearchPageHandler(templates, sessionStore, valkeyClient))
 
+		router.Get("/browse", web_page_handlers.BrowsePageHandler(templates, sessionStore, valkeyClient))
+
+		router.Get("/browse/{writing_type}", web_page_handlers.HomePageHandler(templates, sessionStore, valkeyClient))
 
 		// == Personal Pages ==
 		router.Get("/profile", web_page_handlers.ProfilePageHandler(sessionStore, valkeyClient, templates))

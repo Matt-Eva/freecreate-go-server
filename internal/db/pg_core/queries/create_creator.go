@@ -36,7 +36,7 @@ func CreateCreator(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries conf
 
 	rowResult := pgCore.QueryRow(ctx, query, namedArgs)
 	fmt.Println(rowResult)
-	
+
 	createCreatorErr := rowResult.Scan(&name, &uuid)
 	if createCreatorErr != nil {
 		logger.Log(createCreatorErr)

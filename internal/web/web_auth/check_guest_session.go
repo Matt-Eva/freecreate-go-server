@@ -8,7 +8,7 @@ import (
 	"github.com/gorilla/sessions"
 )
 
-func CheckGuestSession(sessionStore *sessions.CookieStore, w http.ResponseWriter, r *http.Request)(uuid.UUID, *api_error.Error){
+func CheckGuestSession(sessionStore *sessions.CookieStore, w http.ResponseWriter, r *http.Request) (uuid.UUID, *api_error.Error) {
 	_, sessionUuid, _ := GetGuestSession(sessionStore, w, r)
 	if sessionUuid != uuid.Nil {
 		return sessionUuid, nil

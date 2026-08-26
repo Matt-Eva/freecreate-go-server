@@ -14,6 +14,7 @@
         rel="stylesheet"
         href="/internal/web/static/css/card_content_component.css"
       />
+      {{ .CsrfToken }}
     </head>
     <body class="{{ .LoggedInClass }}">
       {{ template "header_component" . }}
@@ -22,10 +23,24 @@
       <div id="page_container" class="{{ .LoggedInClass }}">
         {{ template "sidebar_component" . }}
         <div id="page_content" class="{{ .LoggedInClass }}">
-          {{ range .CardContentCategories }}
-            {{ template "browse_card_container_component" . }}
-          {{ else }}
-            <p>There is no data to show</p>
+          <h2>What would you like to do?</h2>
+          <div>
+            <a href="/browse">Browse</a>
+            <a href="/search">Search</a>
+            {{ if .LoggedIn }}
+              <a href="/write">Write</a>
+            {{ else }}
+              <a href="/login">Login</a>
+            {{ end }}
+          </div>
+          {{ if .LoggedIn }}
+            <h2>Go to:</h2>
+            <div>
+              <a href="/my-subscriptions">My Subscriptions</a>
+              <a href="/my-writing">My Writing</a>
+              <a href="/my-library">My Library</a>
+              <a href="/profile">My Profile</a>
+            </div>
           {{ end }}
         </div>
       </div>

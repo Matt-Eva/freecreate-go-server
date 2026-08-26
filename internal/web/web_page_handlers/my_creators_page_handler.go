@@ -33,14 +33,14 @@ func MyCreatorsPageHandler(templates *template.Template, sessionStore *sessions.
 			CsrfToken     template.HTML
 			LoggedIn      bool
 			LoggedInClass string
-			MyCreators []pg_core_queries.MyCreatorsStruct
+			MyCreators    []pg_core_queries.MyCreatorsStruct
 		}
 
 		pageData := PageData{
 			CsrfToken:     csrf.TemplateField(r),
 			LoggedIn:      true,
 			LoggedInClass: "logged_in",
-			MyCreators: myCreators,
+			MyCreators:    myCreators,
 		}
 
 		templates.ExecuteTemplate(w, "my_creators_page", pageData)

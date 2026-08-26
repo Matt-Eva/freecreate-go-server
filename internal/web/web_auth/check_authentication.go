@@ -10,14 +10,14 @@ import (
 	"github.com/valkey-io/valkey-go"
 )
 
-func CheckAuthentication(ctx context.Context, sessionStore *sessions.CookieStore, valkeyClient valkey.Client, w http.ResponseWriter, r *http.Request) (int64, *api_error.Error){
+func CheckAuthentication(ctx context.Context, sessionStore *sessions.CookieStore, valkeyClient valkey.Client, w http.ResponseWriter, r *http.Request) (int64, *api_error.Error) {
 	_, userId, _ := GetUser(ctx, sessionStore, valkeyClient, w, r)
-	if userId != 0{
+	if userId != 0 {
 		return userId, nil
 	}
 
-	guestSessionUuid, checkGuestSessionErr := CheckGuestSession( sessionStore,  w, r)
-	if guestSessionUuid == uuid.Nil{
+	guestSessionUuid, checkGuestSessionErr := CheckGuestSession(sessionStore, w, r)
+	if guestSessionUuid == uuid.Nil {
 		return 0, checkGuestSessionErr
 	}
 

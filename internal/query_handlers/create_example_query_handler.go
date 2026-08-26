@@ -6,22 +6,21 @@ import (
 	"net/http"
 )
 
-
 type CreatedExample struct {
 	ExampleField string
 }
 
-func HandleCreateExampleQuery(postInput string)(CreatedExample, *api_error.Error){
+func HandleCreateExampleQuery(postInput string) (CreatedExample, *api_error.Error) {
 
 	var createdExample CreatedExample
 
-	if (postInput == ""){
-		msg :="Post input cannot be empty."
+	if postInput == "" {
+		msg := "Post input cannot be empty."
 		err := errors.New(msg)
 		apiErr := &api_error.Error{
-			Code: http.StatusUnprocessableEntity,
+			Code:    http.StatusUnprocessableEntity,
 			Message: msg,
-			Error: err,
+			Error:   err,
 		}
 
 		return createdExample, apiErr

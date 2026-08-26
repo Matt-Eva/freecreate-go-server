@@ -19,8 +19,8 @@ func DonatePageHandler(donateTmpl *template.Template, sessionStore *sessions.Coo
 		if userId != 0 {
 			loggedIn = true
 			loggedInClass = "logged_in"
-			
-		} 
+
+		}
 
 		type PageData struct {
 			LoggedIn      bool

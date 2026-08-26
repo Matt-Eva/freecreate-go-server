@@ -29,16 +29,16 @@ import (
 // You will pretty much always need to pass in sessionStore and valkeyClient in order to handle user
 // authentication and session management.
 
-func ExamplePageHandler(template *template.Template, sessionStore *sessions.CookieStore, valkeyClient valkey.Client, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries)http.HandlerFunc{
-	return func (w http.ResponseWriter, r *http.Request){
+func ExamplePageHandler(template *template.Template, sessionStore *sessions.CookieStore, valkeyClient valkey.Client, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
 		// First, we want to get the context of this particular request.
 		// This will be used as the context for this request lifecycle.
 		// For more on context, please refer to the code guide.
-		 ctx := r.Context()
+		ctx := r.Context()
 
 		//  Next, we want to check authentication of our user.
 		userId, _ := web_auth.CheckAuthentication(ctx, sessionStore, valkeyClient, w, r)
-		
+
 		// for webpages that are only available to an authorized user, we want to do the following:
 		// I have this commented out for now, but you can comment it in and comment out the below section
 		// To test it out.
@@ -56,7 +56,7 @@ func ExamplePageHandler(template *template.Template, sessionStore *sessions.Cook
 		loggedIn := false
 		loggedInClass := "logged_out"
 
-		if userId != 0{
+		if userId != 0 {
 			loggedIn = true
 			loggedInClass = "logged_in"
 		}
@@ -65,7 +65,7 @@ func ExamplePageHandler(template *template.Template, sessionStore *sessions.Cook
 		queryResult, queryErr := query_handlers.HandleExampleQuery(ctx, valkeyClient, pgCore, pgCoreQueries)
 		if queryErr != nil {
 			// if there was an error loading the data, render the standard error page instead.
-			ErrorPageHandler(template, w, queryErr.Message, loggedIn,loggedInClass)
+			ErrorPageHandler(template, w, queryErr.Message, loggedIn, loggedInClass)
 			return
 		}
 
@@ -77,11 +77,11 @@ func ExamplePageHandler(template *template.Template, sessionStore *sessions.Cook
 			PageValues query_handlers.ExampleQueryReturnValues
 		}
 
-		pageData := PageData {
-			UniversalPageData: UniversalPageData {
-				LoggedIn: loggedIn,
+		pageData := PageData{
+			UniversalPageData: UniversalPageData{
+				LoggedIn:      loggedIn,
 				LoggedInClass: loggedInClass,
-				CsrfToken: csrf.TemplateField(r),
+				CsrfToken:     csrf.TemplateField(r),
 			},
 			PageValues: queryResult,
 		}

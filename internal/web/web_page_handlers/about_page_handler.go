@@ -20,7 +20,7 @@ func AboutPageHandler(aboutTmpl *template.Template, sessionStore *sessions.Cooki
 		if userId != 0 {
 			loggedIn = true
 			loggedInClass = "logged_in"
-		} 
+		}
 
 		type PageData struct {
 			Title         string

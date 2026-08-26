@@ -13,8 +13,8 @@ import (
 	"github.com/valkey-io/valkey-go"
 )
 
-func MyCreatorPageHandler(templates *template.Template, sessionStore *sessions.CookieStore, valkeyClient valkey.Client, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries)http.HandlerFunc{
-	return func (w http.ResponseWriter, r *http.Request){
+func MyCreatorPageHandler(templates *template.Template, sessionStore *sessions.CookieStore, valkeyClient valkey.Client, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
 
 		userId, _ := web_auth.CheckAuthentication(ctx, sessionStore, valkeyClient, w, r)
@@ -31,16 +31,16 @@ func MyCreatorPageHandler(templates *template.Template, sessionStore *sessions.C
 			return
 		}
 
-		type PageData struct{
-			LoggedIn bool
+		type PageData struct {
+			LoggedIn      bool
 			LoggedInClass string
-			MyCreator pg_core_queries.MyCreatorStruct
+			MyCreator     pg_core_queries.MyCreatorStruct
 		}
 
 		pageData := PageData{
-			LoggedIn: true,
+			LoggedIn:      true,
 			LoggedInClass: "logged_in",
-			MyCreator: myCreator,
+			MyCreator:     myCreator,
 		}
 
 		templates.ExecuteTemplate(w, "my_creator_page", pageData)

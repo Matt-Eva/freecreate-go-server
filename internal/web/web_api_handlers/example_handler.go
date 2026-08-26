@@ -13,8 +13,8 @@ import (
 	"github.com/valkey-io/valkey-go"
 )
 
-func ExampleHandler(sessionStore *sessions.CookieStore, valkeyClient valkey.Client)http.HandlerFunc{
-	return func (w http.ResponseWriter, r *http.Request){
+func ExampleHandler(sessionStore *sessions.CookieStore, valkeyClient valkey.Client) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
 
 		// For any authenticated requests, we have to get our user first
@@ -54,10 +54,10 @@ func ExampleHandler(sessionStore *sessions.CookieStore, valkeyClient valkey.Clie
 		}
 
 		type Response struct {
-			ExampleField string`json:"exampleField"`
+			ExampleField string `json:"exampleField"`
 		}
 
-		response := Response {
+		response := Response{
 			ExampleField: createdExample.ExampleField,
 		}
 

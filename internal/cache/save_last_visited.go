@@ -1,3 +1,3 @@
 package cache
 
-func SaveLastVisited(){}
+func SaveLastVisited() {}

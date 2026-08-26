@@ -5,14 +5,14 @@ import (
 	"net/http"
 )
 
-func ErrorPageHandler(template *template.Template, w http.ResponseWriter, message string, loggedIn bool, loggedInClass string){
+func ErrorPageHandler(template *template.Template, w http.ResponseWriter, message string, loggedIn bool, loggedInClass string) {
 	type PageData struct {
 		UniversalPageData
 	}
 
 	pageData := PageData{
 		UniversalPageData: UniversalPageData{
-			LoggedIn: loggedIn,
+			LoggedIn:      loggedIn,
 			LoggedInClass: loggedInClass,
 		},
 	}
