@@ -1,0 +1,25 @@
+{{ define "my_creator_page" }}
+  <!doctype html>
+  <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Document</title>
+      {{ template "globals_component" }}
+    </head>
+    <body class="{{ .LoggedInClass }}">
+      {{ template "header_component" . }}
+
+
+      <div id="page_container" class="{{ .LoggedInClass }}">
+        {{ template "sidebar_component" . }}
+        <div id="page_content" class="{{ .LoggedInClass }}">
+          <p>{{ .MyCreator.Name }}</p>
+          <p>{{ .MyCreator.UUID }}</p>
+        </div>
+      </div>
+
+      {{ template "footer_component" . }}
+    </body>
+  </html>
+{{ end }}

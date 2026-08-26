@@ -1,0 +1,1 @@
+SELECT (title, subtitle, uuid, genres, tags, creator.name, creator.uuid) FROM writings WHERE writings.uuid = @uuid INNER JOIN ON creators WHERE creators.id = writings.creator_id;

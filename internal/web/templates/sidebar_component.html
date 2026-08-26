@@ -1,0 +1,26 @@
+{{ define "sidebar_component" }}
+  <aside id="sidebar_component">
+    <nav>
+      {{ if .LoggedIn }}
+      {{ end }}
+      <ul>
+        <li>
+          <a href="/browse">browse</a>
+          <ul>
+            <li><a href="/browse/fiction">fiction</a></li>
+            <li><a href="/browse/short-stories">short stories</a></li>
+            <li><a href="/browse/novelettes">novelettes</a></li>
+            <li><a href="/browse/novellas">novellas</a></li>
+            <li><a href="/browse/novels">novels</a></li>
+            <li><a href="/browse/essays">essays and blogs</a></li>
+            <li><a href="/browse/poetry">poetry</a></li>
+            <li><a href="/browse/memoir">memoirs</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="/search">search</a>
+        </li>
+      </ul>
+    </nav>
+  </aside>
+{{ end }}

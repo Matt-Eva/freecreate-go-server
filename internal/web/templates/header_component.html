@@ -1,0 +1,18 @@
+{{ define "header_component" }}
+  <header id="header_component">
+    <h1 id="header_title_mobile"><a href="/">FC</a></h1>
+    <h1 id="header_title_desktop"><a href="/">FreeCreate</a></h1>
+    <nav id="header_nav">
+      <a href="/browse">browse</a>
+      <a href="/search">search</a>
+      <a href="/about">about</a>
+      <a href="/donate">donate</a>
+      {{ if .LoggedIn }}
+        <a href="/profile" class="end_link">profile</a>
+      {{ else }}
+        <a href="/login" class="end_link">login</a>
+        <!-- <button id="login-modal-toggle">login</button> -->
+      {{ end }}
+    </nav>
+  </header>
+{{ end }}

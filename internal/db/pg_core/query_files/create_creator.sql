@@ -1,0 +1,1 @@
+INSERT INTO creators (name, user_id) VALUES (@name, @user_id) RETURNING name, uuid;

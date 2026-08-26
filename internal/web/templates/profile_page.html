@@ -1,0 +1,28 @@
+{{ define "profile" }}
+  <!doctype html>
+  <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      {{ template "globals_component" }}
+      <script defer src="/internal/web/static/js/profile_page.js"></script>
+      {{ .CsrfToken }}
+    </head>
+    <body class="{{ .LoggedInClass }}">
+      {{ template "header_component" . }}
+
+
+      <div id="page_container" class="{{ .LoggedInClass }}">
+        {{ template "sidebar_component" . }}
+        <div id="page_content" class="{{ .LoggedInClass }}">
+          <p>profile</p>
+          <a href="my-creators">Creator dashboard.</a>
+          <button id="logout_button">logout</button>
+          <p id="logout_error_block"></p>
+        </div>
+      </div>
+
+      {{ template "footer_component" . }}
+    </body>
+  </html>
+{{ end }}

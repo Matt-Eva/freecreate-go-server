@@ -6,13 +6,13 @@ Eventually, the hope is to have FreeCreate host all forms of content - from art,
 
 Together, we can make the internet a beautiful place!
 
+## Code Guide
+
+To get a working knowledge of the codebase and its various languages, tools, and design philosophies, please read the `code-guide` document within the `docs` folder.
+
 ## Written in Go
 
-I'm currently building FreeCreate in parallel right now, following two separate paradigms, for my own edification.
-
-This version of FreeCreate is built with Go, following a minimalist architecture that primarily relies on barebones, native technologies, with a focus on simplicity and peformance.
-
-The other version is being built with Ruby on Rails. You can check it out <a href="https://github.com/Matt-Eva/freecreate-rails">here</a>.
+FreeCreate is writting with Go, HTML (Go Templates), JavaScript, and CSS.
 
 ## Architecture.
 

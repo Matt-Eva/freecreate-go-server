@@ -1,0 +1,112 @@
+<!-- 
+    When naming a page, always name it "page_name_page".
+    Any separate word should be separated by an underscore.
+    Long names are fine, as long as they follow convention.
+-->
+
+{{ define "example_page" }}
+
+  <!doctype html>
+  <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Document</title>
+
+      <!-- 
+        Every page will have a globals component 
+        This includes links to things like global stylesheets
+      -->
+      {{ template "globals_component" . }}
+
+
+      <!-- 
+        We will also create a page level stylesheet for any css needed on this page.
+        Please place all css links above any javascript links, to ensure that these files are requested and loaded first.
+      -->
+      <link
+        rel="stylesheet"
+        href="./internal/web/static/css/example_page.css"
+      />
+
+      <!-- 
+        We will likely also have css. Unlike JavaScript, it's encouraged to create component
+        specific CSS files, and mandatory if that component is to be used on multiple web pages.
+        We may include may be links to several component level css files.
+       -->
+      <link
+        rel="stylesheet"
+        href="./internal/web/static/css/example_component.css"
+      />
+
+      <!-- 
+        If we need specific javascript for this page, create the corresponding page file
+        and import it as below.
+       -->
+      <script defer src="./internal/web/static/js/example_page.js"></script>
+
+      <!-- 
+        While we would ideally like to handle all javascript functionality for a page within its 
+        single page_js file, in case it becomes necessary or prudent we can extrapolate javascript
+        functionality to the component specific level. This should be considered if a single page.js file 
+        is becoming truly too long or complicated.
+       -->
+      <script
+        defer
+        src="./internal/web/static/js/example_component.js"
+      ></script>
+
+      {{ .CsrfToken }}
+    </head>
+    <!-- 
+        The body of any page will always have the class "{{ .LoggedInClass }}". 
+        This will be passed as part of the page data from the web_page_handler and
+        will have a value of either "logged_in" or "logged_out"
+    -->
+    <body class="{{ .LoggedInClass }}">
+      <!-- 
+        Always include the header component at the top of the page.
+        This requires the "{{ .LoggedIn }}" parameter, which is a boolean
+        that will passed in as part of pageData.
+        Parameters are pass to components via the "{{ . }}"
+        -->
+      {{ template "header_component" . }}
+
+
+      <!-- Every web page will follow this structure: -->
+      <!-- Container div should have id "page_container" -->
+      <div id="page_container">
+        <!-- Sidebar component also requires ".{{ .LoggedIn }} parameter" -->
+        {{ template "sidebar_component" . }}
+        <!-- Main page content div should have id "page_content" -->
+        <div id="page_content">
+          <!-- 
+            This is where the actual content of the webpage will appear. Everything surrounding this
+            is just a standardized template
+              -->
+          <h2>Example Page</h2>
+
+          {{ range .PageValues.ExampleParams }}
+            {{ template "example_component" . }}
+          {{ end }}
+
+
+          <form id="example_post_form">
+            <label for="example_post_form_input">Example Input:</label>
+            <input type="text" id="example_post_form_input" />
+            <inpute type="submit" />
+          </form>
+          <p id="example_post_form_message_block"></p>
+
+          <div id="fetched_data_container"></div>
+        </div>
+      </div>
+
+      <!-- 
+        Always include the footer component at the bottom of each page.
+        Also requires "{{ .LoggedIn }}" paramter 
+      -->
+      {{ template "footer_component" . }}
+    </body>
+  </html>
+{{ end }}

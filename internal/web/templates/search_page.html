@@ -1,0 +1,30 @@
+{{ define "search_page" }}
+  <!doctype html>
+  <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      {{ template "globals_component" }}
+      <title>Document</title>
+    </head>
+    <body class="{{ .LoggedInClass }}">
+      {{ template "header_component" . }}
+
+
+      <div id="page_container" class="{{ .LoggedInClass }}">
+        {{ template "sidebar_component" . }}
+        <div id="page_content" class="{{ .LoggedInClass }}">
+          {{ template "category_search_box_component" }}
+          <form action="/search" method="GET">
+            <label for="search">Search</label>
+            <input type="text" name="search" value="{{ .Query }}" />
+            <input type="submit" />
+          </form>
+          <p>{{ .Query }}</p>
+        </div>
+      </div>
+
+      {{ template "footer_component" . }}
+    </body>
+  </html>
+{{ end }}
