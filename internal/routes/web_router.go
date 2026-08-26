@@ -50,14 +50,14 @@ func ConfigureWebRouter(router chi.Router, sessionStore *sessions.CookieStore, v
 
 		router.Get("/browse", web_page_handlers.BrowsePageHandler(templates, sessionStore, valkeyClient))
 
-		router.Get("/browse/{writing_type}", web_page_handlers.HomePageHandler(templates, sessionStore, valkeyClient))
+		router.Get("/browse/{writing_type}", web_page_handlers.BrowsePageHandler(templates, sessionStore, valkeyClient))
 
 		// == Personal Pages ==
 		router.Get("/profile", web_page_handlers.ProfilePageHandler(sessionStore, valkeyClient, templates))
 
-		router.Get("/my-creators", web_page_handlers.MyCreatorsPageHandler(templates, sessionStore, valkeyClient, pgxPools.PgCore, pgCoreQueries))
+		router.Get("/my-creator/{creator_uuid}", web_page_handlers.MyCreatorPageHandler(templates, sessionStore, valkeyClient, pgxPools.PgCore, pgCoreQueries))
 
-		router.Get("/profile/creator/{creator_uuid}", web_page_handlers.MyCreatorPageHandler(templates, sessionStore, valkeyClient, pgxPools.PgCore, pgCoreQueries))
+		// router.Get("/my-writing", web_page_handlers.MyWritingPageHandler())
 
 		// ======== JSON Web API Routes =========
 
