@@ -27,8 +27,12 @@ CREATE TABLE public.creators (
     id bigint NOT NULL,
     uuid uuid DEFAULT uuidv7() NOT NULL,
     user_id bigint NOT NULL,
-    name character varying(100) NOT NULL,
-    creator_handle character varying(100)
+    creator_language regconfig DEFAULT 'english'::regconfig NOT NULL,
+    name text NOT NULL,
+    creator_handle text,
+    creator_name_search_vector tsvector GENERATED ALWAYS AS ((to_tsvector(creator_language, name) || to_tsvector(creator_language, creator_handle))) STORED,
+    CONSTRAINT creators_creator_handle_check CHECK ((length(creator_handle) < 100)),
+    CONSTRAINT creators_name_check CHECK ((length(name) < 100))
 );
 
 
@@ -62,10 +66,15 @@ CREATE TABLE public.schema_migrations (
 CREATE TABLE public.users (
     id bigint NOT NULL,
     uuid uuid DEFAULT uuidv7() NOT NULL,
-    email character varying(255) NOT NULL,
-    username character varying(100),
+    email text NOT NULL,
+    username text,
+    user_handle text,
     reading_history boolean DEFAULT false,
-    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    is_adult boolean DEFAULT false,
+    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    CONSTRAINT users_email_check CHECK ((length(email) < 255)),
+    CONSTRAINT users_user_handle_check CHECK ((length(user_handle) < 100)),
+    CONSTRAINT users_username_check CHECK ((length(username) < 100))
 );
 
 
@@ -92,9 +101,11 @@ CREATE TABLE public.writings (
     user_id bigint NOT NULL,
     creator_id bigint NOT NULL,
     uuid uuid DEFAULT uuidv7(),
-    title character varying(50) NOT NULL,
-    subtitle character varying(50),
-    description character varying(300),
+    writing_language regconfig DEFAULT 'english'::regconfig NOT NULL,
+    title text NOT NULL,
+    subtitle text,
+    title_search_vector tsvector GENERATED ALWAYS AS ((to_tsvector(writing_language, title) || to_tsvector(writing_language, subtitle))) STORED,
+    description text,
     writing_type text NOT NULL,
     topics text[] DEFAULT ARRAY[]::text[] NOT NULL,
     tags text[] DEFAULT ARRAY[]::text[] NOT NULL,
@@ -111,7 +122,10 @@ CREATE TABLE public.writings (
     published boolean DEFAULT false NOT NULL,
     published_before boolean DEFAULT false NOT NULL,
     last_published timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    CONSTRAINT writings_description_check CHECK ((length(description) < 300)),
+    CONSTRAINT writings_subtitle_check CHECK ((length(subtitle) < 100)),
     CONSTRAINT writings_tags_check CHECK ((cardinality(tags) <= 20)),
+    CONSTRAINT writings_title_check CHECK ((length(title) < 100)),
     CONSTRAINT writings_topics_check CHECK ((cardinality(topics) <= 3))
 );
 
@@ -171,19 +185,18 @@ ALTER TABLE ONLY public.users
 
 
 --
--- Name: users users_username_key; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.users
-    ADD CONSTRAINT users_username_key UNIQUE (username);
-
-
---
 -- Name: writings writings_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.writings
     ADD CONSTRAINT writings_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: idx_creators_name_search; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_creators_name_search ON public.creators USING gin (creator_name_search_vector);
 
 
 --
@@ -247,6 +260,13 @@ CREATE INDEX idx_writings_rel_rank ON public.writings USING btree (rel_rank);
 --
 
 CREATE INDEX idx_writings_tags ON public.writings USING gin (tags);
+
+
+--
+-- Name: idx_writings_title_search; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_writings_title_search ON public.writings USING gin (title_search_vector);
 
 
 --

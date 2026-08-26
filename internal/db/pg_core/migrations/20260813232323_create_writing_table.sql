@@ -4,9 +4,13 @@ CREATE TABLE writings (
     user_id BIGINT NOT NULL,
     creator_id BIGINT NOT NULL,
     uuid UUID DEFAULT uuidv7(),
-    title VARCHAR(50) NOT NULL,
-    subtitle VARCHAR(50),
-    description VARCHAR(300),
+    writing_language REGCONFIG NOT NULL DEFAULT 'english',
+    title TEXT NOT NULL CHECK (length(title) < 100),
+    subtitle TEXT CHECK (length(subtitle) < 100),
+    title_search_vector TSVECTOR GENERATED ALWAYS AS (
+        to_tsvector(writing_language, title) || to_tsvector(writing_language, subtitle)
+    ) STORED,
+    description TEXT CHECK (length(description) < 300),
     writing_type TEXT NOT NULL,
     topics TEXT ARRAY NOT NULL DEFAULT ARRAY[]::TEXT[] CHECK (cardinality(topics) <= 3) ,
     tags TEXT ARRAY NOT NULL DEFAULT ARRAY[]::TEXT[] CHECK (cardinality(tags) <= 20), 
@@ -36,6 +40,7 @@ CREATE INDEX idx_writings_last_published ON writings(last_published);
 
 CREATE INDEX idx_writings_topics ON writings USING GIN(topics);
 CREATE INDEX idx_writings_tags ON writings USING GIN(tags);
+CREATE INDEX idx_writings_title_search ON writings USING GIN(title_search_vector);
 
 -- migrate:down
 DROP TABLE writings;
