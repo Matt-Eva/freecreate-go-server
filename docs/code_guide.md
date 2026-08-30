@@ -234,6 +234,9 @@ Here are the tools you will need installed to work on the project (working on ge
 - Prettier Plugin Go Template - Prettier Plugin
   - (Reference)[https://github.com/NiklasPor/prettier-plugin-go-template]
 
+## Env file
+- Please refer to the sample.env file to determine the environment variables you'll need for the project.
+
 
 [Top](#table-of-contents)
 
@@ -442,9 +445,15 @@ Commands for migrating up and rolling back migrations for specific databases are
 
 Please make sure to enable the permissions of these scripts to ensure you're able to run them.
 
+Change permissions:
+
+- `chmod +x ./internal/cmd/_migrate_pg_core.sh`
+
 Example command:
 
-`./internal/cmd/migrate_pg_core.sh`
+- `./internal/cmd/migrate_pg_core.sh`
+
+- `./internal/cmd/rollback_pg_core.sh`
 
 # Queries
 
