@@ -328,13 +328,15 @@ Why are we using Go as our primary backend language? There are several reasons:
 - Go has a built in formatter that dictates formatting rules: `go fmt ./...`.
 - Go is simple
   - The founding philosophy of Go is that there is "one way to write things"
-  - While this is no longer true, Go still has relatively little syntactic sugar, and is easy to read and logic through.
-  - It's very explicit and clear and keeps things predictable and easy to logic through.
+  - While this is no longer true, Go still has relatively little syntactic sugar, and is easy to read and comprehend.
+  - It's very explicit and clear and keeps things predictable and consistent.
 - Go uses errors as values
   - Many developers hate this about Go. You will see a lot of people complaing about writing `if err != nil` over and over and over again.
   - I, personally, love errors as values (Matt). 
   - It makes error handling a first order of business when writing code, rather than a secondary order of business.
   - For more on this, please see [error handling in our Go code](#error-handling-in-our-go-code).
+- Go is widely supported
+  - Fortunately, the Go ecosystem is mature enough to reliably have solid integrations with third party tooling - Stripe, Resend, Postgres, Valkey, etc.
 
 [Top](#table-of-contents)
 
