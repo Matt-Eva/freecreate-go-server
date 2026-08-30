@@ -236,6 +236,7 @@ Here are the tools you will need installed to work on the project (working on ge
 
 ## Env file
 - Please refer to the sample.env file to determine the environment variables you'll need for the project.
+- Please BE CERTAIN not to commit your own .env file to Git history. If you do, please tell Matt as soon as you realize you have. (Don't worry, it'll be ok!)
 
 
 [Top](#table-of-contents)
@@ -316,6 +317,24 @@ Backend Team - System Architecture, Database Administration, Query Handling, and
 [Top](#table-of-contents)
 
 # Go 
+
+## Why Go?
+
+Why are we using Go as our primary backend language? There are several reasons:
+
+- Go is statically typed
+- Go is compiled
+- Go has built in concurrency and parallelism that is easy to implement (and often implemented out of the box in core package functionality)
+- Go has a built in formatter that dictates formatting rules: `go fmt ./...`.
+- Go is simple
+  - The founding philosophy of Go is that there is "one way to write things"
+  - While this is no longer true, Go still has relatively little syntactic sugar, and is easy to read and logic through.
+  - It's very explicit and clear and keeps things predictable and easy to logic through.
+- Go uses errors as values
+  - Many developers hate this about Go. You will see a lot of people complaing about writing `if err != nil` over and over and over again.
+  - I, personally, love errors as values (Matt). 
+  - It makes error handling a first order of business when writing code, rather than a secondary order of business.
+  - For more on this, please see [error handling in our Go code](#error-handling-in-our-go-code).
 
 [Top](#table-of-contents)
 
@@ -428,10 +447,6 @@ Then, we'll create the requisite databases using the `CREATE DATABASE` command:
 - `CREATE DATABASE freecreate_donations_one;`
 
 The reason we're adding "one" to the end of our writing content and donations databases is to accomodate for the possibility of multiple content and donations databases.
-
-Once you've created your databases, make sure to add the following environment variables to your `.env` file (make sure this file is also in your .gitignore):
-
-- 
 
 # Dbmate
 
