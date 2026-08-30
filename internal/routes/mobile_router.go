@@ -2,7 +2,7 @@ package routes
 
 import "github.com/go-chi/chi/v5"
 
-func ReactNativeRouter() *chi.Mux {
+func MobileRouter() *chi.Mux {
 	router := chi.NewRouter()
 
 	return router

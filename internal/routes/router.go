@@ -15,9 +15,9 @@ func CreateRouter(sessionStore *sessions.CookieStore, pgxPools config.PgxPools, 
 
 	ConfigureWebRouter(router, sessionStore, valkeyClient, pgxPools, pgCoreQueries, resendClient)
 
-	router.Mount("/electron-api", ElectronRouter())
+	router.Mount("/desktop-api", DesktopRouter())
 
-	router.Mount("/react-native-api", ReactNativeRouter())
+	router.Mount("/mobile-api", MobileRouter())
 
 	return router
 }
