@@ -212,6 +212,29 @@ FreeCreate's search functionality does not currently employ a full-scale search 
 
 # Requisite Tooling
 
+Here are the tools you will need installed to work on the project (working on getting this Dockerized):
+
+## Core Technologies:
+- Go version 1.27.0
+  - [Installing Go](https://go.dev/doc/install)
+  - [Managing multiple Go versions](https://go.dev/doc/manage-install)
+- Postgresql version 18.6
+- Valkey server 8.1.3
+- dbmate version 2.33.0
+  - [Installing dbmate](https://github.com/amacneil/dbmate)
+- React Native version(?)
+- Electron version(?)
+
+## Tooling:
+- Go - VS Code extension
+- Draw.io - VS Code extension
+- Go Template Support - VS Code extension
+  - author: jinliming2
+- Prettier - VS Code extension
+- Prettier Plugin Go Template - Prettier Plugin
+  - (Reference)[https://github.com/NiklasPor/prettier-plugin-go-template]
+
+
 [Top](#table-of-contents)
 
 # Codebase Structure
