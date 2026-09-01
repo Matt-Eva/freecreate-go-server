@@ -1,8 +1,16 @@
 # Matt To-Do
 
 - Look into Docker for cross-developer template / build []
-- List nice to have tooling / extensions for working with VS Code []
-- List all requisite dependencies for running freecreate []
+- Fill out Section in Code Guide about JavaScript []
+- Fill out Section in Code Guide about Mobile / Desktop stack []
+- Schedule sync with Colin []
+- Schedule sync with Wills []
+- Schedule full group sync []
+- Message Jay [x]
+- Write Code of Conduct []
+- List nice to have tooling / extensions for working with VS Code [x]
+- List all requisite dependencies for running freecreate [x]
+  - Tom was able to get this up and running
 - Note query pattern for updating views / rank / rel_rank. [x]
 - Confirm GIN index generation technique for writing. [x]
 - Refactor bash migration commands to be developer agnostic (works on any machine) [x]
