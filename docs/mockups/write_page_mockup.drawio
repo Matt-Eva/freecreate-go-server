@@ -1,0 +1,58 @@
+<mxfile host="65bd71144e">
+    <diagram id="5PZrNuEZS4NGBaHsjJHd" name="Page-1">
+        <mxGraphModel dx="1921" dy="604" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="2" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="120" y="220" width="420" height="540" as="geometry"/>
+                </mxCell>
+                <mxCell id="4" value="Create New Writing" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="150" y="280" width="150" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="6" value="Title" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="150" y="320" width="80" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="7" value="Creator" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="150" y="350" width="80" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="8" value="" style="shape=singleArrow;direction=south;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="200" y="355" width="20" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="9" value="Writing Type" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="150" y="390" width="80" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="10" value="" style="shape=singleArrow;direction=south;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="230" y="400" width="20" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="11" value="" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="155" y="440" width="70" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="12" value="Create" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+                    <mxGeometry x="155" y="440" width="60" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="13" value="Want to edit existing writing? Go to My Writing (link)." style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="150" y="520" width="350" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="14" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="690" y="215" width="410" height="550" as="geometry"/>
+                </mxCell>
+                <mxCell id="15" value="Standard (with existing creator profiles)" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+                    <mxGeometry x="210" y="160" width="230" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="16" value="No Creator Profiles" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+                    <mxGeometry x="800" y="160" width="160" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="17" value="Looks like you haven&#39;t set up any creator profiles yet! Go to your profile page to make a new creator profile. (Link on &quot;profile page&quot;)" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+                    <mxGeometry x="775" y="260" width="315" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="18" value="After creating, redirect to &quot;edit writing&quot; page for newly created writing" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+                    <mxGeometry x="-70" y="270" width="150" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="19" value="url: /write" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+                    <mxGeometry x="550" y="60" width="60" height="30" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
