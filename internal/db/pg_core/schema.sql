@@ -242,6 +242,20 @@ CREATE UNIQUE INDEX idx_creators_name_user_id ON public.creators USING btree (us
 
 
 --
+-- Name: idx_creators_rank; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_creators_rank ON public.creators USING btree (rank);
+
+
+--
+-- Name: idx_creators_rel_rank; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_creators_rel_rank ON public.creators USING btree (rel_rank);
+
+
+--
 -- Name: idx_creators_user_id; Type: INDEX; Schema: public; Owner: -
 --
 
