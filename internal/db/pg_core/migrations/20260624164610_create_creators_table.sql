@@ -5,7 +5,7 @@ CREATE TABLE creators (
     user_id BIGINT NOT NULL,
     creator_language REGCONFIG NOT NULL DEFAULT 'english',
     name TEXT NOT NULL CHECK (length(name) < 100),
-    creator_handle TEXT UNIQUE CHECK (length(creator_handle) < 100),
+    creator_handle TEXT NOT NULL UNIQUE CHECK (length(creator_handle) < 100),
     creator_name_search_vector tsvector GENERATED ALWAYS AS (
         to_tsvector(creator_language, name) || to_tsvector(creator_language, creator_handle)
     ) STORED,

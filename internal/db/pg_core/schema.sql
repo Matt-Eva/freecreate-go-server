@@ -29,7 +29,7 @@ CREATE TABLE public.creators (
     user_id bigint NOT NULL,
     creator_language regconfig DEFAULT 'english'::regconfig NOT NULL,
     name text NOT NULL,
-    creator_handle text,
+    creator_handle text NOT NULL,
     creator_name_search_vector tsvector GENERATED ALWAYS AS ((to_tsvector(creator_language, name) || to_tsvector(creator_language, creator_handle))) STORED,
     topics text[] DEFAULT ARRAY[]::text[] NOT NULL,
     tags text[] DEFAULT ARRAY[]::text[] NOT NULL,
