@@ -44,6 +44,7 @@ CREATE TABLE public.creators (
     flags bigint DEFAULT 0 NOT NULL,
     rank_tracker bigint DEFAULT 0 NOT NULL,
     created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    last_published timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     CONSTRAINT creators_creator_handle_check CHECK ((length(creator_handle) < 100)),
     CONSTRAINT creators_name_check CHECK ((length(name) < 100)),
     CONSTRAINT creators_tags_check CHECK ((cardinality(tags) <= 20))
@@ -225,6 +226,13 @@ CREATE INDEX idx_creator_topics ON public.creators USING gin (topics);
 --
 
 CREATE INDEX idx_creator_writing_types ON public.creators USING gin (writing_types);
+
+
+--
+-- Name: idx_creators_last_published; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_creators_last_published ON public.creators USING btree (last_published);
 
 
 --

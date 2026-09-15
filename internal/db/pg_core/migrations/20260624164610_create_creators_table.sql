@@ -22,6 +22,7 @@ CREATE TABLE creators (
     flags BIGINT NOT NULL DEFAULT 0,
     rank_tracker BIGINT NOT NULL DEFAULT 0,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    last_published TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
@@ -29,6 +30,7 @@ CREATE INDEX idx_creators_user_id ON creators(user_id);
 CREATE INDEX idx_creators_uuid ON creators(uuid);
 CREATE INDEX idx_creators_rank ON creators(rank);
 CREATE INDEX idx_creators_rel_rank ON creators(rel_rank);
+CREATE INDEX idx_creators_last_published ON creators(last_published);
 
 CREATE UNIQUE INDEX idx_creators_name_user_id ON creators(user_id, name);
 
