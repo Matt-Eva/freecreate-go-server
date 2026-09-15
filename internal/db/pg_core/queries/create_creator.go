@@ -13,15 +13,22 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
+type CreateCreatorParams struct {
+	UserId int64
+	Name string
+	Handle string
+}
+
 type CreatedCreator struct {
 	Name string
 	UUID uuid.UUID
 }
 
-func CreateCreator(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries, creatorName string, userId int64) (CreatedCreator, *api_error.Error) {
+func CreateCreator(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries, creatorName string, createCreatorParams CreateCreatorParams) (CreatedCreator, *api_error.Error) {
 	query := pgCoreQueries.CreateCreator()
 	namedArgs := pgx.NamedArgs{
-		"name":    creatorName,
+		"name":    createCreatorParams.Name,
+		
 		"user_id": userId,
 	}
 

@@ -9,6 +9,7 @@ CREATE TABLE creators (
     creator_name_search_vector tsvector GENERATED ALWAYS AS (
         to_tsvector(creator_language, name) || to_tsvector(creator_language, creator_handle)
     ) STORED,
+    about TEXT NOT NULL DEFAULT '',
     topics TEXT ARRAY NOT NULL DEFAULT ARRAY[]::TEXT[],
     tags TEXT ARRAY NOT NULL DEFAULT ARRAY[]::TEXT[] CHECK (cardinality(tags) <= 20), 
     writing_types TEXT ARRAY NOT NULL DEFAULT ARRAY[]::TEXT[],

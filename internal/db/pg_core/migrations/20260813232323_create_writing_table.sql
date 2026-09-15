@@ -10,7 +10,7 @@ CREATE TABLE writings (
     title_search_vector TSVECTOR GENERATED ALWAYS AS (
         to_tsvector(writing_language, title) || to_tsvector(writing_language, subtitle)
     ) STORED,
-    description TEXT CHECK (length(description) < 300),
+    description TEXT DEFAULT '' CHECK (length(description) < 300),
     writing_type TEXT NOT NULL,
     topics TEXT ARRAY NOT NULL DEFAULT ARRAY[]::TEXT[] CHECK (cardinality(topics) <= 3) ,
     tags TEXT ARRAY NOT NULL DEFAULT ARRAY[]::TEXT[] CHECK (cardinality(tags) <= 20), 
