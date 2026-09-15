@@ -2,6 +2,7 @@ package pg_core_queries
 
 import (
 	"context"
+	"errors"
 	"freecreate/internal/config"
 	pg_core_validators "freecreate/internal/db/pg_core/validators"
 	"freecreate/internal/lib/api_error"
@@ -10,6 +11,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -21,15 +23,16 @@ type CreateCreatorParams struct {
 
 type CreatedCreator struct {
 	Name string
+	Handle string
 	UUID uuid.UUID
 }
 
-func CreateCreator(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries, creatorName string, createCreatorParams CreateCreatorParams) (CreatedCreator, *api_error.Error) {
+func CreateCreator(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries, createCreatorParams CreateCreatorParams) (CreatedCreator, *api_error.Error) {
 	query := pgCoreQueries.CreateCreator()
 	namedArgs := pgx.NamedArgs{
 		"name":    createCreatorParams.Name,
-		
-		"user_id": userId,
+		"creator_handle": createCreatorParams.Handle,
+		"user_id": createCreatorParams.UserId,
 	}
 
 	validateCreatorErr := pg_core_validators.ValidateCreator(namedArgs)
@@ -39,11 +42,22 @@ func CreateCreator(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries conf
 
 	var name string
 	var uuid uuid.UUID
+	var creator_handle string
 
 	rowResult := pgCore.QueryRow(ctx, query, namedArgs)
 
-	createCreatorErr := rowResult.Scan(&name, &uuid)
-	if createCreatorErr != nil {
+	createCreatorErr := rowResult.Scan(&name, &uuid, &creator_handle)
+
+	var pgErr *pgconn.PgError
+	if errors.As(createCreatorErr, &pgErr) && pgErr.Code == "23505"{
+		apiErr := &api_error.Error{
+			Code: http.StatusUnprocessableEntity,
+			Message: "You cannot make two creators with the same name.",
+			Error: createCreatorErr,
+		}
+
+		return CreatedCreator{}, apiErr
+	} else if createCreatorErr != nil {
 		logger.Log(createCreatorErr)
 
 		apiErr := &api_error.Error{

@@ -1,1 +1,1 @@
-SELECT (name, handle, uuid) FROM creators WHERE creators.user_id = @user_id LIMIT 100 ORDER BY name;
+SELECT (name, creator_handle, uuid) FROM creators WHERE creators.user_id = @user_id ORDER BY name LIMIT 100 ;

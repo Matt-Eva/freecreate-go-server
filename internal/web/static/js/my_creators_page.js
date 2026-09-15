@@ -6,12 +6,12 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  const createCreatorForm = document.getElementById("create_creator_form");
+  const createCreatorForm = document.getElementById("new_creator_form");
   const createCreatorNameInput = document.getElementById(
-    "create_creator_name_input",
+    "new_creator_name_input",
   );
   const createCreatorMessageBlock = document.getElementById(
-    "create_creator_message_block",
+    "new_creator_message_block",
   );
 
   createCreatorForm.addEventListener("submit", handleCreateCreator);

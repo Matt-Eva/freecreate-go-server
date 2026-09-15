@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"freecreate/internal/config"
-	pg_core_queries "freecreate/internal/db/pg_core/queries"
 	"freecreate/internal/lib/api_error"
 	"freecreate/internal/lib/logger"
+	"freecreate/internal/query_handlers"
 	"freecreate/internal/web/web_auth"
 	"net/http"
 
@@ -28,6 +28,7 @@ func CreateCreatorHandler(sessionStore *sessions.CookieStore, valkeyClient valke
 
 		type Body struct {
 			Name string `json:"name"`
+			Handle string `json:"handle"`
 		}
 
 		var body Body
@@ -40,8 +41,15 @@ func CreateCreatorHandler(sessionStore *sessions.CookieStore, valkeyClient valke
 		}
 
 		creatorName := body.Name
+		creatorHandle := body.Handle
 
-		createdCreator, createCreatorErr := pg_core_queries.CreateCreator(ctx, pgCore, pgCoreQueries, creatorName, userId)
+		createCreatorParams := query_handlers.CreateCreatorParams {
+			UserId: userId,
+			Name: creatorName,
+			Handle: creatorHandle,
+		}
+
+		createdCreator, createCreatorErr := query_handlers.HandleCreateCreator(ctx, pgCore, pgCoreQueries, createCreatorParams)
 		if createCreatorErr != nil {
 			http.Error(w, createCreatorErr.Message, createCreatorErr.Code)
 			return
@@ -50,11 +58,13 @@ func CreateCreatorHandler(sessionStore *sessions.CookieStore, valkeyClient valke
 		type Response struct {
 			UUID uuid.UUID `json:"uuid"`
 			Name string    `json:"name"`
+			Handle string `json:"handle"`
 		}
 
 		res := Response{
 			UUID: createdCreator.UUID,
 			Name: createdCreator.Name,
+			Handle: createdCreator.Handle,
 		}
 
 		jsonRes, err := json.Marshal(res)
@@ -67,7 +77,7 @@ func CreateCreatorHandler(sessionStore *sessions.CookieStore, valkeyClient valke
 		fmt.Println("creator successfully created! Returning response")
 		fmt.Println(jsonRes)
 
-		// w.Header().Set("Content-Type", "application/json")
+		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusCreated)
 		w.Write(jsonRes)
 	}
