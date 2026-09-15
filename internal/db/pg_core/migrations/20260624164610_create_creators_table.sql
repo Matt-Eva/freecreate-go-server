@@ -33,8 +33,6 @@ CREATE INDEX idx_creators_rank ON creators(rank);
 CREATE INDEX idx_creators_rel_rank ON creators(rel_rank);
 CREATE INDEX idx_creators_last_published ON creators(last_published);
 
-CREATE UNIQUE INDEX idx_creators_name_user_id ON creators(user_id, name);
-
 CREATE INDEX idx_creator_topics ON creators USING GIN(topics);
 CREATE INDEX idx_creator_tags ON creators USING GIN(tags);
 CREATE INDEX idx_creator_writing_types ON creators USING GIN(writing_types);

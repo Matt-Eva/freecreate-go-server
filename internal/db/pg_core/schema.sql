@@ -244,13 +244,6 @@ CREATE INDEX idx_creators_name_search ON public.creators USING gin (creator_name
 
 
 --
--- Name: idx_creators_name_user_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX idx_creators_name_user_id ON public.creators USING btree (user_id, name);
-
-
---
 -- Name: idx_creators_rank; Type: INDEX; Schema: public; Owner: -
 --
 

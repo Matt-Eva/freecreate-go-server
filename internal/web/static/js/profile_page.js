@@ -22,6 +22,7 @@ document.addEventListener("DOMContentLoaded", (e) => {
   const newCreatorMessageBlock = document.getElementById(
     "new_creator_message_block",
   );
+  const myCreatorsContainer = document.getElementById("my_creators_container");
 
   // ============ Event Listeners ================
 
@@ -97,12 +98,33 @@ document.addEventListener("DOMContentLoaded", (e) => {
         throw new Error(err);
       } else {
         const data = await res.json();
-        console.log(data);
+        renderNewCreator(data);
       }
     } catch (error) {
       console.error(error);
       renderCreateCreatorMessage(error.message);
     }
+  }
+
+  function renderNewCreator(data) {
+    console.log(data);
+    const article = document.createElement("article");
+    const name = document.createElement("p");
+    const handle = document.createElement("p");
+
+    const viewLink = document.createElement("a");
+    const editLink = document.createElement("a");
+
+    name.textContent = data.name;
+    handle.textContent = data.handle;
+
+    viewLink.href = `/my-creator/${data.uuid}`;
+    viewLink.textContent = "view";
+    editLink.href = `/my-creator/${data.uuid}/edit`;
+    editLink.textContent = "edit";
+
+    article.append(name, handle, viewLink, editLink);
+    myCreatorsContainer.append(article);
   }
 
   function renderCreateCreatorMessage(message) {

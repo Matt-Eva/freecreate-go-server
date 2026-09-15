@@ -52,7 +52,7 @@ func CreateCreator(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries conf
 	if errors.As(createCreatorErr, &pgErr) && pgErr.Code == "23505"{
 		apiErr := &api_error.Error{
 			Code: http.StatusUnprocessableEntity,
-			Message: "You cannot make two creators with the same name.",
+			Message: "Creator handle must be unique.",
 			Error: createCreatorErr,
 		}
 
@@ -71,6 +71,7 @@ func CreateCreator(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries conf
 
 	createdCreator := CreatedCreator{
 		Name: name,
+		Handle: creator_handle,
 		UUID: uuid,
 	}
 

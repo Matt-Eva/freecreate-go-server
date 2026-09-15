@@ -67,15 +67,14 @@ func CreateCreatorHandler(sessionStore *sessions.CookieStore, valkeyClient valke
 			Handle: createdCreator.Handle,
 		}
 
+		fmt.Println(res)
+
 		jsonRes, err := json.Marshal(res)
 		if err != nil {
 			logger.Log(err)
 			http.Error(w, api_error.InteralServerErrorMessage, 500)
 			return
 		}
-
-		fmt.Println("creator successfully created! Returning response")
-		fmt.Println(jsonRes)
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusCreated)
