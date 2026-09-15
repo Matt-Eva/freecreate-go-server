@@ -58,7 +58,7 @@ func CreateCreator(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries conf
 	if errors.As(createCreatorErr, &pgErr) && pgErr.Code == "23505"{
 		apiErr := &api_error.Error{
 			Code: http.StatusUnprocessableEntity,
-			Message: "Creator handle must be unique.",
+			Message: "That creator handle is already in use.",
 			Error: createCreatorErr,
 		}
 
