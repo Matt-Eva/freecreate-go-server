@@ -2,6 +2,7 @@ package pg_core_queries
 
 import (
 	"context"
+	"errors"
 	"freecreate/internal/config"
 	pg_core_validators "freecreate/internal/db/pg_core/validators"
 	"freecreate/internal/lib/api_error"
@@ -9,6 +10,7 @@ import (
 	"net/http"
 
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -26,7 +28,18 @@ func CreateUser(ctx context.Context, pgCoreQueries config.PgCoreQueries, pgCore 
 	var userId int64
 
 	queryErr := pgCore.QueryRow(ctx, query, queryArgs).Scan(&userId)
-	if queryErr != nil {
+
+	var pgErr *pgconn.PgError
+	if errors.As(queryErr, &pgErr) && pgErr.Code == "23505" {
+		apiErr := &api_error.Error{
+			Code:    http.StatusUnprocessableEntity,
+			Message: "An account with that email address already exists.",
+			Error:   queryErr,
+		}
+
+		return 0, apiErr
+			
+	} else if queryErr != nil {
 		logger.Log(queryErr)
 
 		apiErr := &api_error.Error{
@@ -37,5 +50,6 @@ func CreateUser(ctx context.Context, pgCoreQueries config.PgCoreQueries, pgCore 
 
 		return 0, apiErr
 	}
+
 	return userId, nil
 }

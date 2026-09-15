@@ -2,7 +2,6 @@ package pg_core_queries
 
 import (
 	"context"
-	"fmt"
 	"freecreate/internal/config"
 	pg_core_validators "freecreate/internal/db/pg_core/validators"
 	"freecreate/internal/lib/api_error"
@@ -35,7 +34,6 @@ func CreateCreator(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries conf
 	var uuid uuid.UUID
 
 	rowResult := pgCore.QueryRow(ctx, query, namedArgs)
-	fmt.Println(rowResult)
 
 	createCreatorErr := rowResult.Scan(&name, &uuid)
 	if createCreatorErr != nil {
