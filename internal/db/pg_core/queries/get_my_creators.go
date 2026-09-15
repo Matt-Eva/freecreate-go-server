@@ -15,6 +15,7 @@ import (
 
 type MyCreatorsStruct struct {
 	Name string
+	CreatorHandle string
 	UUID uuid.UUID
 }
 

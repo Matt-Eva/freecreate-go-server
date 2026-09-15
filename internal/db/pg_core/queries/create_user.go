@@ -38,7 +38,7 @@ func CreateUser(ctx context.Context, pgCoreQueries config.PgCoreQueries, pgCore 
 		}
 
 		return 0, apiErr
-			
+
 	} else if queryErr != nil {
 		logger.Log(queryErr)
 

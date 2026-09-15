@@ -53,7 +53,7 @@ func ConfigureWebRouter(router chi.Router, sessionStore *sessions.CookieStore, v
 		router.Get("/browse/{writing_type}", web_page_handlers.BrowsePageHandler(templates, sessionStore, valkeyClient))
 
 		// == Personal Pages ==
-		router.Get("/profile", web_page_handlers.ProfilePageHandler(sessionStore, valkeyClient, templates))
+		router.Get("/profile", web_page_handlers.ProfilePageHandler(sessionStore, valkeyClient, templates, pgxPools.PgCore, pgCoreQueries))
 
 		router.Get("/my-creator/{creator_uuid}", web_page_handlers.MyCreatorPageHandler(templates, sessionStore, valkeyClient, pgxPools.PgCore, pgCoreQueries))
 

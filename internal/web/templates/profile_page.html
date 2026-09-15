@@ -16,9 +16,30 @@
         {{ template "sidebar_component" . }}
         <div id="page_content" class="{{ .LoggedInClass }}">
           <p>profile</p>
-          <a href="my-creators">Creator dashboard.</a>
-          <button id="logout_button">logout</button>
-          <p id="logout_error_block"></p>
+          <div>
+            <button id="logout_button">logout</button>
+            <p id="logout_error_block"></p>
+          </div>
+          <div>
+            <h2>My Creators</h2>
+            <div>
+              <h3>Add New Creator Profile:</h3>
+              <form></form>
+            </div>
+            <div>
+              <h3>My Creator Profiles:</h3>
+              <div>
+                {{ range .MyCreators }}
+                  <article>
+                    <p>{{ .Name }}</p>
+                    <p>{{ .CreatorHandle }}</p>
+                    <a href="/my-creator/{{ .UUID }}">view</a>
+                    <a href="/my-creator/{{ .UUID }}/edit">edit</a>
+                  </article>
+                {{ end }}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 

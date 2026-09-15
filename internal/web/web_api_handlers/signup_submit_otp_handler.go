@@ -50,7 +50,7 @@ func SignupSubmitOtp(sessionStore *sessions.CookieStore, valkeyClient valkey.Cli
 			return
 		}
 
-		createUserParams := query_handlers.CreateUserParams {
+		createUserParams := query_handlers.CreateUserParams{
 			Email: email,
 		}
 

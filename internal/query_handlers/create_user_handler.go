@@ -17,7 +17,7 @@ type CreatedUser struct {
 	UserId int64
 }
 
-func HandleCreateUser(ctx context.Context, pgCoreQueries config.PgCoreQueries, pgCore *pgxpool.Pool, userParams CreateUserParams)(CreatedUser, *api_error.Error) {
+func HandleCreateUser(ctx context.Context, pgCoreQueries config.PgCoreQueries, pgCore *pgxpool.Pool, userParams CreateUserParams) (CreatedUser, *api_error.Error) {
 	var createdUser CreatedUser
 
 	userId, createUserErr := pg_core_queries.CreateUser(ctx, pgCoreQueries, pgCore, userParams.Email)
@@ -26,6 +26,6 @@ func HandleCreateUser(ctx context.Context, pgCoreQueries config.PgCoreQueries, p
 	}
 
 	createdUser.UserId = userId
-	
+
 	return createdUser, nil
 }
