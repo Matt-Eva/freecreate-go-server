@@ -4,9 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"freecreate/internal/config"
-	pg_core_queries "freecreate/internal/db/pg_core/queries"
-	pg_core_validators "freecreate/internal/db/pg_core/validators"
 	"freecreate/internal/lib/logger"
+	"freecreate/internal/query_handlers"
 	"freecreate/internal/web/web_auth"
 
 	"net/http"
@@ -21,7 +20,6 @@ func SignupSubmitOtp(sessionStore *sessions.CookieStore, valkeyClient valkey.Cli
 		fmt.Println("hit submit otp route")
 		_, sessionUuid, getSessionErr := web_auth.GetGuestSession(sessionStore, w, r)
 		if getSessionErr != nil {
-
 			http.Error(w, getSessionErr.Message, getSessionErr.Code)
 			return
 		}
@@ -43,29 +41,28 @@ func SignupSubmitOtp(sessionStore *sessions.CookieStore, valkeyClient valkey.Cli
 		ctx := r.Context()
 
 		email := body.Email
-		emailValidationError := pg_core_validators.ValidateEmail(email)
-		if emailValidationError != nil {
-			http.Error(w, emailValidationError.Message, emailValidationError.Code)
-			return
-		}
 
 		otp := body.Otp
 
 		validateOtpErr := web_auth.ValidateOtp(ctx, sessionUuid, valkeyClient, email, otp)
 		if validateOtpErr != nil {
-			http.Error(w, validateOtpErr.Message, 500)
+			http.Error(w, validateOtpErr.Message, validateOtpErr.Code)
 			return
 		}
 
-		userId, createUserErr := pg_core_queries.CreateUser(ctx, pgCoreQueries, pgCore, email)
+		createUserParams := query_handlers.CreateUserParams {
+			Email: email,
+		}
+
+		createdUser, createUserErr := query_handlers.HandleCreateUser(ctx, pgCoreQueries, pgCore, createUserParams)
 		if createUserErr != nil {
-			http.Error(w, createUserErr.Message, 500)
+			http.Error(w, createUserErr.Message, createUserErr.Code)
 			return
 		}
 
-		loginUserErr := web_auth.LoginUser(ctx, sessionStore, valkeyClient, r, w, userId)
+		loginUserErr := web_auth.LoginUser(ctx, sessionStore, valkeyClient, r, w, createdUser.UserId)
 		if loginUserErr != nil {
-			http.Error(w, loginUserErr.Message, 500)
+			http.Error(w, loginUserErr.Message, loginUserErr.Code)
 			return
 		}
 
