@@ -9,6 +9,9 @@ CREATE TABLE creators (
     creator_name_search_vector tsvector GENERATED ALWAYS AS (
         to_tsvector(creator_language, name) || to_tsvector(creator_language, creator_handle)
     ) STORED,
+    topics TEXT ARRAY NOT NULL DEFAULT ARRAY[]::TEXT[],
+    tags TEXT ARRAY NOT NULL DEFAULT ARRAY[]::TEXT[] CHECK (cardinality(tags) <= 20), 
+    writing_types TEXT ARRAY NOT NULL DEFAULT ARRAY[]::TEXT[],
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
@@ -17,6 +20,9 @@ CREATE INDEX idx_creators_uuid ON creators(uuid);
 
 CREATE UNIQUE INDEX idx_creators_name_user_id ON creators(user_id, name);
 
+CREATE INDEX idx_creator_topics ON creators USING GIN(topics);
+CREATE INDEX idx_creator_tags ON creators USING GIN(tags);
+CREATE INDEX idx_creator_writing_types ON creators USING GIN(writing_types);
 CREATE INDEX idx_creators_name_search ON creators USING GIN(creator_name_search_vector);
 
 

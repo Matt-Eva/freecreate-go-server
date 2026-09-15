@@ -31,8 +31,12 @@ CREATE TABLE public.creators (
     name text NOT NULL,
     creator_handle text,
     creator_name_search_vector tsvector GENERATED ALWAYS AS ((to_tsvector(creator_language, name) || to_tsvector(creator_language, creator_handle))) STORED,
+    topics text[] DEFAULT ARRAY[]::text[] NOT NULL,
+    tags text[] DEFAULT ARRAY[]::text[] NOT NULL,
+    writing_types text[] DEFAULT ARRAY[]::text[] NOT NULL,
     CONSTRAINT creators_creator_handle_check CHECK ((length(creator_handle) < 100)),
-    CONSTRAINT creators_name_check CHECK ((length(name) < 100))
+    CONSTRAINT creators_name_check CHECK ((length(name) < 100)),
+    CONSTRAINT creators_tags_check CHECK ((cardinality(tags) <= 20))
 );
 
 
@@ -190,6 +194,27 @@ ALTER TABLE ONLY public.users
 
 ALTER TABLE ONLY public.writings
     ADD CONSTRAINT writings_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: idx_creator_tags; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_creator_tags ON public.creators USING gin (tags);
+
+
+--
+-- Name: idx_creator_topics; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_creator_topics ON public.creators USING gin (topics);
+
+
+--
+-- Name: idx_creator_writing_types; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_creator_writing_types ON public.creators USING gin (writing_types);
 
 
 --
