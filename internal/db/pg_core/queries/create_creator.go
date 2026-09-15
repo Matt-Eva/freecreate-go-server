@@ -3,11 +3,13 @@ package pg_core_queries
 import (
 	"context"
 	"errors"
+	"fmt"
 	"freecreate/internal/config"
 	pg_core_validators "freecreate/internal/db/pg_core/validators"
 	"freecreate/internal/lib/api_error"
 	"freecreate/internal/lib/logger"
 	"net/http"
+	"strings"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -29,9 +31,13 @@ type CreatedCreator struct {
 
 func CreateCreator(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries, createCreatorParams CreateCreatorParams) (CreatedCreator, *api_error.Error) {
 	query := pgCoreQueries.CreateCreator()
+
+	handle := strings.ReplaceAll(createCreatorParams.Handle, " ", "-")
+	fmt.Println(handle)
+
 	namedArgs := pgx.NamedArgs{
-		"name":    createCreatorParams.Name,
-		"creator_handle": createCreatorParams.Handle,
+		"name":   createCreatorParams.Name,
+		"creator_handle": handle,
 		"user_id": createCreatorParams.UserId,
 	}
 

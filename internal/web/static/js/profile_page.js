@@ -66,6 +66,7 @@ document.addEventListener("DOMContentLoaded", (e) => {
 
     const newCreatorName = newCreatorNameInput.value;
     const newCreatorHandle = newCreatorHandleInput.value;
+
     postCreator(newCreatorName, newCreatorHandle);
   }
 
@@ -107,7 +108,9 @@ document.addEventListener("DOMContentLoaded", (e) => {
   }
 
   function renderNewCreator(data) {
-    console.log(data);
+    newCreatorNameInput.value = "";
+    newCreatorHandleInput.value = "";
+
     const article = document.createElement("article");
     const name = document.createElement("p");
     const handle = document.createElement("p");
