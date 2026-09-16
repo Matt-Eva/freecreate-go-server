@@ -69,6 +69,9 @@ func ExampleHandler(sessionStore *sessions.CookieStore, valkeyClient valkey.Clie
 		}
 
 		w.WriteHeader(http.StatusCreated)
-		w.Write(jsonRes)
+		_, writeErr := w.Write(jsonRes)
+		if writeErr != nil {
+			logger.Log(writeErr)
+		}
 	}
 }

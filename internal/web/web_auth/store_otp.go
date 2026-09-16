@@ -17,7 +17,7 @@ import (
 func StoreOtp(ctx context.Context, valkeyClient valkey.Client, sessionUuid uuid.UUID, email string, otp string) *api_error.Error {
 
 	if len(otp) != 8 {
-		msg := "Sorry, that is not a valid One Time Password. One time password must be at least 8 characters."
+		msg := "one time password must be at least 8 characters"
 		err := errors.New(msg)
 
 		apiErr := &api_error.Error{

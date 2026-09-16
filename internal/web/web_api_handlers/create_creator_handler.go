@@ -22,7 +22,7 @@ func CreateCreatorHandler(sessionStore *sessions.CookieStore, valkeyClient valke
 
 		_, userId, getUserErr := web_auth.GetUser(ctx, sessionStore, valkeyClient, w, r)
 		if getUserErr != nil || userId == 0 {
-			http.Redirect(w, r, "/login", 303)
+			http.Redirect(w, r, "/login", http.StatusSeeOther)
 			return
 		}
 
@@ -41,12 +41,11 @@ func CreateCreatorHandler(sessionStore *sessions.CookieStore, valkeyClient valke
 		}
 
 		creatorName := body.Name
-		creatorHandle := body.Handle
+		// creatorHandle := body.Handle
 
 		createCreatorParams := query_handlers.CreateCreatorParams{
 			UserId: userId,
 			Name:   creatorName,
-			Handle: creatorHandle,
 		}
 
 		createdCreator, createCreatorErr := query_handlers.HandleCreateCreator(ctx, pgCore, pgCoreQueries, createCreatorParams)
@@ -78,6 +77,10 @@ func CreateCreatorHandler(sessionStore *sessions.CookieStore, valkeyClient valke
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusCreated)
-		w.Write(jsonRes)
+		_, writeErr := w.Write(jsonRes)
+		if writeErr != nil {
+			logger.Log(writeErr)
+			return
+		}
 	}
 }

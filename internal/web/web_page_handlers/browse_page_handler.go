@@ -2,6 +2,7 @@ package web_page_handlers
 
 import (
 	"fmt"
+	"freecreate/internal/lib/logger"
 	"freecreate/internal/web/web_auth"
 	"html/template"
 	"net/http"
@@ -75,6 +76,9 @@ func BrowsePageHandler(template *template.Template, sessionStore *sessions.Cooki
 			CardContentCategories: cardContentCategories,
 		}
 
-		template.ExecuteTemplate(w, "browse_page", pageData)
+		err := template.ExecuteTemplate(w, "browse_page", pageData)
+		if err != nil {
+			logger.Log(err)
+		}
 	}
 }

@@ -66,6 +66,6 @@ func SignupSubmitOtp(sessionStore *sessions.CookieStore, valkeyClient valkey.Cli
 			return
 		}
 
-		http.Redirect(w, r, "/profile", 303)
+		http.Redirect(w, r, "/profile", http.StatusSeeOther)
 	}
 }

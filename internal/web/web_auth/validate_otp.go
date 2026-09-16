@@ -59,7 +59,7 @@ func ValidateOtp(ctx context.Context, sessionUuid uuid.UUID, valkeyClient valkey
 	}
 
 	if retrievedOtp != otp {
-		msg := "Either your email or one time password are invalid."
+		msg := "either your email or one time password are invalid"
 		err := errors.New(msg)
 
 		apiErr := &api_error.Error{

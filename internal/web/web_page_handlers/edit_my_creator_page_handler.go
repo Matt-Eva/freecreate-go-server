@@ -1,6 +1,7 @@
 package web_page_handlers
 
 import (
+	"freecreate/internal/lib/logger"
 	"html/template"
 	"net/http"
 
@@ -21,6 +22,10 @@ func EditMyCreatorPageHandler(template *template.Template) http.HandlerFunc {
 				CsrfToken:     csrf.TemplateField(r),
 			},
 		}
-		template.ExecuteTemplate(w, "edit_my_creator_page", pageData)
+
+		err := template.ExecuteTemplate(w, "edit_my_creator_page", pageData)
+		if err != nil {
+			logger.Log(err)
+		}
 	}
 }

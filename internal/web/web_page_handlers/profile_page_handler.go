@@ -2,6 +2,7 @@ package web_page_handlers
 
 import (
 	"freecreate/internal/config"
+	"freecreate/internal/lib/logger"
 	"freecreate/internal/query_handlers"
 	"freecreate/internal/web/web_auth"
 	"html/template"
@@ -20,7 +21,7 @@ func ProfilePageHandler(sessionStore *sessions.CookieStore, valkeyClient valkey.
 
 		userId, _ := web_auth.CheckAuthentication(ctx, sessionStore, valkeyClient, w, r)
 		if userId == 0 {
-			http.Redirect(w, r, "/login", 303)
+			http.Redirect(w, r, "/login", http.StatusSeeOther)
 			return
 		}
 
@@ -48,6 +49,9 @@ func ProfilePageHandler(sessionStore *sessions.CookieStore, valkeyClient valkey.
 			MyCreators: myCreators,
 		}
 
-		profileTmpl.ExecuteTemplate(w, "profile", pageData)
+		err := profileTmpl.ExecuteTemplate(w, "profile", pageData)
+		if err != nil {
+			logger.Log(err)
+		}
 	}
 }
