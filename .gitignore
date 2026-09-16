@@ -1,5 +1,4 @@
 .env
-.air.toml
 /tmp
 freecreate
 /config/profanity.go
