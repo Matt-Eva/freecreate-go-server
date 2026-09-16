@@ -2,28 +2,29 @@ package routes
 
 import (
 	"freecreate/internal/config"
-	"freecreate/internal/web/middleware"
 	"freecreate/internal/web/web_api_handlers"
+	"freecreate/internal/web/web_middleware"
 	"freecreate/internal/web/web_page_handlers"
 	"html/template"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/gorilla/sessions"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/resend/resend-go/v2"
 	"github.com/valkey-io/valkey-go"
 )
 
-func ConfigureWebRouter(router chi.Router, sessionStore *sessions.CookieStore, valkeyClient valkey.Client, pgxPools config.PgxPools, pgCoreQueries config.PgCoreQueries, resendClient *resend.Client) {
+func ConfigureWebRouter(router chi.Router, sessionStore *sessions.CookieStore, valkeyClient valkey.Client, pgCore *pgxpool.Pool, pgContentPools config.PgContentPools, pgCoreQueries config.PgCoreQueries, pgContentQueries config.PgContentQueries, resendClient *resend.Client) {
 
 	router.Group(func(router chi.Router) {
 		// ========= Router Configuration ========
 
-		csrfMiddleware := middleware.GenereateCsrfMiddleware()
+		csrfMiddleware := web_middleware.GenereateCsrfMiddleware()
 		router.Use(csrfMiddleware)
 
 		fileServer := http.FileServer(http.Dir("internal/web/static"))
-		cachedFileServer := middleware.CacheControlHandler(fileServer)
+		cachedFileServer := web_middleware.CacheControlHandler(fileServer)
 
 		router.Handle("/internal/web/static/*", http.StripPrefix("/internal/web/static/", cachedFileServer))
 
@@ -31,7 +32,7 @@ func ConfigureWebRouter(router chi.Router, sessionStore *sessions.CookieStore, v
 
 		// ========= Example Page Handler ======
 
-		router.Get("/example", web_page_handlers.ExamplePageHandler(templates, sessionStore, valkeyClient, pgxPools.PgCore, pgCoreQueries))
+		router.Get("/example", web_page_handlers.ExamplePageHandler(templates, sessionStore, valkeyClient, pgCore, pgCoreQueries))
 
 		// ========= Web Page Handlers =========
 
@@ -53,9 +54,11 @@ func ConfigureWebRouter(router chi.Router, sessionStore *sessions.CookieStore, v
 		router.Get("/browse/{writing_type}", web_page_handlers.BrowsePageHandler(templates, sessionStore, valkeyClient))
 
 		// == Personal Pages ==
-		router.Get("/profile", web_page_handlers.ProfilePageHandler(sessionStore, valkeyClient, templates))
+		router.Get("/profile", web_page_handlers.ProfilePageHandler(sessionStore, valkeyClient, templates, pgCore, pgCoreQueries))
 
-		router.Get("/my-creator/{creator_uuid}", web_page_handlers.MyCreatorPageHandler(templates, sessionStore, valkeyClient, pgxPools.PgCore, pgCoreQueries))
+		router.Get("/my-creator/{creator_uuid}", web_page_handlers.MyCreatorPageHandler(templates, sessionStore, valkeyClient, pgCore, pgCoreQueries))
+
+		router.Get("/my-creator/{creator-uuid}/edit", web_page_handlers.EditMyCreatorPageHandler(templates))
 
 		// router.Get("/my-writing", web_page_handlers.MyWritingPageHandler())
 
@@ -65,17 +68,17 @@ func ConfigureWebRouter(router chi.Router, sessionStore *sessions.CookieStore, v
 
 			r.Post("/example", web_api_handlers.ExampleHandler(sessionStore, valkeyClient))
 
-			r.Post("/signup/request-otp", web_api_handlers.SignupRequestOtp(sessionStore, valkeyClient, resendClient, pgCoreQueries, pgxPools.PgCore))
+			r.Post("/signup/request-otp", web_api_handlers.SignupRequestOtp(sessionStore, valkeyClient, resendClient, pgCoreQueries, pgCore))
 
-			r.Post("/signup/submit-otp", web_api_handlers.SignupSubmitOtp(sessionStore, valkeyClient, pgCoreQueries, pgxPools.PgCore))
+			r.Post("/signup/submit-otp", web_api_handlers.SignupSubmitOtp(sessionStore, valkeyClient, pgCoreQueries, pgCore))
 
-			r.Post("/login/request-otp", web_api_handlers.LoginRequestOtpHandler(sessionStore, valkeyClient, resendClient, pgCoreQueries, pgxPools.PgCore))
+			r.Post("/login/request-otp", web_api_handlers.LoginRequestOtpHandler(sessionStore, valkeyClient, resendClient, pgCoreQueries, pgCore))
 
-			r.Post("/login/submit-otp", web_api_handlers.LoginSubmitOtpHandler(sessionStore, valkeyClient, pgCoreQueries, pgxPools.PgCore))
+			r.Post("/login/submit-otp", web_api_handlers.LoginSubmitOtpHandler(sessionStore, valkeyClient, pgCoreQueries, pgCore))
 
 			r.Delete("/logout", web_api_handlers.LogoutHandler(sessionStore, valkeyClient))
 
-			r.Post("/creator", web_api_handlers.CreateCreatorHandler(sessionStore, valkeyClient, pgxPools.PgCore, pgCoreQueries))
+			r.Post("/creator", web_api_handlers.CreateCreatorHandler(sessionStore, valkeyClient, pgCore, pgCoreQueries))
 		})
 
 	})

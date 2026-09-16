@@ -26,6 +26,6 @@ func LogoutHandler(sessionStore *sessions.CookieStore, valkeyClient valkey.Clien
 			return
 		}
 
-		http.Redirect(w, r, "/", 303)
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 	}
 }

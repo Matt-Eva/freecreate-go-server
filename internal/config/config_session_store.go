@@ -10,7 +10,7 @@ import (
 	"github.com/gorilla/sessions"
 )
 
-func ConfigSessionStore(environment string) (*sessions.CookieStore, error) {
+func ConfigWebSessionStore(environment string) (*sessions.CookieStore, error) {
 
 	sessionAuthKey, err := base64.StdEncoding.DecodeString(os.Getenv("SESSION_AUTH_KEY"))
 	if err != nil {

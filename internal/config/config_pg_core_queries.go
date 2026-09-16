@@ -37,6 +37,7 @@ func (q PgCoreQueries) GetMyCreator() string {
 
 func ConfigPgCoreQueries() (PgCoreQueries, error) {
 	q := PgCoreQueries{}
+
 	getUserByEmail, getUserEmailErr := os.ReadFile(filepath.Join("./internal/db/pg_core/query_files", "get_user_by_email.sql"))
 	if getUserEmailErr != nil {
 		logger.Log(getUserEmailErr)

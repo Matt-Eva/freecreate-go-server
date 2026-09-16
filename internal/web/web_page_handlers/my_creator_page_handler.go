@@ -3,6 +3,7 @@ package web_page_handlers
 import (
 	"freecreate/internal/config"
 	pg_core_queries "freecreate/internal/db/pg_core/queries"
+	"freecreate/internal/lib/logger"
 	"freecreate/internal/web/web_auth"
 	"html/template"
 	"net/http"
@@ -19,7 +20,7 @@ func MyCreatorPageHandler(templates *template.Template, sessionStore *sessions.C
 
 		userId, _ := web_auth.CheckAuthentication(ctx, sessionStore, valkeyClient, w, r)
 		if userId == 0 {
-			http.Redirect(w, r, "/login", 303)
+			http.Redirect(w, r, "/login", http.StatusSeeOther)
 			return
 		}
 
@@ -43,6 +44,9 @@ func MyCreatorPageHandler(templates *template.Template, sessionStore *sessions.C
 			MyCreator:     myCreator,
 		}
 
-		templates.ExecuteTemplate(w, "my_creator_page", pageData)
+		err := templates.ExecuteTemplate(w, "my_creator_page", pageData)
+		if err != nil {
+			logger.Log(err)
+		}
 	}
 }

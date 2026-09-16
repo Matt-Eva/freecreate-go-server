@@ -26,13 +26,13 @@ func initialize(environment string) (*chi.Mux, error) {
 
 	ctx := context.Background()
 
-	sessionStore, sessionErr := config.ConfigSessionStore(environment)
+	webSessionStore, sessionErr := config.ConfigWebSessionStore(environment)
 	if sessionErr != nil {
 		logger.Log(sessionErr)
 		return nil, sessionErr
 	}
 
-	pgxPools, pgxErr := config.ConfigPgx(ctx, environment)
+	pgCore, pgContentPools, pgxErr := config.ConfigPgx(ctx, environment)
 	if pgxErr != nil {
 		logger.Log(pgxErr)
 		log.Fatal(pgxErr)
@@ -45,11 +45,17 @@ func initialize(environment string) (*chi.Mux, error) {
 		return nil, pgCoreQueryError
 	}
 
+	pgContentQueries, pgContentQueryErr := config.ConfigPgContentQueries()
+	if pgContentQueryErr != nil {
+		logger.Log(pgContentQueryErr)
+		return nil, pgContentQueryErr
+	}
+
 	valkeyClient := config.ConfigValkey()
 
 	resendClient := config.InitResend()
 
-	router := routes.CreateRouter(sessionStore, pgxPools, pgCoreQueries, valkeyClient, resendClient)
+	router := routes.CreateRouter(webSessionStore, pgCore, pgContentPools, pgCoreQueries, pgContentQueries, valkeyClient, resendClient)
 
 	return router, nil
 }

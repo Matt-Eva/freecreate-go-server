@@ -3,6 +3,7 @@ package web_page_handlers
 import (
 	"fmt"
 	"freecreate/internal/config"
+	"freecreate/internal/lib/logger"
 	"freecreate/internal/query_handlers"
 	"freecreate/internal/web/web_auth"
 	"html/template"
@@ -89,6 +90,9 @@ func ExamplePageHandler(template *template.Template, sessionStore *sessions.Cook
 		fmt.Println(pageData.LoggedIn)
 		fmt.Println(pageData.PageValues.ExampleParams)
 
-		template.ExecuteTemplate(w, "example_page", pageData)
+		err := template.ExecuteTemplate(w, "example_page", pageData)
+		if err != nil {
+			logger.Log(err)
+		}
 	}
 }

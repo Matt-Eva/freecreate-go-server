@@ -10,7 +10,7 @@ import (
 
 func ValidateCreator(args pgx.NamedArgs) *api_error.Error {
 	if args["name"] == "" || args["name"] == nil {
-		msg := "Name cannot be empty."
+		msg := "name cannot be empty"
 		err := errors.New(msg)
 		apiErr := &api_error.Error{
 			Code:    http.StatusUnprocessableEntity,
@@ -21,7 +21,7 @@ func ValidateCreator(args pgx.NamedArgs) *api_error.Error {
 	}
 
 	if args["user_id"] == 0 || args["user_id"] == nil {
-		msg := "Invalid user ID."
+		msg := "invalid user ID"
 		err := errors.New(msg)
 		apiErr := &api_error.Error{
 			Code:    http.StatusUnprocessableEntity,

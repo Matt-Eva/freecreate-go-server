@@ -1,6 +1,7 @@
 package web_page_handlers
 
 import (
+	"freecreate/internal/lib/logger"
 	"freecreate/internal/web/web_auth"
 	"html/template"
 	"net/http"
@@ -32,6 +33,9 @@ func DonatePageHandler(donateTmpl *template.Template, sessionStore *sessions.Coo
 			LoggedInClass: loggedInClass,
 		}
 
-		donateTmpl.ExecuteTemplate(w, "donate_page", pageData)
+		err := donateTmpl.ExecuteTemplate(w, "donate_page", pageData)
+		if err != nil {
+			logger.Log(err)
+		}
 	}
 }

@@ -25,7 +25,7 @@ func LoginRequestOtpHandler(sessionStore *sessions.CookieStore, valkeyClient val
 
 		_, userId, _ := web_auth.GetUser(ctx, sessionStore, valkeyClient, w, r)
 		if userId != 0 {
-			http.Redirect(w, r, "/profile", 303)
+			http.Redirect(w, r, "/profile", http.StatusSeeOther)
 			return
 		}
 
@@ -80,11 +80,11 @@ func LoginRequestOtpHandler(sessionStore *sessions.CookieStore, valkeyClient val
 		if sendEmailErr != nil {
 			if sendEmailErr.Error() == "[ERROR]: Invalid `to` field. The email address needs to follow the `email@example.com` or `Name <email@example.com>` format." {
 				err := errors.New("That is not a valid email address. Please enter a valid email address.")
-				http.Error(w, err.Error(), 422)
+				http.Error(w, err.Error(), http.StatusUnprocessableEntity)
 				return
 			}
 			logger.Log(sendEmailErr)
-			http.Error(w, sendEmailErr.Error(), 422)
+			http.Error(w, sendEmailErr.Error(), http.StatusUnprocessableEntity)
 			return
 		}
 
