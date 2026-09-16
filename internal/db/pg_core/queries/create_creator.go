@@ -19,14 +19,14 @@ import (
 
 type CreateCreatorParams struct {
 	UserId int64
-	Name string
+	Name   string
 	Handle string
 }
 
 type CreatedCreator struct {
-	Name string
+	Name   string
 	Handle string
-	UUID uuid.UUID
+	UUID   uuid.UUID
 }
 
 func CreateCreator(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries, createCreatorParams CreateCreatorParams) (CreatedCreator, *api_error.Error) {
@@ -36,9 +36,9 @@ func CreateCreator(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries conf
 	fmt.Println(handle)
 
 	namedArgs := pgx.NamedArgs{
-		"name":   createCreatorParams.Name,
+		"name":           createCreatorParams.Name,
 		"creator_handle": handle,
-		"user_id": createCreatorParams.UserId,
+		"user_id":        createCreatorParams.UserId,
 	}
 
 	validateCreatorErr := pg_core_validators.ValidateCreator(namedArgs)
@@ -55,11 +55,11 @@ func CreateCreator(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries conf
 	createCreatorErr := rowResult.Scan(&name, &uuid, &creator_handle)
 
 	var pgErr *pgconn.PgError
-	if errors.As(createCreatorErr, &pgErr) && pgErr.Code == "23505"{
+	if errors.As(createCreatorErr, &pgErr) && pgErr.Code == "23505" {
 		apiErr := &api_error.Error{
-			Code: http.StatusUnprocessableEntity,
+			Code:    http.StatusUnprocessableEntity,
 			Message: "That creator handle is already in use.",
-			Error: createCreatorErr,
+			Error:   createCreatorErr,
 		}
 
 		return CreatedCreator{}, apiErr
@@ -76,9 +76,9 @@ func CreateCreator(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries conf
 	}
 
 	createdCreator := CreatedCreator{
-		Name: name,
+		Name:   name,
 		Handle: creator_handle,
-		UUID: uuid,
+		UUID:   uuid,
 	}
 
 	return createdCreator, nil

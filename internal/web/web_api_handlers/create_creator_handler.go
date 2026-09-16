@@ -27,7 +27,7 @@ func CreateCreatorHandler(sessionStore *sessions.CookieStore, valkeyClient valke
 		}
 
 		type Body struct {
-			Name string `json:"name"`
+			Name   string `json:"name"`
 			Handle string `json:"handle"`
 		}
 
@@ -43,9 +43,9 @@ func CreateCreatorHandler(sessionStore *sessions.CookieStore, valkeyClient valke
 		creatorName := body.Name
 		creatorHandle := body.Handle
 
-		createCreatorParams := query_handlers.CreateCreatorParams {
+		createCreatorParams := query_handlers.CreateCreatorParams{
 			UserId: userId,
-			Name: creatorName,
+			Name:   creatorName,
 			Handle: creatorHandle,
 		}
 
@@ -56,14 +56,14 @@ func CreateCreatorHandler(sessionStore *sessions.CookieStore, valkeyClient valke
 		}
 
 		type Response struct {
-			UUID uuid.UUID `json:"uuid"`
-			Name string    `json:"name"`
-			Handle string `json:"handle"`
+			UUID   uuid.UUID `json:"uuid"`
+			Name   string    `json:"name"`
+			Handle string    `json:"handle"`
 		}
 
 		res := Response{
-			UUID: createdCreator.UUID,
-			Name: createdCreator.Name,
+			UUID:   createdCreator.UUID,
+			Name:   createdCreator.Name,
 			Handle: createdCreator.Handle,
 		}
 

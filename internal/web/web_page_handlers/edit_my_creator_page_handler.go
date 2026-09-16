@@ -7,20 +7,20 @@ import (
 	"github.com/gorilla/csrf"
 )
 
-func EditMyCreatorPageHandler(template *template.Template) http.HandlerFunc{
-return func (w http.ResponseWriter, r *http.Request){
+func EditMyCreatorPageHandler(template *template.Template) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
 
-	type PageData struct {
-		UniversalPageData
-	}
+		type PageData struct {
+			UniversalPageData
+		}
 
-	pageData := PageData {
-		UniversalPageData: UniversalPageData{
-			LoggedIn: true,
-			LoggedInClass: "logged_in",
-			CsrfToken: csrf.TemplateField(r),
-		},
+		pageData := PageData{
+			UniversalPageData: UniversalPageData{
+				LoggedIn:      true,
+				LoggedInClass: "logged_in",
+				CsrfToken:     csrf.TemplateField(r),
+			},
+		}
+		template.ExecuteTemplate(w, "edit_my_creator_page", pageData)
 	}
-	template.ExecuteTemplate(w, "edit_my_creator_page", pageData)
-}
 }

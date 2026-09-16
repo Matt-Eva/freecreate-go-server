@@ -15,12 +15,12 @@ type GetMyCreatorsParams struct {
 }
 
 type MyCreatorsStruct struct {
-	Name string
+	Name          string
 	CreatorHandle string
-	UUID uuid.UUID
+	UUID          uuid.UUID
 }
 
-func HandleGetMyCreators(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries,getMyCreatorsParams GetMyCreatorsParams)([]MyCreatorsStruct, *api_error.Error){
+func HandleGetMyCreators(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries, getMyCreatorsParams GetMyCreatorsParams) ([]MyCreatorsStruct, *api_error.Error) {
 
 	var myCreators []MyCreatorsStruct
 
@@ -29,12 +29,12 @@ func HandleGetMyCreators(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQuerie
 		return myCreators, getMyCreatorsErr
 	}
 
-	for i:= 0; i < len(creators); i++{
+	for i := 0; i < len(creators); i++ {
 		creator := creators[i]
 		myCreator := MyCreatorsStruct{
-			Name: creator.Name,
+			Name:          creator.Name,
 			CreatorHandle: creator.CreatorHandle,
-			UUID: creator.UUID,
+			UUID:          creator.UUID,
 		}
 
 		myCreators = append(myCreators, myCreator)

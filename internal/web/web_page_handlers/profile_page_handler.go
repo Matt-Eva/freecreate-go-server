@@ -41,7 +41,7 @@ func ProfilePageHandler(sessionStore *sessions.CookieStore, valkeyClient valkey.
 
 		pageData := PageData{
 			UniversalPageData: UniversalPageData{
-				CsrfToken: csrf.TemplateField(r),
+				CsrfToken:     csrf.TemplateField(r),
 				LoggedIn:      true,
 				LoggedInClass: "logged_in",
 			},
