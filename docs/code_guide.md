@@ -234,7 +234,7 @@ Here are the tools you will need installed to work on the project (working on ge
   - author: jinliming2
 - Prettier - VS Code extension
 - Prettier Plugin Go Template - Prettier Plugin
-  - (Reference)[https://github.com/NiklasPor/prettier-plugin-go-template]
+  - [Reference](https://github.com/NiklasPor/prettier-plugin-go-template)
 
 ## Env file
 - Please refer to the sample.env file to determine the environment variables you'll need for the project.
