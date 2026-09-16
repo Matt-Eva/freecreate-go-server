@@ -2,8 +2,8 @@ package routes
 
 import (
 	"freecreate/internal/config"
-	"freecreate/internal/web/middleware"
 	"freecreate/internal/web/web_api_handlers"
+	"freecreate/internal/web/web_middleware"
 	"freecreate/internal/web/web_page_handlers"
 	"html/template"
 	"net/http"
@@ -20,11 +20,11 @@ func ConfigureWebRouter(router chi.Router, sessionStore *sessions.CookieStore, v
 	router.Group(func(router chi.Router) {
 		// ========= Router Configuration ========
 
-		csrfMiddleware := middleware.GenereateCsrfMiddleware()
+		csrfMiddleware := web_middleware.GenereateCsrfMiddleware()
 		router.Use(csrfMiddleware)
 
 		fileServer := http.FileServer(http.Dir("internal/web/static"))
-		cachedFileServer := middleware.CacheControlHandler(fileServer)
+		cachedFileServer := web_middleware.CacheControlHandler(fileServer)
 
 		router.Handle("/internal/web/static/*", http.StripPrefix("/internal/web/static/", cachedFileServer))
 
