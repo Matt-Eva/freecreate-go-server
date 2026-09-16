@@ -165,3 +165,22 @@ Groups:
 ## Forums:
 
 - Are forums basically just groups? I think so - for groups posts, you can basically just start a thread and view it there.
+
+# Reading list
+
+It makes the most sense to have an "add to reading list" button on a browse card, but checking if a piece of content is on a user's reading list during a search / browse session could potentially add enormous overhead, especially if a user has a very long reading list.
+
+There are three ways to handle this:
+
+1. Don't have the "add to reading list" displayed on the card
+2. Check against a user's reading list for every item that is loaded in a search.
+3. Just display the "add to reading list" button even if an item is already in a users reading list. Then, upon the query, check if its in the reading list or not. If it already is, just move it to the front of the reading list queue.
+
+Option 3 seems to be the most performant while still accomplishing the desired feature. The downside 
+would be potentially confusing some users.
+
+For option 2, possible to store a user's reading list ids in valkey and check against the list?
+
+Problem - running this on each search query could really slow down search queries in general.
+
+Let's try option 2, actually.

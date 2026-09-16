@@ -36,7 +36,7 @@ func LoginSubmitOtpHandler(sessionStore *sessions.CookieStore, valkeyClient valk
 		jErr := json.NewDecoder(r.Body).Decode(&body)
 		if jErr != nil {
 			logger.Log(jErr)
-			http.Error(w, jErr.Error(), 422)
+			http.Error(w, jErr.Error(), http.StatusUnprocessableEntity)
 			return
 		}
 
@@ -69,7 +69,7 @@ func LoginSubmitOtpHandler(sessionStore *sessions.CookieStore, valkeyClient valk
 			return
 		}
 
-		http.Redirect(w, r, "/profile", 303)
+		http.Redirect(w, r, "/profile", http.StatusSeeOther)
 
 	}
 

@@ -1,6 +1,7 @@
 package web_page_handlers
 
 import (
+	"freecreate/internal/lib/logger"
 	"freecreate/internal/web/web_auth"
 	"html/template"
 	"net/http"
@@ -15,7 +16,7 @@ func LoginPageHandler(sessionStore *sessions.CookieStore, valkeyClient valkey.Cl
 		ctx := r.Context()
 		userId, _ := web_auth.CheckAuthentication(ctx, sessionStore, valkeyClient, w, r)
 		if userId != 0 {
-			http.Redirect(w, r, "/profile", 303)
+			http.Redirect(w, r, "/profile", http.StatusSeeOther)
 			return
 		}
 
@@ -31,6 +32,9 @@ func LoginPageHandler(sessionStore *sessions.CookieStore, valkeyClient valkey.Cl
 			LoggedInClass: "logged_out",
 		}
 
-		loginTmpl.ExecuteTemplate(w, "login_page", pageData)
+		err := loginTmpl.ExecuteTemplate(w, "login_page", pageData)
+		if err != nil {
+			logger.Log(err)
+		}
 	}
 }

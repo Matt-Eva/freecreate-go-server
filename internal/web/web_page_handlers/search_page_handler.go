@@ -1,6 +1,7 @@
 package web_page_handlers
 
 import (
+	"freecreate/internal/lib/logger"
 	"freecreate/internal/web/web_auth"
 	"html/template"
 	"net/http"
@@ -40,6 +41,9 @@ func SearchPageHandler(searchTmpl *template.Template, sessionStore *sessions.Coo
 			pageData.Query = ""
 		}
 
-		searchTmpl.ExecuteTemplate(w, "search_page", pageData)
+		err := searchTmpl.ExecuteTemplate(w, "search_page", pageData)
+		if err != nil {
+			logger.Log(err)
+		}
 	}
 }

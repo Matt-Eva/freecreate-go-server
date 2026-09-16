@@ -14,8 +14,9 @@ import (
 )
 
 type MyCreatorsStruct struct {
-	Name string
-	UUID uuid.UUID
+	Name          string
+	CreatorHandle string
+	UUID          uuid.UUID
 }
 
 func GetMyCreators(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries, userId int64) ([]MyCreatorsStruct, *api_error.Error) {

@@ -29,10 +29,26 @@ CREATE TABLE public.creators (
     user_id bigint NOT NULL,
     creator_language regconfig DEFAULT 'english'::regconfig NOT NULL,
     name text NOT NULL,
-    creator_handle text,
+    creator_handle text NOT NULL,
     creator_name_search_vector tsvector GENERATED ALWAYS AS ((to_tsvector(creator_language, name) || to_tsvector(creator_language, creator_handle))) STORED,
+    about text DEFAULT ''::text NOT NULL,
+    topics text[] DEFAULT ARRAY[]::text[] NOT NULL,
+    tags text[] DEFAULT ARRAY[]::text[] NOT NULL,
+    writing_types text[] DEFAULT ARRAY[]::text[] NOT NULL,
+    rank bigint DEFAULT 0 NOT NULL,
+    rel_rank bigint DEFAULT 0 NOT NULL,
+    donations bigint DEFAULT 0 NOT NULL,
+    supporters bigint DEFAULT 0 NOT NULL,
+    followers bigint DEFAULT 0 NOT NULL,
+    subscribers bigint DEFAULT 0 NOT NULL,
+    views bigint DEFAULT 0 NOT NULL,
+    flags bigint DEFAULT 0 NOT NULL,
+    rank_tracker bigint DEFAULT 0 NOT NULL,
+    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    last_published timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     CONSTRAINT creators_creator_handle_check CHECK ((length(creator_handle) < 100)),
-    CONSTRAINT creators_name_check CHECK ((length(name) < 100))
+    CONSTRAINT creators_name_check CHECK ((length(name) < 100)),
+    CONSTRAINT creators_tags_check CHECK ((cardinality(tags) <= 20))
 );
 
 
@@ -105,7 +121,7 @@ CREATE TABLE public.writings (
     title text NOT NULL,
     subtitle text,
     title_search_vector tsvector GENERATED ALWAYS AS ((to_tsvector(writing_language, title) || to_tsvector(writing_language, subtitle))) STORED,
-    description text,
+    description text DEFAULT ''::text,
     writing_type text NOT NULL,
     topics text[] DEFAULT ARRAY[]::text[] NOT NULL,
     tags text[] DEFAULT ARRAY[]::text[] NOT NULL,
@@ -193,6 +209,34 @@ ALTER TABLE ONLY public.writings
 
 
 --
+-- Name: idx_creator_tags; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_creator_tags ON public.creators USING gin (tags);
+
+
+--
+-- Name: idx_creator_topics; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_creator_topics ON public.creators USING gin (topics);
+
+
+--
+-- Name: idx_creator_writing_types; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_creator_writing_types ON public.creators USING gin (writing_types);
+
+
+--
+-- Name: idx_creators_last_published; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_creators_last_published ON public.creators USING btree (last_published);
+
+
+--
 -- Name: idx_creators_name_search; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -200,10 +244,17 @@ CREATE INDEX idx_creators_name_search ON public.creators USING gin (creator_name
 
 
 --
--- Name: idx_creators_name_user_id; Type: INDEX; Schema: public; Owner: -
+-- Name: idx_creators_rank; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX idx_creators_name_user_id ON public.creators USING btree (user_id, name);
+CREATE INDEX idx_creators_rank ON public.creators USING btree (rank);
+
+
+--
+-- Name: idx_creators_rel_rank; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_creators_rel_rank ON public.creators USING btree (rel_rank);
 
 
 --

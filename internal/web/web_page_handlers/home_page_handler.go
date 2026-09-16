@@ -1,6 +1,7 @@
 package web_page_handlers
 
 import (
+	"freecreate/internal/lib/logger"
 	"freecreate/internal/web/web_auth"
 	"html/template"
 	"net/http"
@@ -34,6 +35,9 @@ func HomePageHandler(homeTmpl *template.Template, sessionStore *sessions.CookieS
 			},
 		}
 
-		homeTmpl.ExecuteTemplate(w, "home", pageData)
+		err := homeTmpl.ExecuteTemplate(w, "home", pageData)
+		if err != nil {
+			logger.Log(err)
+		}
 	}
 }

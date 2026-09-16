@@ -15,7 +15,7 @@ func HandleCreateExampleQuery(postInput string) (CreatedExample, *api_error.Erro
 	var createdExample CreatedExample
 
 	if postInput == "" {
-		msg := "Post input cannot be empty."
+		msg := "post input cannot be empty"
 		err := errors.New(msg)
 		apiErr := &api_error.Error{
 			Code:    http.StatusUnprocessableEntity,

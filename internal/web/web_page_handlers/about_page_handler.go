@@ -1,6 +1,7 @@
 package web_page_handlers
 
 import (
+	"freecreate/internal/lib/logger"
 	"freecreate/internal/web/web_auth"
 	"html/template"
 	"net/http"
@@ -34,12 +35,9 @@ func AboutPageHandler(aboutTmpl *template.Template, sessionStore *sessions.Cooki
 			LoggedInClass: loggedInClass,
 		}
 
-		aboutTmpl.ExecuteTemplate(w, "about_page", pageData)
+		err := aboutTmpl.ExecuteTemplate(w, "about_page", pageData)
+		if err != nil {
+			logger.Log(err)
+		}
 	}
-}
-
-func write103Header(w http.ResponseWriter) {
-	w.Header().Add("Link", "</static/globals.css>; rel=preload; as=style")
-	w.Header().Add("Link", "</static/header_component.css>; rel=preload; as=style")
-	w.WriteHeader(103)
 }

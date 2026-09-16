@@ -129,8 +129,6 @@ The choices and concepts you will encounter throughout the rest of this guide ar
 
 # Programming Languages (and More)
 
-FreeCreate uses two primary programming lanaguages, a markup language, a style sheet language, and a database query language.
-
 ## Programming Languages - Go and JavaScript
 
 ### Go
@@ -188,10 +186,6 @@ While many platforms reach for NoSQL databases in order to solve the problem of 
   - This pattern replicates the sharding pattern found in true sharded databases, but without the management overhead.
   - Connection to multiple content DBs will simply be handled by multiple pgx driver instances.
 
-- Donations DB(s):
-  - The Donations DB follows the same pattern as the Content DB - instead of storing donations in the core database, they are stored in separate postgres instances.
-  - The rationale for doing this for donations is that they could potentially grow to infinite number, or at least very high volume, and are not needed as part of relational querying. A donation will still be allocated to a piece of content's "rank", but it most likely won't be needed for specific relational queries. And, if it is needed, using the embedded uuid of its related pieces of data from the core db should still be relatively efficient.
-
 ## Valkey - Cache
 
 Caching - for session data as well as query caching - will be managed by Valkey, which is an open source redis spinoff. You can read more about it below in the dedicated section on Valkey.
@@ -212,6 +206,35 @@ FreeCreate's search functionality does not currently employ a full-scale search 
 
 # Requisite Tooling
 
+Here are the tools you will need installed to work on the project (working on getting this Dockerized):
+
+## Core Technologies:
+- Go version 1.27.0
+  - [Installing Go](https://go.dev/doc/install)
+  - [Managing multiple Go versions](https://go.dev/doc/manage-install)
+- Postgresql version 18.6
+- Valkey server 8.1.3
+- dbmate version 2.33.0
+  - [Installing dbmate](https://github.com/amacneil/dbmate)
+- React Native version(?)
+- Electron version(?)
+
+## Tooling:
+- Go - VS Code extension
+- air - Go live code reloader
+  - [installation](https://github.com/air-verse/air#via-go-install-recommended)
+- Draw.io - VS Code extension
+- Go Template Support - VS Code extension
+  - author: jinliming2
+- Prettier - VS Code extension
+- Prettier Plugin Go Template - Prettier Plugin
+  - [Reference](https://github.com/NiklasPor/prettier-plugin-go-template)
+
+## Env file
+- Please refer to the sample.env file to determine the environment variables you'll need for the project.
+- Please BE CERTAIN not to commit your own .env file to Git history. If you do, please tell Matt as soon as you realize you have. (Don't worry, it'll be ok!)
+
+
 [Top](#table-of-contents)
 
 # Codebase Structure
@@ -226,8 +249,6 @@ Each of these entrypoints will have separate API endpoints. This is to simplify 
 
 For example, each different platform will likely have a different auth strategy - giving each platform its own sub-api, router, and set of handlers will make it easier to incorporate and manage those different auth strategies.
 
-As mentioned, this also makes it much easier for different teams to work in parallel. If a feature needs to be changed or created for react-native, the team handling the react-native frontend and API endpoints and handlers can easily do so without accidentally compromising the code of the electron team or the web team.
-
 ## Query Handlers and Shared Functionality
 
 However, some code can and should be shared across all teams. 
@@ -238,7 +259,7 @@ For example, there should be one and only one function for generating OTPs. Simi
 
 This not only ensures consistent user experience, but enforces the intended design patterns of the codebase and makes the codebase more resilient to errors.
 
-This may slow down developers somewhat, but we actually WANT that in these instances. For cases, we want to be thoughtful, deliberate, and careful when making any changes, to ensure we stay bug-free and deliver a uniform user experience.
+This may slow down developers somewhat, but we actually WANT that in these instances. We want to be thoughtful, deliberate, and careful when making any changes, to ensure we stay bug-free and deliver a uniform user experience.
 
 ### Query Handlers
 
@@ -248,11 +269,11 @@ When it comes to interacting with the database(s) and cache(s), there should be 
 
 Moreover, sometimes a single "query" - like a search query - may actually involve a whole number of queries, or could potentially run a host of various queries.
 
-To ensure that these occur in the correct order and follow the correct patterns every time, it's better to extrapolate this logic out into consolidated, shared functions, rather than trying to replicate them across every platform. We don't want "web search" to somehow differ from "desktop search" in its functionality - search should be search.
+To ensure that these occur in the correct order and follow the correct patterns every time, it's better to extrapolate this logic out into consolidated, shared functions, rather than trying to replicate them across every platform. We don't want "web search" to somehow differ from "desktop search" in its functionality - search should be search, including ALL necessary sub-queries, such as cache requests.
 
-Moreover, the schema is pretty complex. Having an established query interface that can be more easily dropped into and integrated with api endpoints makes it easier for the developers of various platforms to create and integrate features. Instead of everybody having to be masters of the schema and query patterns in addition to being masters of their own platform, they can focus more on delivering features and developing competence in their domain.
+Moreover, the schema is pretty complex. Having an established query interface that can be more easily dropped into and integrated with api endpoints makes it easier for the developers of various platforms to create and integrate features. Instead of expecting everyone to be masters of the schema and query patterns in addition to being masters of their own platform, they can focus more on delivering features and developing competence in their domain.
 
-This also allows a person - or team - to focus solely on become schema and query experts. The schema is a bit complicated - and will only become moreso with time - although much of that complexity is just due to information / table volume and variety rather than innate complexity. 
+This also allows a person - or team - to focus solely on become schema and query experts. The schema is a bit complicated and will only become more complicated with time.
 
 This team can then also spend more time thinking about and working on ways to improve data storage and optimize queries, whether considering scale, performance, or feature buildout.
 
@@ -291,7 +312,91 @@ Backend Team - System Architecture, Database Administration, Query Handling, and
 
 # Go 
 
+## Why Go?
+
+Why are we using Go as our primary backend language? There are several reasons:
+
+- Go is statically typed
+- Go is compiled
+- Go has built in concurrency and parallelism that is easy to implement (and often implemented out of the box in core package functionality)
+- Go has a built in formatter that dictates formatting rules: `go fmt ./...`.
+- Go is simple
+  - The founding philosophy of Go is that there is "one way to write things"
+  - While this is no longer true, Go still has relatively little syntactic sugar, and is easy to read and comprehend.
+  - It's very explicit and clear and keeps things predictable and consistent.
+- Go uses errors as values
+  - Many developers hate this about Go. You will see a lot of people complaing about writing `if err != nil` over and over and over again.
+  - I, personally, love errors as values (Matt). 
+  - It makes error handling a first order of business when writing code, rather than a secondary order of business.
+  - For more on this, please see [error handling in our Go code](#error-handling-in-our-go-code).
+- Go is widely supported
+  - Fortunately, the Go ecosystem is mature enough to reliably have solid integrations with third party tooling - Stripe, Resend, Postgres, Valkey, etc.
+
 [Top](#table-of-contents)
+
+## Go Cheatsheet
+
+### Zero values:
+
+
+
+
+### Structs
+
+`Structs` are programmer-defined structured datatypes in go. We will literally declare that as a `type`:
+
+```Go
+type MyStruct struct {
+  Field string
+}
+```
+
+Structs are similar to maps in that they are structured as key-value pairs. When you define a struct type, you set its field names as well as the datatype associated with each field name. These datatypes can be primitive types, structured types - arrays, slices, and maps - and other structs.
+
+```Go 
+type MyComplexStruct struct {
+  NestedStruct MyStruct
+  Id int
+  StructArray []MyStruct
+}
+```
+
+One thing that I, Matt, personally find DEEPLY ANNOYING about structs is that when you initialize a struct without defining a specific value for one of its fields, it initializes as the "zero" type for that field. [Zero value reference](https://go.dev/tour/basics/12).
+
+Ex:
+
+```Go
+type User struct {
+  UserId int
+  Username string
+}
+
+user := User{
+  UserId: 1,
+}
+
+fmt.Println(user)
+```
+
+As you might have noticed, I didn't actually give my user variable a `Username` attribute. That means this attribute initializes as an emtpy string - `""`. You can enter this code in the [Go playground](https://go.dev/play/) to examine this behavior.
+
+Why does Go do this? The convenient side is that it allows you to declare variables of a struct type without actually populating all of the fields for that struct:
+
+```Go
+var user User
+```
+
+But this is BY FAR the biggest opportunity for bugs that I've encountered in Go so far. It basically inadvertently escapes us from Go's otherwise strict type system, allowing us to accidentally instantialize structs with empty fields without raising any concerns.
+
+All this necessitates is good validation strategies, but it can occasionally be frustrating. If you ever run into unexpectedly empty values, double check and make sure your struct fields are all populated correctly!
+
+### Methods (and "Object Orientation")
+
+Structs are also how Go handles "Object Oriented" programming. You can attach methods to a struct that can interact with a struct's data and perform other actions you might want coupled with your data:
+
+```Go
+type MyStruct struct
+```
 
 # Error Handling in Our Go Code
 
@@ -403,10 +508,6 @@ Then, we'll create the requisite databases using the `CREATE DATABASE` command:
 
 The reason we're adding "one" to the end of our writing content and donations databases is to accomodate for the possibility of multiple content and donations databases.
 
-Once you've created your databases, make sure to add the following environment variables to your `.env` file (make sure this file is also in your .gitignore):
-
-- 
-
 # Dbmate
 
 to create a migration in a specific folder using dbmate, run the command `dbmate -d "./[location of my folder]" new [name_of_my_migration_file]`. This will create a new, timestamped migration in the folder of your choosing.
@@ -419,9 +520,15 @@ Commands for migrating up and rolling back migrations for specific databases are
 
 Please make sure to enable the permissions of these scripts to ensure you're able to run them.
 
+Change permissions:
+
+- `chmod +x ./internal/cmd/_migrate_pg_core.sh`
+
 Example command:
 
-`./internal/cmd/migrate_pg_core.sh`
+- `./internal/cmd/migrate_pg_core.sh`
+
+- `./internal/cmd/rollback_pg_core.sh`
 
 # Queries
 

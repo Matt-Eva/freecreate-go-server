@@ -1,6 +1,7 @@
 package web_page_handlers
 
 import (
+	"freecreate/internal/lib/logger"
 	"html/template"
 	"net/http"
 )
@@ -17,5 +18,8 @@ func ErrorPageHandler(template *template.Template, w http.ResponseWriter, messag
 		},
 	}
 
-	template.ExecuteTemplate(w, "error_page", pageData)
+	err := template.ExecuteTemplate(w, "error_page", pageData)
+	if err != nil {
+		logger.Log(err)
+	}
 }

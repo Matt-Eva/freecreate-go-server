@@ -12,30 +12,28 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-type PgxPools struct {
-	PgCore    *pgxpool.Pool
-	PgContent *pgxpool.Pool
+type PgContentPools struct {
+	PgContentOne *pgxpool.Pool
 }
 
-func ConfigPgx(ctx context.Context, environment string) (PgxPools, error) {
+func ConfigPgx(ctx context.Context, environment string) (*pgxpool.Pool, PgContentPools, error) {
 	corePool, coreErr := connectPgx(ctx, environment, os.Getenv("PG_MAIN_DB_URL"), "./db/pg_core/migrations")
 	if coreErr != nil {
 		logger.Log(coreErr)
-		return PgxPools{}, coreErr
+		return nil, PgContentPools{}, coreErr
 	}
 
-	contentPool, contentErr := connectPgx(ctx, environment, os.Getenv("PG_CONTENT_DB_ONE_URL"), "./db/pg_content/migrations")
+	contentOnePool, contentErr := connectPgx(ctx, environment, os.Getenv("PG_CONTENT_DB_ONE_URL"), "./db/pg_content/migrations")
 	if contentErr != nil {
 		logger.Log(contentErr)
-		return PgxPools{}, contentErr
+		return nil, PgContentPools{}, contentErr
 	}
 
-	pgxPools := PgxPools{
-		PgCore:    corePool,
-		PgContent: contentPool,
+	pgContentPools := PgContentPools{
+		PgContentOne: contentOnePool,
 	}
 
-	return pgxPools, nil
+	return corePool, pgContentPools, nil
 }
 
 func connectPgx(ctx context.Context, environment string, connEnv string, migrationsDir string) (*pgxpool.Pool, error) {
@@ -81,27 +79,3 @@ func runDbmateMigrations(connString string, environment string, migrationsDir st
 
 	return nil
 }
-
-// func configPgxContentDbOne(ctx context.Context, environment string) (*pgxpool.Pool, error) {
-// 	contentDbOneConnUrl := os.Getenv("PG_CONTENT_DB_ONE_URL")
-
-// 	pgxContentDbOnePool, err := pgxpool.New(ctx, contentDbOneConnUrl)
-// 	if err != nil {
-// 		fmt.Fprintf(os.Stderr, "Unable to create connection pool: %v\n", err)
-// 		os.Exit(1)
-// 	}
-// 	fmt.Println("successful connectino to pgx Content db one!")
-
-// 	migrationErr := runDbmateMigrations(contentDbOneConnUrl, environment, "./db/pg_content/migrations", "./db/pg_content")
-// 	if migrationErr != nil {
-// 		logger.Log(migrationErr)
-// 		return nil, migrationErr
-// 	}
-
-// 	return pgxContentDbOnePool, nil
-// }
-
-// ============== Just create more content DBs in parallel to create "sharding" for content =======
-// func ConfigPgxContentDBTwo(ctx context.Context){
-
-// }
