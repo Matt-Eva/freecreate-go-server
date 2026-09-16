@@ -227,6 +227,8 @@ Here are the tools you will need installed to work on the project (working on ge
 
 ## Tooling:
 - Go - VS Code extension
+- air - Go live code reloader
+  - [installation](https://github.com/air-verse/air#via-go-install-recommended)
 - Draw.io - VS Code extension
 - Go Template Support - VS Code extension
   - author: jinliming2
