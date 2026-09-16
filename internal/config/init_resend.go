@@ -10,7 +10,7 @@ import (
 
 func InitResend() *resend.Client {
 	apiKey := os.Getenv("RESEND_API_KEY")
-	if apiKey == ""{
+	if apiKey == "" {
 		log.Fatal("resend api Key cannot be empty")
 	}
 	client := resend.NewClient(apiKey)

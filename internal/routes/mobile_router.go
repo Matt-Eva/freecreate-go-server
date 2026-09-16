@@ -10,6 +10,7 @@ import (
 )
 
 func MobileRouter(pgCore *pgxpool.Pool, pgContentPools config.PgContentPools, pgCoreQueries config.PgCoreQueries, pgContentQueries config.PgContentQueries, valkeyClient valkey.Client, resendClient *resend.Client) *chi.Mux {
+
 	router := chi.NewRouter()
 
 	return router
