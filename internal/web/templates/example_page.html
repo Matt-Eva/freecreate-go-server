@@ -84,22 +84,6 @@
             This is where the actual content of the webpage will appear. Everything surrounding this
             is just a standardized template
               -->
-          <h2>Example Page</h2>
-
-          {{ range .PageValues.ExampleParams }}
-            {{ template "example_component" . }}
-          {{ end }}
-
-
-          <form id="example_post_form">
-            <label for="example_post_form_input">Example Input:</label>
-            <input type="text" id="example_post_form_input" />
-            <inpute type="submit" />
-          </form>
-          <p id="example_post_form_message_block"></p>
-
-          <div id="fetched_data_container"></div>
-        </div>
       </div>
 
       <!-- 

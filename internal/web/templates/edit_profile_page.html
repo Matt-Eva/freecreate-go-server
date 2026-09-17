@@ -1,0 +1,25 @@
+{{ define "edit_profile_page" }}
+  <!doctype html>
+  <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+      {{ template "globals_component" . }}
+
+      {{ .CsrfToken }}
+    </head>
+    <body class="{{ .LoggedInClass }}">
+    
+      {{ template "header_component" . }}
+
+      <div id="page_container">
+        {{ template "sidebar_component" . }}
+        <div id="page_content">
+            edit profile pa
+      </div>
+
+      {{ template "footer_component" . }}
+    </body>
+  </html>
+{{ end }}
