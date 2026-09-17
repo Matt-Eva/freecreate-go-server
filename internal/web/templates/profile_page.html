@@ -22,7 +22,41 @@
           </div>
           <div>
             <div>
-              <h2></h2>
+              <h2>Profile Information</h2>
+              <div>
+                <p>
+                  Username:
+                  {{ if eq .UserInfo.Username "" }}
+                    <em>you haven't set up a user name yet.</em>
+                  {{ else }}
+                    {{ .UserInfo.Username }}
+                  {{ end }}
+                </p>
+                <p>
+                  User Handle:
+                  {{ if eq .UserInfo.UserHandle "" }}
+                    <em>you haven't set up a user handle yet.</em>
+                  {{ else }}
+                    {{ .UserInfo.UserHandle }}
+                  {{ end }}
+                </p>
+                <p>
+                  Adult:
+                  {{ if .UserInfo.IsAdult }}
+                    Yes
+                  {{ else }}
+                    No
+                  {{ end }}
+                </p>
+                <p>
+                  Reading History:
+                  {{ if .UserInfo.ReadingHistory }}
+                    On
+                  {{ else }}
+                    Off
+                  {{ end }}
+                </p>
+              </div>
             </div>
             <div>
               <h2>My Creators</h2>
