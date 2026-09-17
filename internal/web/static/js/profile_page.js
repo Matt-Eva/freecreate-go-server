@@ -70,15 +70,15 @@ document.addEventListener("DOMContentLoaded", (e) => {
     postCreator(newCreatorName, newCreatorHandle);
   }
 
-  async function postCreator(name, handle) {
-    if (!name || !handle) {
+  async function postCreator(name, creatorHandle) {
+    if (!name || !creatorHandle) {
       renderCreateCreatorMessage("Name and handle cannot be empty.");
       return;
     }
 
     const requestBody = {
-      name: name,
-      handle: handle,
+      name,
+      creatorHandle,
     };
 
     console.log(requestBody);

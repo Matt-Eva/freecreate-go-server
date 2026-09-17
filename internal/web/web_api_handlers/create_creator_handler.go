@@ -27,8 +27,8 @@ func CreateCreatorHandler(sessionStore *sessions.CookieStore, valkeyClient valke
 		}
 
 		type Body struct {
-			Name   string `json:"name"`
-			Handle string `json:"handle"`
+			Name          string `json:"name"`
+			CreatorHandle string `json:"creatorHandle"`
 		}
 
 		var body Body
@@ -44,8 +44,9 @@ func CreateCreatorHandler(sessionStore *sessions.CookieStore, valkeyClient valke
 		// creatorHandle := body.Handle
 
 		createCreatorParams := query_handlers.CreateCreatorParams{
-			UserId: userId,
-			Name:   creatorName,
+			UserId:        userId,
+			Name:          creatorName,
+			CreatorHandle: body.CreatorHandle,
 		}
 
 		createdCreator, createCreatorErr := query_handlers.HandleCreateCreator(ctx, pgCore, pgCoreQueries, createCreatorParams)
@@ -63,7 +64,7 @@ func CreateCreatorHandler(sessionStore *sessions.CookieStore, valkeyClient valke
 		res := Response{
 			UUID:   createdCreator.UUID,
 			Name:   createdCreator.Name,
-			Handle: createdCreator.Handle,
+			Handle: createdCreator.CreatorHandle,
 		}
 
 		fmt.Println(res)

@@ -185,6 +185,14 @@ ALTER TABLE ONLY public.schema_migrations
 
 
 --
+-- Name: users unique_user_handle; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT unique_user_handle UNIQUE (user_handle);
+
+
+--
 -- Name: users users_email_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -386,4 +394,5 @@ INSERT INTO public.schema_migrations (version) VALUES
     ('20260917172626'),
     ('20260917172721'),
     ('20260917172923'),
-    ('20260917172957');
+    ('20260917172957'),
+    ('20260917234555');

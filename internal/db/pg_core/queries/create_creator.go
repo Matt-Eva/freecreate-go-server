@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"freecreate/internal/config"
+	pg_core_types "freecreate/internal/db/pg_core/types"
 	pg_core_validators "freecreate/internal/db/pg_core/validators"
 	"freecreate/internal/lib/api_error"
 	"freecreate/internal/lib/logger"
@@ -15,44 +16,27 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-type CreateCreatorParams struct {
-	UserId int64
-	Name   string
-	Handle string
-}
+func CreateCreator(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries, createCreatorParams pg_core_types.CreateCreatorParams) (pg_core_types.CreatedCreator, *api_error.Error) {
+	var createdCreator pg_core_types.CreatedCreator
 
-type CreatedCreator struct {
-	Name   string
-	Handle string
-	UUID   uuid.UUID
-}
-
-func CreateCreator(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries, createCreatorParams CreateCreatorParams) (CreatedCreator, *api_error.Error) {
 	query := pgCoreQueries.CreateCreator()
-
-	handle, handleErr := pg_core_validators.ValidateCreatorHandle(createCreatorParams.Handle)
-	if handleErr != nil {
-		return CreatedCreator{}, handleErr
-	}
 
 	namedArgs := pgx.NamedArgs{
 		"name":           createCreatorParams.Name,
-		"creator_handle": handle,
+		"creator_handle": createCreatorParams.CreatorHandle,
 		"user_id":        createCreatorParams.UserId,
 	}
 
 	validateCreatorErr := pg_core_validators.ValidateCreator(namedArgs)
 	if validateCreatorErr != nil {
-		return CreatedCreator{}, validateCreatorErr
+		return createdCreator, validateCreatorErr
 	}
 
 	var name string
-	var uuid uuid.UUID
 	var creator_handle string
+	var uuid uuid.UUID
 
-	rowResult := pgCore.QueryRow(ctx, query, namedArgs)
-
-	createCreatorErr := rowResult.Scan(&name, &uuid, &creator_handle)
+	createCreatorErr := pgCore.QueryRow(ctx, query, namedArgs).Scan(&name, &uuid, &creator_handle)
 
 	var pgErr *pgconn.PgError
 	if errors.As(createCreatorErr, &pgErr) && pgErr.Code == "23505" {
@@ -62,7 +46,7 @@ func CreateCreator(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries conf
 			Error:   createCreatorErr,
 		}
 
-		return CreatedCreator{}, apiErr
+		return createdCreator, apiErr
 	} else if createCreatorErr != nil {
 		logger.Log(createCreatorErr)
 
@@ -72,14 +56,12 @@ func CreateCreator(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries conf
 			Error:   createCreatorErr,
 		}
 
-		return CreatedCreator{}, apiErr
+		return createdCreator, apiErr
 	}
 
-	createdCreator := CreatedCreator{
-		Name:   name,
-		Handle: creator_handle,
-		UUID:   uuid,
-	}
+	createdCreator.Name = name
+	createdCreator.UUID = uuid
+	createdCreator.CreatorHandle = creator_handle
 
 	return createdCreator, nil
 }
