@@ -1,20 +1,22 @@
-{{ define "about_page" }}
+{{ define "page_template" }}
   <!doctype html>
   <html lang="en">
     <head>
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      {{ template "globals_component" }}
+  
+      {{ template "globals_component" . }}
+
+      {{ .CsrfToken }}
     </head>
     <body class="{{ .LoggedInClass }}">
+    
       {{ template "header_component" . }}
 
-
-      <div id="page_container" class="{{ .LoggedInClass }}">
+      <div id="page_container">
         {{ template "sidebar_component" . }}
-        <div id="page_content" class="{{ .LoggedInClass }}">
-          <p>about</p>
-        </div>
+        <div id="page_content">
+
       </div>
 
       {{ template "footer_component" . }}

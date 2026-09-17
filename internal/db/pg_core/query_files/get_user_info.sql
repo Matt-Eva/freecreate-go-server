@@ -1,0 +1,1 @@
+SELECT (username, user_handle, is_adult, reading_history) FROM users WHERE id = @user_id;

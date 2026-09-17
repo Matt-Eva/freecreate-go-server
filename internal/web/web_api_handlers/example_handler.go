@@ -19,7 +19,7 @@ func ExampleHandler(sessionStore *sessions.CookieStore, valkeyClient valkey.Clie
 
 		// For any authenticated requests, we have to get our user first
 
-		_, userId, _ := web_auth.GetUser(ctx, sessionStore, valkeyClient, w, r)
+		userId, _ := web_auth.CheckAuthentication(ctx, sessionStore, valkeyClient, w, r)
 
 		// if userId == 0{
 		// 	http.Error(w, "There was an issue with your login session. Please logout and try logging in again.", 401)
