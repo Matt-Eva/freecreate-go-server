@@ -18,13 +18,13 @@ type UpdateUserInfoParams struct {
 }
 
 type CreateCreatorParams struct {
-	UserId int64 `db:"user_id"`
-	Name   string 
+	UserId        int64 `db:"user_id"`
+	Name          string
 	CreatorHandle string `db:"creator_handle"`
 }
 
 type CreatedCreator struct {
-	Name   string `db:"name"`
-	CreatorHandle string `db:"creator_handle"`
-	UUID   uuid.UUID	`db:"uuid"`
+	Name          string    `db:"name"`
+	CreatorHandle string    `db:"creator_handle"`
+	UUID          uuid.UUID `db:"uuid"`
 }

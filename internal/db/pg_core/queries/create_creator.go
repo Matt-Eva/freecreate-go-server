@@ -16,14 +16,10 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-
-
 func CreateCreator(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries, createCreatorParams pg_core_types.CreateCreatorParams) (pg_core_types.CreatedCreator, *api_error.Error) {
 	var createdCreator pg_core_types.CreatedCreator
 
 	query := pgCoreQueries.CreateCreator()
-
-
 
 	namedArgs := pgx.NamedArgs{
 		"name":           createCreatorParams.Name,
@@ -36,9 +32,9 @@ func CreateCreator(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries conf
 		return createdCreator, validateCreatorErr
 	}
 
-	var name string;
-	var creator_handle string;
-	var uuid uuid.UUID;
+	var name string
+	var creator_handle string
+	var uuid uuid.UUID
 
 	createCreatorErr := pgCore.QueryRow(ctx, query, namedArgs).Scan(&name, &uuid, &creator_handle)
 

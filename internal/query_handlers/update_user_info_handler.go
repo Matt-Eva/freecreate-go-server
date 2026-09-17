@@ -27,7 +27,7 @@ func HandleUpdateUserInfo(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueri
 		UserHandle:     params.UserHandle,
 		ReadingHistory: params.ReadingHistory,
 		IsAdult:        params.IsAdult,
-		UserId: params.UserId,
+		UserId:         params.UserId,
 	}
 
 	info, getInfoErr := pg_core_queries.UpdateUserInfo(ctx, pgCore, pgCoreQueries, updateParams)

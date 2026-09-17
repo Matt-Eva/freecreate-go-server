@@ -15,19 +15,15 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-
-
 func UpdateUserInfo(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries, updateUserInfoParams pg_core_types.UpdateUserInfoParams) (pg_core_types.UserInfo, *api_error.Error) {
 	var userInfo pg_core_types.UserInfo
 
-
-
 	namedArgs := pgx.NamedArgs{
-		"username": updateUserInfoParams.Username,
-		"user_handle": updateUserInfoParams.UserHandle,
+		"username":        updateUserInfoParams.Username,
+		"user_handle":     updateUserInfoParams.UserHandle,
 		"reading_history": updateUserInfoParams.ReadingHistory,
-		"is_adult": updateUserInfoParams.IsAdult,
-		"user_id": updateUserInfoParams.UserId,
+		"is_adult":        updateUserInfoParams.IsAdult,
+		"user_id":         updateUserInfoParams.UserId,
 	}
 
 	argErr := pg_core_validators.ValidateUserInfo(namedArgs)
@@ -37,10 +33,10 @@ func UpdateUserInfo(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries con
 
 	query := pgCoreQueries.UpdateUserInfo()
 
-	var username string;
-	var user_handle string;
-	var is_adult bool;
-	var reading_history bool;
+	var username string
+	var user_handle string
+	var is_adult bool
+	var reading_history bool
 
 	queryErr := pgCore.QueryRow(ctx, query, namedArgs).Scan(&username, &user_handle, &reading_history, &is_adult)
 

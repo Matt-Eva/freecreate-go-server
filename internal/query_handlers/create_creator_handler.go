@@ -12,23 +12,23 @@ import (
 )
 
 type CreateCreatorParams struct {
-	UserId int64
-	Name   string
+	UserId        int64
+	Name          string
 	CreatorHandle string
 }
 
 type CreatedCreator struct {
-	Name   string
+	Name          string
 	CreatorHandle string
-	UUID   uuid.UUID
+	UUID          uuid.UUID
 }
 
 func HandleCreateCreator(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries, params CreateCreatorParams) (CreatedCreator, *api_error.Error) {
 	var createdCreator CreatedCreator
 
 	queryParams := pg_core_types.CreateCreatorParams{
-		UserId: params.UserId,
-		Name:   params.Name,
+		UserId:        params.UserId,
+		Name:          params.Name,
 		CreatorHandle: params.CreatorHandle,
 	}
 
@@ -38,8 +38,8 @@ func HandleCreateCreator(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQuerie
 	}
 
 	createdCreator = CreatedCreator{
-		Name:   creator.Name,
-		UUID:   creator.UUID,
+		Name:          creator.Name,
+		UUID:          creator.UUID,
 		CreatorHandle: creator.CreatorHandle,
 	}
 
