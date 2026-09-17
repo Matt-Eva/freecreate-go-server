@@ -56,7 +56,7 @@ func ConfigureWebRouter(router chi.Router, sessionStore *sessions.CookieStore, v
 		// == Personal Pages ==
 		router.Get("/profile", web_page_handlers.ProfilePageHandler(sessionStore, valkeyClient, templates, pgCore, pgCoreQueries))
 
-		router.Get("/profile/edit", web_page_handlers.EditProfilePageHandler(templates))
+		router.Get("/profile/edit", web_page_handlers.EditProfilePageHandler(templates, sessionStore, valkeyClient, pgCore, pgCoreQueries))
 
 		router.Get("/my-creator/{creator_uuid}", web_page_handlers.MyCreatorPageHandler(templates, sessionStore, valkeyClient, pgCore, pgCoreQueries))
 
@@ -79,6 +79,8 @@ func ConfigureWebRouter(router chi.Router, sessionStore *sessions.CookieStore, v
 			r.Post("/login/submit-otp", web_api_handlers.LoginSubmitOtpHandler(sessionStore, valkeyClient, pgCoreQueries, pgCore))
 
 			r.Delete("/logout", web_api_handlers.LogoutHandler(sessionStore, valkeyClient))
+
+			r.Patch("/user/profile", web_api_handlers.UpdateUserInfoHandler(sessionStore, valkeyClient, pgCore, pgCoreQueries))
 
 			r.Post("/creator", web_api_handlers.CreateCreatorHandler(sessionStore, valkeyClient, pgCore, pgCoreQueries))
 		})

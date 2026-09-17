@@ -4,19 +4,84 @@
     <head>
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
+
       {{ template "globals_component" . }}
+
+
+      <script defer src="/internal/web/static/js/edit_profile_page.js"></script>
 
       {{ .CsrfToken }}
     </head>
     <body class="{{ .LoggedInClass }}">
-    
       {{ template "header_component" . }}
+
 
       <div id="page_container">
         {{ template "sidebar_component" . }}
         <div id="page_content">
-            edit profile pa
+          <h2>Update Profile Info</h2>
+          <div>
+            <form id="update_profile_form">
+              <label for="update_username_input">Username:</label>
+              <input
+                type="text"
+                id="update_username_input"
+                value="{{ .UserInfo.Username }}"
+              />
+              <label for="update_userhandle_input">User Handle (unique):</label>
+              <input
+                type="text"
+                id="update_userhandle_input"
+                value="{{ .UserInfo.UserHandle }}"
+              />
+              <p>Reading History</p>
+              <label for="reading_history_off">Off</label>
+              <input
+                type="radio"
+                name="reading_history"
+                id="reading_history_off"
+                value="off"
+                {{ if ne .UserInfo.ReadingHistory true }}
+                  checked="true"
+                {{ end }}
+              />
+              <label for="reading_history_on">On</label>
+              <input
+                type="radio"
+                name="reading_history"
+                id="reading_history_on"
+                value="on"
+                {{ if .UserInfo.ReadingHistory }}
+                  checked="true"
+                {{ end }}
+              />
+              <p>Are you an adult?</p>
+              <label for="is_adult_no">No</label>
+              <input
+                type="radio"
+                name="is_adult"
+                id="is_adult_no"
+                value="no"
+                {{ if ne .UserInfo.IsAdult true }}
+                  checked="true"
+                {{ end }}
+              />
+              <label for="is_adult_yes">Yes</label>
+              <input
+                type="radio"
+                name="is_adult"
+                id="is_adult_yes"
+                value="yes"
+                {{ if .UserInfo.IsAdult }}
+                  checked="true"
+                {{ end }}
+              />
+              <input type="submit" value="update" />
+            </form>
+            <p id="update_profile_message_block"></p>
+            <button id="cancel_update_btn">cancel</button>
+          </div>
+        </div>
       </div>
 
       {{ template "footer_component" . }}

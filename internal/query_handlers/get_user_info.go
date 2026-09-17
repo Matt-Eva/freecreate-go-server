@@ -9,13 +9,6 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-type UserInfo struct {
-	Username       string
-	UserHandle     string
-	IsAdult        bool
-	ReadingHistory bool
-}
-
 func HandleGetUserInfo(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries, userId int64) (UserInfo, *api_error.Error) {
 	var userInfo UserInfo
 

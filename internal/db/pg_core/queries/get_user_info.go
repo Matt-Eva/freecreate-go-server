@@ -3,6 +3,7 @@ package pg_core_queries
 import (
 	"context"
 	"freecreate/internal/config"
+	pg_core_types "freecreate/internal/db/pg_core/types"
 	"freecreate/internal/lib/api_error"
 	"freecreate/internal/lib/logger"
 	"net/http"
@@ -11,15 +12,8 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-type UserInfo struct {
-	Username       string
-	UserHandle     string
-	IsAdult        bool
-	ReadingHistory bool
-}
-
-func GetUserInfo(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries, userId int64) (UserInfo, *api_error.Error) {
-	var userInfo UserInfo
+func GetUserInfo(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries, userId int64) (pg_core_types.UserInfo, *api_error.Error) {
+	var userInfo pg_core_types.UserInfo
 
 	query := pgCoreQueries.GetUserInfo()
 

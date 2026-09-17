@@ -38,7 +38,7 @@
                   {{ if eq .UserInfo.UserHandle "" }}
                     <em>you haven't set up a user handle yet.</em>
                   {{ else }}
-                    {{ .UserInfo.UserHandle }}
+                    @{{ .UserInfo.UserHandle }}
                   {{ end }}
                 </p>
                 <p>
