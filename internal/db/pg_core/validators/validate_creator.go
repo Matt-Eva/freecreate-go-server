@@ -31,5 +31,16 @@ func ValidateCreator(args pgx.NamedArgs) *api_error.Error {
 		return apiErr
 	}
 
+	if args["creator_handle"] == "@" || args["creator_handle"] == ""{
+		msg := "validated handle cannot be empty"
+		err := errors.New(msg)
+		apiErr := &api_error.Error{
+			Code:    http.StatusUnprocessableEntity,
+			Message: msg,
+			Error:   err,
+		}
+		return apiErr
+	}
+
 	return nil
 }
