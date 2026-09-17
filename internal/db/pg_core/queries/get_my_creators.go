@@ -44,10 +44,12 @@ func GetMyCreators(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries conf
 
 	for queryResult.Next() {
 		var myCreator MyCreatorsStruct
+
 		scanErr := queryResult.Scan(&myCreator)
 		if scanErr != nil {
 			logger.Log(scanErr)
 		}
+		
 		myCreators = append(myCreators, myCreator)
 	}
 

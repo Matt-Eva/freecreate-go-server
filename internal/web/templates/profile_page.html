@@ -21,29 +21,34 @@
             <p id="logout_error_block"></p>
           </div>
           <div>
-            <h2>My Creators</h2>
             <div>
-              <h3>Add New Creator Profile:</h3>
-              <form id="new_creator_form">
-                <label for="new_creator_name_input">Name:</label>
-                <input type="text" id="new_creator_name_input" />
-                <label for="new_creator_handle_input">Handle (unique):</label>
-                <input type="text" id="new_creator_handle_input" />
-                <input type="submit" value="create" />
-              </form>
-              <p id="new_creator_message_block"></p>
+              <h2></h2>
             </div>
             <div>
-              <h3>My Creator Profiles:</h3>
-              <div id="my_creators_container">
-                {{ range .MyCreators }}
-                  <article>
-                    <p>{{ .Name }}</p>
-                    <p>{{ .CreatorHandle }}</p>
-                    <a href="/my-creator/{{ .UUID }}">view</a>
-                    <a href="/my-creator/{{ .UUID }}/edit">edit</a>
-                  </article>
-                {{ end }}
+              <h2>My Creators</h2>
+              <div>
+                <h3>Add New Creator Profile:</h3>
+                <form id="new_creator_form">
+                  <label for="new_creator_name_input">Name:</label>
+                  <input type="text" id="new_creator_name_input" />
+                  <label for="new_creator_handle_input">Handle (unique):</label>
+                  <input type="text" id="new_creator_handle_input" />
+                  <input type="submit" value="create" />
+                </form>
+                <p id="new_creator_message_block"></p>
+              </div>
+              <div>
+                <h3>My Creator Profiles:</h3>
+                <div id="my_creators_container">
+                  {{ range .MyCreators }}
+                    <article>
+                      <p>{{ .Name }}</p>
+                      <p>{{ .CreatorHandle }}</p>
+                      <a href="/my-creator/{{ .UUID }}">view</a>
+                      <a href="/my-creator/{{ .UUID }}/edit">edit</a>
+                    </article>
+                  {{ end }}
+                </div>
               </div>
             </div>
           </div>

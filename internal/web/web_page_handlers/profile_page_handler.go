@@ -35,9 +35,15 @@ func ProfilePageHandler(sessionStore *sessions.CookieStore, valkeyClient valkey.
 			return
 		}
 
+		userInfo, getUserInfoErr := query_handlers.HandleGetUserInfo(ctx, pgCore, pgCoreQueries, userId)
+		if getUserInfoErr != nil {
+			http.Error(w, getUserInfoErr.Message, getUserInfoErr.Code)
+		}
+
 		type PageData struct {
 			UniversalPageData
 			MyCreators []query_handlers.MyCreatorsStruct
+			UserInfo query_handlers.UserInfo
 		}
 
 		pageData := PageData{
@@ -47,6 +53,7 @@ func ProfilePageHandler(sessionStore *sessions.CookieStore, valkeyClient valkey.
 				LoggedInClass: "logged_in",
 			},
 			MyCreators: myCreators,
+			UserInfo: userInfo,
 		}
 
 		err := profileTmpl.ExecuteTemplate(w, "profile", pageData)
