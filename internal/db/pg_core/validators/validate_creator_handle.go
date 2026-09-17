@@ -8,13 +8,13 @@ import (
 	"strings"
 )
 
-func ValidateCreatorHandle(handle string)(string, *api_error.Error){
-	 apiErr := &api_error.Error{
-		Code: http.StatusInternalServerError,
+func ValidateCreatorHandle(handle string) (string, *api_error.Error) {
+	apiErr := &api_error.Error{
+		Code:    http.StatusInternalServerError,
 		Message: api_error.InteralServerErrorMessage,
 	}
 
-	if handle == ""{
+	if handle == "" {
 		err := errors.New("handle cannot be empty")
 		logger.Log(err)
 		apiErr.Error = err
@@ -22,8 +22,8 @@ func ValidateCreatorHandle(handle string)(string, *api_error.Error){
 	}
 
 	validatedHandle := "@" + strings.ReplaceAll(handle, " ", "-")
-	
-	if validatedHandle == "@" || validatedHandle == ""{
+
+	if validatedHandle == "@" || validatedHandle == "" {
 		err := errors.New("validated handle cannot be empty")
 		logger.Log(err)
 		apiErr.Error = err

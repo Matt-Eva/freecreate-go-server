@@ -8,17 +8,17 @@ import (
 	"github.com/gorilla/csrf"
 )
 
-func EditProfilePageHandler(templates *template.Template)http.HandlerFunc{
-	return func (w http.ResponseWriter, r *http.Request){
-		type PageData struct{
+func EditProfilePageHandler(templates *template.Template) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		type PageData struct {
 			UniversalPageData
 		}
 
 		pageData := PageData{
 			UniversalPageData: UniversalPageData{
-				LoggedIn: true,
+				LoggedIn:      true,
 				LoggedInClass: "logged_in",
-				CsrfToken: csrf.TemplateField(r),
+				CsrfToken:     csrf.TemplateField(r),
 			},
 		}
 

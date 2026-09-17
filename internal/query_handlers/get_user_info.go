@@ -16,7 +16,7 @@ type UserInfo struct {
 	ReadingHistory bool
 }
 
-func HandleGetUserInfo(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries, userId int64)(UserInfo, *api_error.Error) {
+func HandleGetUserInfo(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries, userId int64) (UserInfo, *api_error.Error) {
 	var userInfo UserInfo
 
 	user, getUserErr := pg_core_queries.GetUserInfo(ctx, pgCore, pgCoreQueries, userId)

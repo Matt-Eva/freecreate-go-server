@@ -17,6 +17,7 @@ import (
 func ProfilePageHandler(sessionStore *sessions.CookieStore, valkeyClient valkey.Client, profileTmpl *template.Template, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
+
 		ctx := r.Context()
 
 		userId, _ := web_auth.CheckAuthentication(ctx, sessionStore, valkeyClient, w, r)
@@ -29,21 +30,21 @@ func ProfilePageHandler(sessionStore *sessions.CookieStore, valkeyClient valkey.
 			UserId: userId,
 		}
 
+		userInfo, getUserInfoErr := query_handlers.HandleGetUserInfo(ctx, pgCore, pgCoreQueries, userId)
+		if getUserInfoErr != nil {
+			http.Error(w, getUserInfoErr.Message, getUserInfoErr.Code)
+		}
+
 		myCreators, getMyCreatorsErr := query_handlers.HandleGetMyCreators(ctx, pgCore, pgCoreQueries, getMyCreatorsParams)
 		if getMyCreatorsErr != nil {
 			http.Error(w, getMyCreatorsErr.Message, getMyCreatorsErr.Code)
 			return
 		}
 
-		userInfo, getUserInfoErr := query_handlers.HandleGetUserInfo(ctx, pgCore, pgCoreQueries, userId)
-		if getUserInfoErr != nil {
-			http.Error(w, getUserInfoErr.Message, getUserInfoErr.Code)
-		}
-
 		type PageData struct {
 			UniversalPageData
 			MyCreators []query_handlers.MyCreatorsStruct
-			UserInfo query_handlers.UserInfo
+			UserInfo   query_handlers.UserInfo
 		}
 
 		pageData := PageData{
@@ -53,7 +54,7 @@ func ProfilePageHandler(sessionStore *sessions.CookieStore, valkeyClient valkey.
 				LoggedInClass: "logged_in",
 			},
 			MyCreators: myCreators,
-			UserInfo: userInfo,
+			UserInfo:   userInfo,
 		}
 
 		err := profileTmpl.ExecuteTemplate(w, "profile", pageData)

@@ -49,7 +49,7 @@ func GetMyCreators(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries conf
 		if scanErr != nil {
 			logger.Log(scanErr)
 		}
-		
+
 		myCreators = append(myCreators, myCreator)
 	}
 

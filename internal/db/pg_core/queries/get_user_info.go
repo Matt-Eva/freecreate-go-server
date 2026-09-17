@@ -22,7 +22,7 @@ func GetUserInfo(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries config
 	var userInfo UserInfo
 
 	query := pgCoreQueries.GetUserInfo()
-	
+
 	namedArgs := pgx.NamedArgs{
 		"user_id": userId,
 	}
@@ -32,9 +32,9 @@ func GetUserInfo(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries config
 		logger.Log(err)
 
 		apiErr := &api_error.Error{
-			Code: http.StatusInternalServerError,
+			Code:    http.StatusInternalServerError,
 			Message: api_error.InteralServerErrorMessage,
-			Error: err,
+			Error:   err,
 		}
 
 		return userInfo, apiErr
