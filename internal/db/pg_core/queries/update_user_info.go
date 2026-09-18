@@ -18,9 +18,11 @@ import (
 func UpdateUserInfo(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries, updateUserInfoParams pg_core_types.UpdateUserInfoParams) (pg_core_types.UserInfo, *api_error.Error) {
 	var userInfo pg_core_types.UserInfo
 
+	handle := pg_core_validators.ValidateCreatorUserHandle(updateUserInfoParams.UserHandle)
+
 	namedArgs := pgx.NamedArgs{
 		"username":        updateUserInfoParams.Username,
-		"user_handle":     updateUserInfoParams.UserHandle,
+		"user_handle":     handle,
 		"reading_history": updateUserInfoParams.ReadingHistory,
 		"is_adult":        updateUserInfoParams.IsAdult,
 		"user_id":         updateUserInfoParams.UserId,

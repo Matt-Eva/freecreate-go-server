@@ -4,28 +4,18 @@ import (
 	"context"
 	"freecreate/internal/config"
 	pg_core_queries "freecreate/internal/db/pg_core/queries"
+	pg_core_types "freecreate/internal/db/pg_core/types"
 	"freecreate/internal/lib/api_error"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-type CreateUserParams struct {
-	Email string
-}
+func HandleCreateUser(ctx context.Context, pgCoreQueries config.PgCoreQueries, pgCore *pgxpool.Pool, userParams pg_core_types.CreateUserParams) (pg_core_types.CreatedUser, *api_error.Error) {
 
-type CreatedUser struct {
-	UserId int64
-}
-
-func HandleCreateUser(ctx context.Context, pgCoreQueries config.PgCoreQueries, pgCore *pgxpool.Pool, userParams CreateUserParams) (CreatedUser, *api_error.Error) {
-	var createdUser CreatedUser
-
-	userId, createUserErr := pg_core_queries.CreateUser(ctx, pgCoreQueries, pgCore, userParams.Email)
+	user, createUserErr := pg_core_queries.CreateUser(ctx, pgCoreQueries, pgCore, userParams.Email)
 	if createUserErr != nil {
-		return createdUser, createUserErr
+		return user, createUserErr
 	}
 
-	createdUser.UserId = userId
-
-	return createdUser, nil
+	return user, nil
 }

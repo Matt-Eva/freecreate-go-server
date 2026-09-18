@@ -2,8 +2,8 @@ package web_api_handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"freecreate/internal/config"
+	pg_core_types "freecreate/internal/db/pg_core/types"
 	"freecreate/internal/lib/api_error"
 	"freecreate/internal/lib/logger"
 	"freecreate/internal/query_handlers"
@@ -43,7 +43,7 @@ func CreateCreatorHandler(sessionStore *sessions.CookieStore, valkeyClient valke
 		creatorName := body.Name
 		// creatorHandle := body.Handle
 
-		createCreatorParams := query_handlers.CreateCreatorParams{
+		createCreatorParams := pg_core_types.NewCreatorParams{
 			UserId:        userId,
 			Name:          creatorName,
 			CreatorHandle: body.CreatorHandle,
@@ -56,18 +56,16 @@ func CreateCreatorHandler(sessionStore *sessions.CookieStore, valkeyClient valke
 		}
 
 		type Response struct {
-			UUID   uuid.UUID `json:"uuid"`
-			Name   string    `json:"name"`
-			Handle string    `json:"handle"`
+			UUID          uuid.UUID `json:"uuid"`
+			Name          string    `json:"name"`
+			CreatorHandle string    `json:"creatorHandle"`
 		}
 
 		res := Response{
-			UUID:   createdCreator.UUID,
-			Name:   createdCreator.Name,
-			Handle: createdCreator.CreatorHandle,
+			UUID:          createdCreator.UUID,
+			Name:          createdCreator.Name,
+			CreatorHandle: createdCreator.CreatorHandle,
 		}
-
-		fmt.Println(res)
 
 		jsonRes, err := json.Marshal(res)
 		if err != nil {

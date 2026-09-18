@@ -3,6 +3,7 @@ package web_api_handlers
 import (
 	"encoding/json"
 	"freecreate/internal/config"
+	pg_core_types "freecreate/internal/db/pg_core/types"
 	"freecreate/internal/lib/api_error"
 	"freecreate/internal/lib/logger"
 	"freecreate/internal/query_handlers"
@@ -39,7 +40,7 @@ func UpdateUserInfoHandler(sessionStore *sessions.CookieStore, valkeyClient valk
 			return
 		}
 
-		queryParams := query_handlers.UpdateUserInfoParams{
+		queryParams := pg_core_types.UpdateUserInfoParams{
 			Username:       body.Username,
 			UserHandle:     body.UserHandle,
 			IsAdult:        body.IsAdult,

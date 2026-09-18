@@ -2,6 +2,7 @@ package web_page_handlers
 
 import (
 	"freecreate/internal/config"
+	pg_core_types "freecreate/internal/db/pg_core/types"
 	"freecreate/internal/lib/logger"
 	"freecreate/internal/query_handlers"
 	"freecreate/internal/web/web_auth"
@@ -32,7 +33,7 @@ func EditProfilePageHandler(templates *template.Template, sessionStore *sessions
 
 		type PageData struct {
 			UniversalPageData
-			UserInfo query_handlers.UserInfo
+			UserInfo pg_core_types.UserInfo
 		}
 
 		pageData := PageData{

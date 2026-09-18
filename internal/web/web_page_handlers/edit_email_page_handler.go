@@ -12,12 +12,12 @@ import (
 	"github.com/valkey-io/valkey-go"
 )
 
-func EditEmailPageHandler(template *template.Template, sessionStore *sessions.CookieStore, valkeyClient valkey.Client, resendClient *resend.Client) http.HandlerFunc{
-	return func (w http.ResponseWriter, r *http.Request){
+func EditEmailPageHandler(template *template.Template, sessionStore *sessions.CookieStore, valkeyClient valkey.Client, resendClient *resend.Client) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
 
 		userId, _ := web_auth.CheckAuthentication(ctx, sessionStore, valkeyClient, w, r)
-		if userId == 0{
+		if userId == 0 {
 			http.Redirect(w, r, "/login", http.StatusSeeOther)
 			return
 		}
@@ -28,9 +28,9 @@ func EditEmailPageHandler(template *template.Template, sessionStore *sessions.Co
 
 		pageData := PageData{
 			UniversalPageData: UniversalPageData{
-				LoggedIn: true,
+				LoggedIn:      true,
 				LoggedInClass: "logged_in",
-				CsrfToken: csrf.TemplateField(r),
+				CsrfToken:     csrf.TemplateField(r),
 			},
 		}
 

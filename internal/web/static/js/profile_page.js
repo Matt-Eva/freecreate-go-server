@@ -99,6 +99,7 @@ document.addEventListener("DOMContentLoaded", (e) => {
         throw new Error(err);
       } else {
         const data = await res.json();
+        console.log(data);
         renderNewCreator(data);
       }
     } catch (error) {
@@ -119,7 +120,7 @@ document.addEventListener("DOMContentLoaded", (e) => {
     const editLink = document.createElement("a");
 
     name.textContent = data.name;
-    handle.textContent = data.handle;
+    handle.textContent = "@" + data.creatorHandle;
 
     viewLink.href = `/my-creator/${data.uuid}`;
     viewLink.textContent = "view";

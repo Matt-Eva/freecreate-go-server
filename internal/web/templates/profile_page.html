@@ -82,7 +82,7 @@
                   {{ range .MyCreators }}
                     <article>
                       <p>{{ .Name }}</p>
-                      <p>{{ .CreatorHandle }}</p>
+                      <p>@{{ .CreatorHandle }}</p>
                       <a href="/my-creator/{{ .UUID }}">view</a>
                       <a href="/my-creator/{{ .UUID }}/edit">edit</a>
                     </article>

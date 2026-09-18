@@ -2,6 +2,24 @@ package pg_core_types
 
 import "github.com/google/uuid"
 
+// =========== USER STRUCTS ====================
+
+type CreateUserParams struct {
+	Email string
+}
+
+type CreatedUser struct {
+	UserId int64
+}
+
+type UpdateUserInfoParams struct {
+	Username       string
+	UserHandle     string
+	ReadingHistory bool
+	IsAdult        bool
+	UserId         int64
+}
+
 type UserInfo struct {
 	Username       string
 	UserHandle     string
@@ -9,22 +27,30 @@ type UserInfo struct {
 	ReadingHistory bool
 }
 
-type UpdateUserInfoParams struct {
-	Username       string `db:"username"`
-	UserHandle     string `db:"user_handle"`
-	ReadingHistory bool   `db:"reading_history"`
-	IsAdult        bool   `db:"is_adult"`
-	UserId         int64  `db:"user_id"`
-}
+// ========== CREATOR STRUCTS ===================
 
-type CreateCreatorParams struct {
-	UserId        int64 `db:"user_id"`
+type NewCreatorParams struct {
+	UserId        int64
 	Name          string
-	CreatorHandle string `db:"creator_handle"`
+	CreatorHandle string
 }
 
 type CreatedCreator struct {
-	Name          string    `db:"name"`
-	CreatorHandle string    `db:"creator_handle"`
-	UUID          uuid.UUID `db:"uuid"`
+	Name          string
+	CreatorHandle string
+	UUID          uuid.UUID
+}
+
+type MyCreatorsStruct struct {
+	Name          string
+	CreatorHandle string
+	UUID          uuid.UUID
+}
+
+type MyCreator struct {
+	Name          string
+	UUID          uuid.UUID
+}
+
+type Creator struct {
 }
