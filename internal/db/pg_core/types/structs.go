@@ -2,6 +2,14 @@ package pg_core_types
 
 import "github.com/google/uuid"
 
+type CreateUserParams struct {
+	Email string
+}
+
+type CreatedUser struct {
+	UserId int64
+}
+
 type UserInfo struct {
 	Username       string
 	UserHandle     string
@@ -27,4 +35,18 @@ type CreatedCreator struct {
 	Name          string
 	CreatorHandle string
 	UUID          uuid.UUID
+}
+
+type MyCreatorsStruct struct {
+	Name          string
+	CreatorHandle string
+	UUID          uuid.UUID
+}
+
+type MyCreator struct {
+	Name          string
+	UUID          uuid.UUID
+}
+
+type Creator struct {
 }

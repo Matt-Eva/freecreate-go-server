@@ -3,6 +3,7 @@ package web_page_handlers
 import (
 	"freecreate/internal/config"
 	pg_core_queries "freecreate/internal/db/pg_core/queries"
+	pg_core_types "freecreate/internal/db/pg_core/types"
 	"freecreate/internal/lib/logger"
 	"freecreate/internal/web/web_auth"
 	"html/template"
@@ -34,7 +35,7 @@ func MyCreatorsPageHandler(templates *template.Template, sessionStore *sessions.
 			CsrfToken     template.HTML
 			LoggedIn      bool
 			LoggedInClass string
-			MyCreators    []pg_core_queries.MyCreatorsStruct
+			MyCreators    []pg_core_types.MyCreatorsStruct
 		}
 
 		pageData := PageData{
