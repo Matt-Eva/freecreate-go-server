@@ -16,15 +16,17 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-func CreateCreator(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries, createCreatorParams pg_core_types.CreateCreatorParams) (pg_core_types.CreatedCreator, *api_error.Error) {
+func CreateCreator(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries, newCreatorParams pg_core_types.NewCreatorParams) (pg_core_types.CreatedCreator, *api_error.Error) {
 	var createdCreator pg_core_types.CreatedCreator
 
 	query := pgCoreQueries.CreateCreator()
 
+	creatorHandle := pg_core_validators.ValidateCreatorUserHandle(newCreatorParams.CreatorHandle)
+
 	namedArgs := pgx.NamedArgs{
-		"name":           createCreatorParams.Name,
-		"creator_handle": createCreatorParams.CreatorHandle,
-		"user_id":        createCreatorParams.UserId,
+		"name":           newCreatorParams.Name,
+		"creator_handle": creatorHandle,
+		"user_id":        newCreatorParams.UserId,
 	}
 
 	validateCreatorErr := pg_core_validators.ValidateCreator(namedArgs)
