@@ -58,6 +58,8 @@ func ConfigureWebRouter(router chi.Router, sessionStore *sessions.CookieStore, v
 
 		router.Get("/profile/edit", web_page_handlers.EditProfilePageHandler(templates, sessionStore, valkeyClient, pgCore, pgCoreQueries))
 
+		router.Get("/profile/edit/email", web_page_handlers.EditEmailPageHandler(templates, sessionStore, valkeyClient, resendClient))
+
 		router.Get("/my-creator/{creator_uuid}", web_page_handlers.MyCreatorPageHandler(templates, sessionStore, valkeyClient, pgCore, pgCoreQueries))
 
 		router.Get("/my-creator/{creator-uuid}/edit", web_page_handlers.EditMyCreatorPageHandler(templates))
