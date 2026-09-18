@@ -11,7 +11,7 @@ type PgCoreQueries struct {
 	getUserByEmail string
 	createUser     string
 	getUserInfo    string
-	deleteUser string
+	deleteUser     string
 	updateUserInfo string
 	createCreator  string
 	getMyCreators  string
@@ -34,7 +34,7 @@ func (q PgCoreQueries) UpdateUserInfo() string {
 	return q.updateUserInfo
 }
 
-func (q PgCoreQueries) DeleteUser() string { 
+func (q PgCoreQueries) DeleteUser() string {
 	return q.deleteUser
 }
 

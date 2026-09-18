@@ -10,7 +10,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-func HandleDeleteUser(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries, params pg_core_types.DeleteUserParams) *api_error.Error{
+func HandleDeleteUser(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries, params pg_core_types.DeleteUserParams) *api_error.Error {
 	err := pg_core_queries.DeleteUser(ctx, pgCore, pgCoreQueries, params)
 
 	return err

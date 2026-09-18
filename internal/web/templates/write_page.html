@@ -1,0 +1,37 @@
+{{ define "write_page" }}
+  <!doctype html>
+  <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+      {{ template "globals_component" . }}
+
+      {{ .CsrfToken }}
+    </head>
+    <body class="{{ .LoggedInClass }}">
+      {{ template "header_component" . }}
+
+
+      <div id="page_container">
+        {{ template "sidebar_component" . }}
+        <div id="page_content">
+          Write page
+          {{ if eq (len .MyCreators) 0 }}
+            <p>You haven't set up any creator profiles yet!</p>
+            <p>
+              To start writing, please
+              <a href="/profile">set up a creator profile.</a>
+            </p>
+          {{ else }}
+            {{ range .MyCreators }}
+              <p>{{ .Name }}</p>
+            {{ end }}
+          {{ end }}
+        </div>
+      </div>
+
+      {{ template "footer_component" . }}
+    </body>
+  </html>
+{{ end }}

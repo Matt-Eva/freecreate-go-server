@@ -45,15 +45,26 @@ type CreatedCreator struct {
 	UUID          uuid.UUID
 }
 
+type GetMyCreatorsParams struct {
+	UserId int64
+}
+
 type MyCreatorsStruct struct {
 	Name          string
 	CreatorHandle string
 	UUID          uuid.UUID
 }
 
+type GetMyCreatorParams struct {
+	UserId int64
+}
+
 type MyCreator struct {
-	Name          string
-	UUID          uuid.UUID
+	Name string
+	UUID uuid.UUID
+}
+
+type GetCreatorParams struct {
 }
 
 type Creator struct {

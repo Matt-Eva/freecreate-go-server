@@ -15,10 +15,8 @@ import (
 	"github.com/valkey-io/valkey-go"
 )
 
-func ProfilePageHandler(sessionStore *sessions.CookieStore, valkeyClient valkey.Client, profileTmpl *template.Template, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries) http.HandlerFunc {
-
+func WritePageHandler(templates *template.Template, sessionStore *sessions.CookieStore, valkeyClient valkey.Client, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-
 		ctx := r.Context()
 
 		userId, _ := web_auth.CheckAuthentication(ctx, sessionStore, valkeyClient, w, r)
@@ -27,38 +25,31 @@ func ProfilePageHandler(sessionStore *sessions.CookieStore, valkeyClient valkey.
 			return
 		}
 
-		userInfo, getUserInfoErr := query_handlers.HandleGetUserInfo(ctx, pgCore, pgCoreQueries, userId)
-		if getUserInfoErr != nil {
-			http.Error(w, getUserInfoErr.Message, getUserInfoErr.Code)
-		}
-
-		getMyCreatorsParams := pg_core_types.GetMyCreatorsParams{
+		getCreatorsParams := pg_core_types.GetMyCreatorsParams{
 			UserId: userId,
 		}
 
-		myCreators, getMyCreatorsErr := query_handlers.HandleGetMyCreators(ctx, pgCore, pgCoreQueries, getMyCreatorsParams)
-		if getMyCreatorsErr != nil {
-			http.Error(w, getMyCreatorsErr.Message, getMyCreatorsErr.Code)
+		myCreators, queryErr := query_handlers.HandleGetMyCreators(ctx, pgCore, pgCoreQueries, getCreatorsParams)
+		if queryErr != nil {
+			http.Error(w, queryErr.Message, queryErr.Code)
 			return
 		}
 
 		type PageData struct {
 			UniversalPageData
 			MyCreators []pg_core_types.MyCreatorsStruct
-			UserInfo   pg_core_types.UserInfo
 		}
 
 		pageData := PageData{
 			UniversalPageData: UniversalPageData{
-				CsrfToken:     csrf.TemplateField(r),
 				LoggedIn:      true,
 				LoggedInClass: "logged_in",
+				CsrfToken:     csrf.TemplateField(r),
 			},
 			MyCreators: myCreators,
-			UserInfo:   userInfo,
 		}
 
-		err := profileTmpl.ExecuteTemplate(w, "profile", pageData)
+		err := templates.ExecuteTemplate(w, "write_page", pageData)
 		if err != nil {
 			logger.Log(err)
 		}
