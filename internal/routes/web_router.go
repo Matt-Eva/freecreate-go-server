@@ -66,6 +66,8 @@ func ConfigureWebRouter(router chi.Router, sessionStore *sessions.CookieStore, v
 
 		router.Get("/write", web_page_handlers.WritePageHandler(templates, sessionStore, valkeyClient, pgCore, pgCoreQueries))
 
+		router.Get("/my-library", web_page_handlers.MyLibraryPageHandler(templates))
+
 		// router.Get("/my-writing", web_page_handlers.MyWritingPageHandler())
 
 		// ======== JSON Web API Routes =========
