@@ -70,15 +70,15 @@ document.addEventListener("DOMContentLoaded", (e) => {
     postCreator(newCreatorName, newCreatorHandle);
   }
 
-  async function postCreator(name, handle) {
-    if (!name || !handle) {
+  async function postCreator(name, creatorHandle) {
+    if (!name || !creatorHandle) {
       renderCreateCreatorMessage("Name and handle cannot be empty.");
       return;
     }
 
     const requestBody = {
-      name: name,
-      handle: handle,
+      name,
+      creatorHandle,
     };
 
     console.log(requestBody);
@@ -99,6 +99,7 @@ document.addEventListener("DOMContentLoaded", (e) => {
         throw new Error(err);
       } else {
         const data = await res.json();
+        console.log(data);
         renderNewCreator(data);
       }
     } catch (error) {
@@ -119,7 +120,7 @@ document.addEventListener("DOMContentLoaded", (e) => {
     const editLink = document.createElement("a");
 
     name.textContent = data.name;
-    handle.textContent = data.handle;
+    handle.textContent = "@" + data.creatorHandle;
 
     viewLink.href = `/my-creator/${data.uuid}`;
     viewLink.textContent = "view";

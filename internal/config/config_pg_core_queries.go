@@ -10,6 +10,8 @@ import (
 type PgCoreQueries struct {
 	getUserByEmail string
 	createUser     string
+	getUserInfo    string
+	updateUserInfo string
 	createCreator  string
 	getMyCreators  string
 	getMyCreator   string
@@ -21,6 +23,14 @@ func (q PgCoreQueries) GetUserByEmail() string {
 
 func (q PgCoreQueries) CreateUser() string {
 	return q.createUser
+}
+
+func (q PgCoreQueries) GetUserInfo() string {
+	return q.getUserInfo
+}
+
+func (q PgCoreQueries) UpdateUserInfo() string {
+	return q.updateUserInfo
 }
 
 func (q PgCoreQueries) CreateCreator() string {
@@ -51,6 +61,20 @@ func ConfigPgCoreQueries() (PgCoreQueries, error) {
 		return q, createUserErr
 	}
 	q.createUser = string(createUser)
+
+	getUserInfo, getUserInfoErr := os.ReadFile(filepath.Join("./internal/db/pg_core/query_files", "get_user_info.sql"))
+	if getUserInfoErr != nil {
+		logger.Log(getUserInfoErr)
+		return q, getUserInfoErr
+	}
+	q.getUserInfo = string(getUserInfo)
+
+	updateUserInfo, updateUserInfoErr := os.ReadFile(filepath.Join("./internal/db/pg_core/query_files", "update_user_info.sql"))
+	if updateUserInfoErr != nil {
+		logger.Log(updateUserInfoErr)
+		return q, updateUserInfoErr
+	}
+	q.updateUserInfo = string(updateUserInfo)
 
 	createCreator, createCreatorErr := os.ReadFile(filepath.Join("./internal/db/pg_core/query_files", "create_creator.sql"))
 	if createCreatorErr != nil {

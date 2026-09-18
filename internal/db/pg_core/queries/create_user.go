@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"freecreate/internal/config"
+	pg_core_types "freecreate/internal/db/pg_core/types"
 	pg_core_validators "freecreate/internal/db/pg_core/validators"
 	"freecreate/internal/lib/api_error"
 	"freecreate/internal/lib/logger"
@@ -14,10 +15,12 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-func CreateUser(ctx context.Context, pgCoreQueries config.PgCoreQueries, pgCore *pgxpool.Pool, email string) (int64, *api_error.Error) {
+func CreateUser(ctx context.Context, pgCoreQueries config.PgCoreQueries, pgCore *pgxpool.Pool, email string) (pg_core_types.CreatedUser, *api_error.Error) {
+	var createdUser pg_core_types.CreatedUser
+
 	validationErr := pg_core_validators.ValidateEmail(email)
 	if validationErr != nil {
-		return 0, validationErr
+		return createdUser, validationErr
 	}
 
 	query := pgCoreQueries.CreateUser()
@@ -37,7 +40,7 @@ func CreateUser(ctx context.Context, pgCoreQueries config.PgCoreQueries, pgCore 
 			Error:   queryErr,
 		}
 
-		return 0, apiErr
+		return createdUser, apiErr
 
 	} else if queryErr != nil {
 		logger.Log(queryErr)
@@ -48,8 +51,10 @@ func CreateUser(ctx context.Context, pgCoreQueries config.PgCoreQueries, pgCore 
 			Error:   queryErr,
 		}
 
-		return 0, apiErr
+		return createdUser, apiErr
 	}
 
-	return userId, nil
+	createdUser.UserId = userId
+
+	return createdUser, nil
 }

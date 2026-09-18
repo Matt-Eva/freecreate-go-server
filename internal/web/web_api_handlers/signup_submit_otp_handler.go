@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"freecreate/internal/config"
+	pg_core_types "freecreate/internal/db/pg_core/types"
 	"freecreate/internal/lib/logger"
 	"freecreate/internal/query_handlers"
 	"freecreate/internal/web/web_auth"
@@ -50,7 +51,7 @@ func SignupSubmitOtp(sessionStore *sessions.CookieStore, valkeyClient valkey.Cli
 			return
 		}
 
-		createUserParams := query_handlers.CreateUserParams{
+		createUserParams := pg_core_types.CreateUserParams{
 			Email: email,
 		}
 

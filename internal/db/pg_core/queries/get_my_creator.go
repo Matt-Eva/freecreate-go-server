@@ -3,31 +3,25 @@ package pg_core_queries
 import (
 	"context"
 	"errors"
-	"fmt"
 	"freecreate/internal/config"
+	pg_core_types "freecreate/internal/db/pg_core/types"
 	"freecreate/internal/lib/api_error"
 	"freecreate/internal/lib/logger"
 	"net/http"
 
-	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-type MyCreatorStruct struct {
-	Name string
-	UUID uuid.UUID
-}
-
-func GetMyCreator(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries, creatorUuid string, userId int64) (MyCreatorStruct, *api_error.Error) {
+func GetMyCreator(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries, creatorUuid string, userId int64) (pg_core_types.MyCreator, *api_error.Error) {
 	query := pgCoreQueries.GetMyCreator()
-	fmt.Println(query)
+
 	namedArgs := pgx.NamedArgs{
 		"user_id": userId,
 		"uuid":    creatorUuid,
 	}
 
-	var myCreator MyCreatorStruct
+	var myCreator pg_core_types.MyCreator
 
 	queryErr := pgCore.QueryRow(ctx, query, namedArgs).Scan(&myCreator)
 	if errors.Is(queryErr, pgx.ErrNoRows) {

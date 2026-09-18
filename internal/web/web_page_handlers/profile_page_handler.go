@@ -2,6 +2,7 @@ package web_page_handlers
 
 import (
 	"freecreate/internal/config"
+	pg_core_types "freecreate/internal/db/pg_core/types"
 	"freecreate/internal/lib/logger"
 	"freecreate/internal/query_handlers"
 	"freecreate/internal/web/web_auth"
@@ -17,6 +18,7 @@ import (
 func ProfilePageHandler(sessionStore *sessions.CookieStore, valkeyClient valkey.Client, profileTmpl *template.Template, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
+
 		ctx := r.Context()
 
 		userId, _ := web_auth.CheckAuthentication(ctx, sessionStore, valkeyClient, w, r)
@@ -29,6 +31,11 @@ func ProfilePageHandler(sessionStore *sessions.CookieStore, valkeyClient valkey.
 			UserId: userId,
 		}
 
+		userInfo, getUserInfoErr := query_handlers.HandleGetUserInfo(ctx, pgCore, pgCoreQueries, userId)
+		if getUserInfoErr != nil {
+			http.Error(w, getUserInfoErr.Message, getUserInfoErr.Code)
+		}
+
 		myCreators, getMyCreatorsErr := query_handlers.HandleGetMyCreators(ctx, pgCore, pgCoreQueries, getMyCreatorsParams)
 		if getMyCreatorsErr != nil {
 			http.Error(w, getMyCreatorsErr.Message, getMyCreatorsErr.Code)
@@ -38,6 +45,7 @@ func ProfilePageHandler(sessionStore *sessions.CookieStore, valkeyClient valkey.
 		type PageData struct {
 			UniversalPageData
 			MyCreators []query_handlers.MyCreatorsStruct
+			UserInfo   pg_core_types.UserInfo
 		}
 
 		pageData := PageData{
@@ -47,6 +55,7 @@ func ProfilePageHandler(sessionStore *sessions.CookieStore, valkeyClient valkey.
 				LoggedInClass: "logged_in",
 			},
 			MyCreators: myCreators,
+			UserInfo:   userInfo,
 		}
 
 		err := profileTmpl.ExecuteTemplate(w, "profile", pageData)
