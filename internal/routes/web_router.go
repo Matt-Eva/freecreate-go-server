@@ -84,6 +84,8 @@ func ConfigureWebRouter(router chi.Router, sessionStore *sessions.CookieStore, v
 
 			r.Patch("/user/profile", web_api_handlers.UpdateUserInfoHandler(sessionStore, valkeyClient, pgCore, pgCoreQueries))
 
+			r.Delete("/user", web_api_handlers.DeleteUserHandler(sessionStore, valkeyClient, pgCore, pgCoreQueries))
+
 			r.Post("/creator", web_api_handlers.CreateCreatorHandler(sessionStore, valkeyClient, pgCore, pgCoreQueries))
 		})
 
