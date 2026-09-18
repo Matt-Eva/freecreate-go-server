@@ -2,19 +2,14 @@ package pg_core_types
 
 import "github.com/google/uuid"
 
+// =========== USER STRUCTS ====================
+
 type CreateUserParams struct {
 	Email string
 }
 
 type CreatedUser struct {
 	UserId int64
-}
-
-type UserInfo struct {
-	Username       string
-	UserHandle     string
-	IsAdult        bool
-	ReadingHistory bool
 }
 
 type UpdateUserInfoParams struct {
@@ -24,6 +19,15 @@ type UpdateUserInfoParams struct {
 	IsAdult        bool
 	UserId         int64
 }
+
+type UserInfo struct {
+	Username       string
+	UserHandle     string
+	IsAdult        bool
+	ReadingHistory bool
+}
+
+// ========== CREATOR STRUCTS ===================
 
 type NewCreatorParams struct {
 	UserId        int64
