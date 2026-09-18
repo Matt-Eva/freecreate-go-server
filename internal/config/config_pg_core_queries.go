@@ -11,6 +11,7 @@ type PgCoreQueries struct {
 	getUserByEmail string
 	createUser     string
 	getUserInfo    string
+	deleteUser string
 	updateUserInfo string
 	createCreator  string
 	getMyCreators  string
@@ -31,6 +32,10 @@ func (q PgCoreQueries) GetUserInfo() string {
 
 func (q PgCoreQueries) UpdateUserInfo() string {
 	return q.updateUserInfo
+}
+
+func (q PgCoreQueries) DeleteUser() string { 
+	return q.deleteUser
 }
 
 func (q PgCoreQueries) CreateCreator() string {
@@ -75,6 +80,13 @@ func ConfigPgCoreQueries() (PgCoreQueries, error) {
 		return q, updateUserInfoErr
 	}
 	q.updateUserInfo = string(updateUserInfo)
+
+	deleteUser, deleteUserErr := os.ReadFile(filepath.Join("./internal/db/pg_core/query_files", "delete_user.sql"))
+	if deleteUserErr != nil {
+		logger.Log(deleteUserErr)
+		return q, deleteUserErr
+	}
+	q.deleteUser = string(deleteUser)
 
 	createCreator, createCreatorErr := os.ReadFile(filepath.Join("./internal/db/pg_core/query_files", "create_creator.sql"))
 	if createCreatorErr != nil {

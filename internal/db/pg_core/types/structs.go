@@ -27,6 +27,10 @@ type UserInfo struct {
 	ReadingHistory bool
 }
 
+type DeleteUserParams struct {
+	UserId int64
+}
+
 // ========== CREATOR STRUCTS ===================
 
 type NewCreatorParams struct {
