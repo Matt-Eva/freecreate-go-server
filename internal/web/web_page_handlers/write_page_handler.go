@@ -3,6 +3,7 @@ package web_page_handlers
 import (
 	"freecreate/internal/config"
 	pg_core_types "freecreate/internal/db/pg_core/types"
+	"freecreate/internal/lib"
 	"freecreate/internal/lib/logger"
 	"freecreate/internal/query_handlers"
 	"freecreate/internal/web/web_auth"
@@ -38,6 +39,7 @@ func WritePageHandler(templates *template.Template, sessionStore *sessions.Cooki
 		type PageData struct {
 			UniversalPageData
 			MyCreators []pg_core_types.MyCreatorsStruct
+			WritingTypes []string
 		}
 
 		pageData := PageData{
@@ -47,6 +49,7 @@ func WritePageHandler(templates *template.Template, sessionStore *sessions.Cooki
 				CsrfToken:     csrf.TemplateField(r),
 			},
 			MyCreators: myCreators,
+			WritingTypes: lib.WritingTypes,
 		}
 
 		err := templates.ExecuteTemplate(w, "write_page", pageData)

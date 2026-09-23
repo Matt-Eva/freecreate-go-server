@@ -6,6 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
       {{ template "globals_component" . }}
+      <script defer src="/internal/web/static/js/write_page.js"></script>
 
       {{ .CsrfToken }}
     </head>
@@ -24,9 +25,22 @@
               <a href="/profile">set up a creator profile.</a>
             </p>
           {{ else }}
-            {{ range .MyCreators }}
-              <p>{{ .Name }}</p>
-            {{ end }}
+            <form id="new_writing_form">
+              <label for="new_writing_title">Title:</label>
+              <input type="text" id="new_writing_title" />
+              <label for="new_writing_creator">Creator:</label>
+              <select id="new_writing_creator">
+                {{ range .MyCreators }}
+                  <option value="{{ .ID }}">{{ .Name }}</option>
+                {{ end }}
+              </select>
+              <select id="new_writing_type">
+                {{ range .WritingTypes }}
+                  <option>{{ . }}</option>
+                {{ end }}
+              </select>
+              <input type="submit" />
+            </form>
           {{ end }}
         </div>
       </div>
