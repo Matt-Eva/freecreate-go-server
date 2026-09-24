@@ -6,6 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
       {{ template "globals_component" . }}
+      <script defer src="/internal/web/static/js/edit_writing_page.js"></script>
 
       {{ .CsrfToken }}
     </head>
@@ -15,7 +16,7 @@
 
       <div id="page_container">
         {{ template "sidebar_component" . }}
-        <div id="page_content"></div>
+        <div id="page_content">edit writing</div>
       </div>
 
       {{ template "footer_component" . }}
