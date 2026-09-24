@@ -15,22 +15,13 @@ type GetMyWritingParams struct {
 	UserId int64
 }
 
-type MyWritingsStruct struct {
-	Title string
-	UUID uuid.UUID
-	Published bool
-	CreatorId int64
-}
-
 type CreatorWritingsGroup struct {
 	CreatorName string
 	CreatorUUID uuid.UUID
-	Writing []MyWritingsStruct
+	Writing     []pg_core_types.MyWritingsStruct
 }
 
-
-
-func HandleGetMyWriting(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries, params GetMyWritingParams)([]CreatorWritingsGroup, *api_error.Error) {
+func HandleGetMyWriting(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries, params GetMyWritingParams) ([]CreatorWritingsGroup, *api_error.Error) {
 	var creatorWritings []CreatorWritingsGroup
 
 	getWritingParams := pg_core_types.GetMyWritingsParams{
