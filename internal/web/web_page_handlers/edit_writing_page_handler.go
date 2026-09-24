@@ -13,8 +13,8 @@ import (
 	"github.com/valkey-io/valkey-go"
 )
 
-func EditWritingPageHandler(templates template.Template, sessionStore *sessions.CookieStore, valkeyClient valkey.Client, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries)http.HandlerFunc{
-	return func (w http.ResponseWriter, r *http.Request){
+func EditWritingPageHandler(templates template.Template, sessionStore *sessions.CookieStore, valkeyClient valkey.Client, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
 
 		userId, _ := web_auth.CheckAuthentication(ctx, sessionStore, valkeyClient, w, r)
@@ -29,9 +29,9 @@ func EditWritingPageHandler(templates template.Template, sessionStore *sessions.
 
 		pageData := PageData{
 			UniversalPageData: UniversalPageData{
-				LoggedIn: true,
+				LoggedIn:      true,
 				LoggedInClass: "logged_in",
-				CsrfToken: csrf.TemplateField(r),
+				CsrfToken:     csrf.TemplateField(r),
 			},
 		}
 

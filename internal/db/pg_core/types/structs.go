@@ -91,4 +91,5 @@ type CreatedWriting struct {
 	Topics      []string
 	Tags        []string
 	Description string
+	Published   bool
 }
