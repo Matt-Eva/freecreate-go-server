@@ -7,8 +7,8 @@ import (
 	"github.com/gorilla/csrf"
 )
 
-func MyLibraryPageHandler(templates *template.Template)http.HandlerFunc{
-	return func (w http.ResponseWriter, r *http.Request){
+func MyLibraryPageHandler(templates *template.Template) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
 
 		type PageData struct {
 			UniversalPageData
@@ -16,9 +16,9 @@ func MyLibraryPageHandler(templates *template.Template)http.HandlerFunc{
 
 		pageData := PageData{
 			UniversalPageData: UniversalPageData{
-				LoggedIn: true,
+				LoggedIn:      true,
 				LoggedInClass: "logged_in",
-				CsrfToken: csrf.TemplateField(r),
+				CsrfToken:     csrf.TemplateField(r),
 			},
 		}
 

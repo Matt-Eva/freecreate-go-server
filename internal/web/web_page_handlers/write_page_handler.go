@@ -38,7 +38,7 @@ func WritePageHandler(templates *template.Template, sessionStore *sessions.Cooki
 
 		type PageData struct {
 			UniversalPageData
-			MyCreators []pg_core_types.MyCreatorsStruct
+			MyCreators   []pg_core_types.MyCreatorsStruct
 			WritingTypes []string
 		}
 
@@ -48,7 +48,7 @@ func WritePageHandler(templates *template.Template, sessionStore *sessions.Cooki
 				LoggedInClass: "logged_in",
 				CsrfToken:     csrf.TemplateField(r),
 			},
-			MyCreators: myCreators,
+			MyCreators:   myCreators,
 			WritingTypes: lib.WritingTypes,
 		}
 

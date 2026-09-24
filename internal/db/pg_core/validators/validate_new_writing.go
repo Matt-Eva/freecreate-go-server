@@ -8,7 +8,7 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-func ValidateNewWriting(args pgx.NamedArgs) *api_error.Error{
+func ValidateNewWriting(args pgx.NamedArgs) *api_error.Error {
 	apiErr := &api_error.Error{
 		Code: http.StatusUnprocessableEntity,
 	}
@@ -29,7 +29,13 @@ func ValidateNewWriting(args pgx.NamedArgs) *api_error.Error{
 		return apiErr
 	}
 
-	if args["writing_type"] == "" || args["writing_type"] == nil {}
-	
+	if args["writing_type"] == "" || args["writing_type"] == nil {
+		msg := "writing type cannot be empty"
+		err := errors.New(msg)
+		apiErr.Message = msg
+		apiErr.Error = err
+		return apiErr
+	}
+
 	return nil
 }

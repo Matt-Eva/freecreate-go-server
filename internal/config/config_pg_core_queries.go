@@ -16,7 +16,7 @@ type PgCoreQueries struct {
 	createCreator  string
 	getMyCreators  string
 	getMyCreator   string
-	createWriting string
+	createWriting  string
 }
 
 func (q PgCoreQueries) GetUserByEmail() string {
