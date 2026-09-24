@@ -1,0 +1,1 @@
+SELECT (uuid, creator_id, title, published) FROM writings WHERE user_id = @user_id;

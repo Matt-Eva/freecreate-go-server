@@ -68,7 +68,7 @@ func ConfigureWebRouter(router chi.Router, sessionStore *sessions.CookieStore, v
 
 		router.Get("/writing/{writing_uuid}/edit", web_page_handlers.EditWritingPageHandler(*templates, sessionStore, valkeyClient, pgCore, pgCoreQueries))
 
-		router.Get("/my-writing", web_page_handlers.MyWritingPageHandler(templates, sessionStore, valkeyClient, pgCore, pgCoreQueries))
+		router.Get("/my-writing", web_page_handlers.MyWritingsPageHandler(templates, sessionStore, valkeyClient, pgCore, pgCoreQueries))
 
 		router.Get("/my-library", web_page_handlers.MyLibraryPageHandler(templates))
 

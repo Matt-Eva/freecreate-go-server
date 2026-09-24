@@ -1,1 +1,0 @@
-SELECT (uuid, creator_id, title, subtitle, published) FROM writings WHERE user_id = @user_id;

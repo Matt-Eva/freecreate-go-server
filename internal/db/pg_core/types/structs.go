@@ -93,3 +93,14 @@ type CreatedWriting struct {
 	Description string
 	Published   bool
 }
+
+type GetMyWritingsParams struct {
+	UserId int64
+}
+
+type MyWritingsStruct struct {
+	UUID      uuid.UUID
+	CreatorId int64
+	Title     string
+	Published bool
+}
