@@ -68,7 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
       } else {
         const data = await res.json();
         console.log(data);
-        window.location.href = "";
+        window.location.href = `/writing/${data.uuid}/edit`;
       }
     } catch (error) {
       console.error(error);
