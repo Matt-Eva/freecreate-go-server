@@ -12,8 +12,8 @@ import (
 	"github.com/valkey-io/valkey-go"
 )
 
-func DeleteUserHandler(sessionStore *sessions.CookieStore, valkeClient valkey.Client, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries) http.HandlerFunc{
-	return func (w http.ResponseWriter, r *http.Request){
+func DeleteUserHandler(sessionStore *sessions.CookieStore, valkeClient valkey.Client, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
 
 		userId, _ := web_auth.CheckAuthentication(ctx, sessionStore, valkeClient, w, r)

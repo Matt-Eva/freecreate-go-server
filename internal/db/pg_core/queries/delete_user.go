@@ -13,7 +13,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-func DeleteUser(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries, params pg_core_types.DeleteUserParams) *api_error.Error{
+func DeleteUser(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries, params pg_core_types.DeleteUserParams) *api_error.Error {
 	namedArgs := pgx.NamedArgs{
 		"id": params.UserId,
 	}
@@ -23,23 +23,23 @@ func DeleteUser(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries config.
 	output, err := pgCore.Exec(ctx, query, namedArgs)
 	if err != nil {
 		logger.Log(err)
-		
+
 		apiErr := &api_error.Error{
-			Code: http.StatusInternalServerError,
+			Code:    http.StatusInternalServerError,
 			Message: api_error.InteralServerErrorMessage,
-			Error: err,
+			Error:   err,
 		}
 
 		return apiErr
-	} else if output.RowsAffected() == 0{
+	} else if output.RowsAffected() == 0 {
 		msg := "there were no matching rows to delete"
 		err := errors.New(msg)
 		logger.Log(err)
-		
+
 		apiErr := &api_error.Error{
-			Code: http.StatusInternalServerError,
+			Code:    http.StatusInternalServerError,
 			Message: msg,
-			Error: err,
+			Error:   err,
 		}
 
 		return apiErr

@@ -64,6 +64,12 @@ func ConfigureWebRouter(router chi.Router, sessionStore *sessions.CookieStore, v
 
 		router.Get("/my-creator/{creator-uuid}/edit", web_page_handlers.EditMyCreatorPageHandler(templates))
 
+		router.Get("/write", web_page_handlers.WritePageHandler(templates, sessionStore, valkeyClient, pgCore, pgCoreQueries))
+
+		router.Get("/writing/{writing_uuid}/edit", web_page_handlers.EditWritingPageHandler(*templates, sessionStore, valkeyClient, pgCore, pgCoreQueries))
+
+		router.Get("/my-library", web_page_handlers.MyLibraryPageHandler(templates))
+
 		// router.Get("/my-writing", web_page_handlers.MyWritingPageHandler())
 
 		// ======== JSON Web API Routes =========
@@ -87,6 +93,8 @@ func ConfigureWebRouter(router chi.Router, sessionStore *sessions.CookieStore, v
 			r.Delete("/user", web_api_handlers.DeleteUserHandler(sessionStore, valkeyClient, pgCore, pgCoreQueries))
 
 			r.Post("/creator", web_api_handlers.CreateCreatorHandler(sessionStore, valkeyClient, pgCore, pgCoreQueries))
+
+			r.Post("/writing", web_api_handlers.NewWritingHandler(sessionStore, valkeyClient, pgCore, pgCoreQueries))
 		})
 
 	})
