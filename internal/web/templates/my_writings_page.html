@@ -19,9 +19,21 @@
           {{ range .MyWritings }}
             <div>
               <h3>{{ .CreatorName }}</h3>
+              <a href="/my-creator/{{ .CreatorUUID }}">view</a>
               <div>
                 {{ range .Writing }}
-                  <article>{{ .Title }}</article>
+                  <article>
+                    <p>{{ .Title }}</p>
+                    <p>
+                      {{ if .Published }}
+                        Published
+                      {{ else }}
+                        Unpublished
+                      {{ end }}
+                    </p>
+                    <a href="/my-writing/{{ .UUID }}">view</a>
+                    <a href="/writing/{{ .UUID }}/edit">edit</a>
+                  </article>
                 {{ end }}
               </div>
             </div>
