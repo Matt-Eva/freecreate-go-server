@@ -52,7 +52,7 @@ type GetMyCreatorsParams struct {
 type MyCreatorsStruct struct {
 	Name          string
 	CreatorHandle string
-	ID            int
+	ID            int64
 	UUID          uuid.UUID
 }
 
