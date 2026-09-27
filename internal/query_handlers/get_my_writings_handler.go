@@ -44,7 +44,7 @@ func HandleGetMyWritings(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQuerie
 
 	// creatorMap := make(map[int64]CreatorWritingsGroup)
 
-	for i := 0; i < len(myCreators); i++{
+	for i := 0; i < len(myCreators); i++ {
 		creatorGroup := CreatorWritingsGroup{
 			CreatorName: myCreators[i].Name,
 			CreatorUUID: myCreators[i].UUID,
@@ -52,7 +52,7 @@ func HandleGetMyWritings(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQuerie
 
 		// creatorMap[myCreators[i].ID] = creatorGroup
 
-		for i := 0; i < len(myWritings); i++{
+		for i := 0; i < len(myWritings); i++ {
 			writing := myWritings[i]
 			creatorGroup.Writing = append(creatorGroup.Writing, writing)
 		}

@@ -19,7 +19,7 @@ func MyWritingsPageHandler(templates *template.Template, sessionStore *sessions.
 		ctx := r.Context()
 
 		userId, _ := web_auth.CheckAuthentication(ctx, sessionStore, valkeyClient, w, r)
-		if userId == 0{
+		if userId == 0 {
 			http.Redirect(w, r, "/login", http.StatusSeeOther)
 			return
 		}
@@ -41,9 +41,9 @@ func MyWritingsPageHandler(templates *template.Template, sessionStore *sessions.
 
 		pageData := PageData{
 			UniversalPageData: UniversalPageData{
-				LoggedIn: true,
+				LoggedIn:      true,
 				LoggedInClass: "logged_in",
-				CsrfToken: csrf.TemplateField(r),
+				CsrfToken:     csrf.TemplateField(r),
 			},
 			MyWritings: myWritings,
 		}

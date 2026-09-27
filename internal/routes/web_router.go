@@ -66,15 +66,19 @@ func ConfigureWebRouter(router chi.Router, sessionStore *sessions.CookieStore, v
 
 		router.Get("/write", web_page_handlers.WritePageHandler(templates, sessionStore, valkeyClient, pgCore, pgCoreQueries))
 
-		router.Get("/writing/{writing_uuid}/edit", web_page_handlers.EditWritingPageHandler(*templates, sessionStore, valkeyClient, pgCore, pgCoreQueries))
-
 		router.Get("/my-writing", web_page_handlers.MyWritingsPageHandler(templates, sessionStore, valkeyClient, pgCore, pgCoreQueries))
 
 		router.Get("/my-writing/{writing_uuid}", web_page_handlers.MyWritingPageHandler(templates))
 
-		router.Get("/my-library", web_page_handlers.MyLibraryPageHandler(templates))
+		router.Get("/my-writing/{writing_uuid}/stats", web_page_handlers.MyWritingStatsPageHandler(templates))
 
-		// router.Get("/my-writing", web_page_handlers.MyWritingPageHandler())
+		router.Get("/writing/{writing_uuid}/edit", web_page_handlers.EditWritingPageHandler(*templates, sessionStore, valkeyClient, pgCore, pgCoreQueries))
+
+		router.Get("/my-writing/{writing_uuid}/my-chapter/{chapter_uuid}", web_page_handlers.MyChapterPageHandler(templates, sessionStore, valkeyClient, pgCore, pgCoreQueries, pgContentPools, pgContentQueries))
+
+		router.Get("/writing/{writing_uuid}/chapter/{chapter_uuid}/edit", web_page_handlers.EditChapterPageHandler(templates, sessionStore, valkeyClient, pgCore, pgCoreQueries, pgContentPools, pgContentQueries))
+
+		router.Get("/my-library", web_page_handlers.MyLibraryPageHandler(templates))
 
 		// ======== JSON Web API Routes =========
 
