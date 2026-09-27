@@ -25,24 +25,24 @@ func GetMyWritings(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries conf
 	if queryErr != nil {
 		logger.Log(queryErr)
 		apiErr := &api_error.Error{
-			Code: http.StatusInternalServerError,
+			Code:    http.StatusInternalServerError,
 			Message: api_error.InteralServerErrorMessage,
-			Error: queryErr,
+			Error:   queryErr,
 		}
 
 		return myWritings, apiErr
 	}
 
-	for queryResult.Next(){
+	for queryResult.Next() {
 		var writing pg_core_types.MyWritingsStruct
 
 		scanErr := queryResult.Scan(&writing)
 		if scanErr != nil {
 			logger.Log(scanErr)
 			apiErr := &api_error.Error{
-				Code: http.StatusInternalServerError,
+				Code:    http.StatusInternalServerError,
 				Message: api_error.InteralServerErrorMessage,
-				Error: scanErr,
+				Error:   scanErr,
 			}
 
 			return myWritings, apiErr

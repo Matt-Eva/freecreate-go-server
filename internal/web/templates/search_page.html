@@ -5,7 +5,10 @@
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       {{ template "globals_component" }}
+      <script defer src="/internal/web/static/js/search_page.js"></script>
       <title>Document</title>
+
+      {{ .CsrfToken }}
     </head>
     <body class="{{ .LoggedInClass }}">
       {{ template "header_component" . }}
@@ -14,11 +17,15 @@
       <div id="page_container" class="{{ .LoggedInClass }}">
         {{ template "sidebar_component" . }}
         <div id="page_content" class="{{ .LoggedInClass }}">
-          {{ template "category_search_box_component" }}
-          <form action="/search" method="GET">
-            <label for="search">Search</label>
-            <input type="text" name="search" value="{{ .Query }}" />
-            <input type="submit" />
+          <!-- {{ template "category_search_box_component" }} -->
+          <form id="add_tag_form">
+            <label for="add_tag_input">Add Tag (up to five):</label>
+            <input type="text" id="add_tag_input" />
+            <input type="submit" value="add" />
+          </form>
+          <div id="added_tag_block"></div>
+          <form id="search_submit_form">
+            <input type="submit" value="search" />
           </form>
           <p>{{ .Query }}</p>
         </div>
