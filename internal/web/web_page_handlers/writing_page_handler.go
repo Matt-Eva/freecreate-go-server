@@ -13,15 +13,16 @@ import (
 	"github.com/valkey-io/valkey-go"
 )
 
-func EditMyCreatorPageHandler(template *template.Template, sessionStore *sessions.CookieStore, valkeyClient valkey.Client, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries) http.HandlerFunc {
+func WritingPageHandler(templates *template.Template, sessionStore *sessions.CookieStore, valkeyClient valkey.Client, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-
 		ctx := r.Context()
 
 		userId, _ := web_auth.CheckAuthentication(ctx, sessionStore, valkeyClient, w, r)
-		if userId == 0 {
-			http.Redirect(w, r, "/login", http.StatusSeeOther)
-			return
+		loggedIn := false
+		loggedInClass := "logged_out"
+		if userId != 0 {
+			loggedIn = true
+			loggedInClass = "logged_in"
 		}
 
 		type PageData struct {
@@ -30,13 +31,13 @@ func EditMyCreatorPageHandler(template *template.Template, sessionStore *session
 
 		pageData := PageData{
 			UniversalPageData: UniversalPageData{
-				LoggedIn:      true,
-				LoggedInClass: "logged_in",
+				LoggedIn:      loggedIn,
+				LoggedInClass: loggedInClass,
 				CsrfToken:     csrf.TemplateField(r),
 			},
 		}
 
-		err := template.ExecuteTemplate(w, "edit_my_creator_page", pageData)
+		err := templates.ExecuteTemplate(w, "writing_page", pageData)
 		if err != nil {
 			logger.Log(err)
 		}

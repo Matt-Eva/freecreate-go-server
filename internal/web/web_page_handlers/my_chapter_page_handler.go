@@ -2,10 +2,12 @@ package web_page_handlers
 
 import (
 	"freecreate/internal/config"
+	"freecreate/internal/lib/logger"
 	"freecreate/internal/web/web_auth"
 	"html/template"
 	"net/http"
 
+	"github.com/gorilla/csrf"
 	"github.com/gorilla/sessions"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/valkey-io/valkey-go"
@@ -19,6 +21,23 @@ func MyChapterPageHandler(template *template.Template, sessionStore *sessions.Co
 		if userId == 0 {
 			http.Redirect(w, r, "/login", http.StatusSeeOther)
 			return
+		}
+
+		type PageData struct {
+			UniversalPageData
+		}
+
+		pageData := PageData{
+			UniversalPageData: UniversalPageData{
+				LoggedIn:      true,
+				LoggedInClass: "logged_in",
+				CsrfToken:     csrf.TemplateField(r),
+			},
+		}
+
+		err := template.ExecuteTemplate(w, "my_chapter_page", pageData)
+		if err != nil {
+			logger.Log(err)
 		}
 	}
 }
