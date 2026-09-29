@@ -15,7 +15,30 @@
 
       <div id="page_container">
         {{ template "sidebar_component" . }}
-        <div id="page_content">My Writing Page</div>
+        <div id="page_content">
+          <h2>{{ .MyWriting.Title }}</h2>
+          <h3>{{ .MyWriting.Subtitle }}</h3>
+          <h4>
+            <a href="/my-creator/{{ .MyWriting.CreatorUUID }}"
+              >{{ .MyWriting.CreatorName }}</a
+            >
+          </h4>
+          <a href="/writing/{{ .MyWriting.UUID }}/edit">edit</a>
+          <p>{{ .MyWriting.WritingType }}</p>
+          <p>
+            {{ range .MyWriting.Topics }}
+              <span>{{ . }}</span>
+            {{ end }}
+          </p>
+          <p>{{ .MyWriting.Description }}</p>
+          <p>
+            {{ if .MyWriting.Published }}
+              Published
+            {{ else }}
+              Unpublished
+            {{ end }}
+          </p>
+        </div>
       </div>
 
       {{ template "footer_component" . }}
