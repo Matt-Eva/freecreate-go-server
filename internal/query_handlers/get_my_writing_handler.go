@@ -10,8 +10,8 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-func HandleGetMyWriting(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries, params pg_core_types.GetMyWritingParams)(pg_core_types.MyWriting, *api_error.Error) {
+func HandleGetMyWriting(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries, params pg_core_types.GetMyWritingParams) (pg_core_types.MyWriting, *api_error.Error) {
 	myWriting, queryErr := pg_core_queries.GetMyWriting(ctx, pgCore, pgCoreQueries, params)
-	
+
 	return myWriting, queryErr
 }

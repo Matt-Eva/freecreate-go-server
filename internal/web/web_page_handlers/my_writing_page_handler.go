@@ -33,17 +33,16 @@ func MyWritingPageHandler(template *template.Template, sessionStore *sessions.Co
 
 		writingUUIDParam := chi.URLParam(r, "writing_uuid")
 
-		
 		writingUUID, uuidErr := uuid.Parse(writingUUIDParam)
 		if uuidErr != nil {
 			logger.Log(uuidErr)
 			http.Error(w, api_error.InteralServerErrorMessage, http.StatusInternalServerError)
 			return
 		}
-	
+
 		getWritingParams := pg_core_types.GetMyWritingParams{
 			UserId: userId,
-			UUID: writingUUID,
+			UUID:   writingUUID,
 		}
 
 		myWriting, queryErr := query_handlers.HandleGetMyWriting(ctx, pgCore, pgCoreQueries, getWritingParams)
@@ -51,7 +50,6 @@ func MyWritingPageHandler(template *template.Template, sessionStore *sessions.Co
 			http.Error(w, queryErr.Message, queryErr.Code)
 			return
 		}
-
 
 		type PageData struct {
 			UniversalPageData
@@ -68,7 +66,6 @@ func MyWritingPageHandler(template *template.Template, sessionStore *sessions.Co
 		}
 
 		fmt.Println(pageData.MyWriting)
-
 
 		err := template.ExecuteTemplate(w, "my_writing_page", pageData)
 		if err != nil {

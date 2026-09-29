@@ -12,25 +12,25 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-func GetMyWriting(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries, params pg_core_types.GetMyWritingParams)(pg_core_types.MyWriting, *api_error.Error) {
+func GetMyWriting(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries, params pg_core_types.GetMyWritingParams) (pg_core_types.MyWriting, *api_error.Error) {
 	var myWriting pg_core_types.MyWriting
 
 	query := pgCoreQueries.GetMyWriting()
 
 	namedArgs := pgx.NamedArgs{
 		"user_id": params.UserId,
-		"uuid": params.UUID,
+		"uuid":    params.UUID,
 	}
 
 	queryErr := pgCore.QueryRow(ctx, query, namedArgs).Scan(&myWriting)
 	if queryErr != nil {
 		logger.Log(queryErr)
 		apiErr := &api_error.Error{
-			Code: http.StatusInternalServerError,
+			Code:    http.StatusInternalServerError,
 			Message: api_error.InteralServerErrorMessage,
-			Error: queryErr,
+			Error:   queryErr,
 		}
-		
+
 		return myWriting, apiErr
 	}
 

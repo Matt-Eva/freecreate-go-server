@@ -132,6 +132,18 @@ type MyWriting struct {
 	CreatorName string
 }
 
+type GetMyCreatorWritingsParams struct {
+	UserId    int64
+	CreatorId int64
+}
+
+type MyCreatorWritings struct {
+	Title       string
+	UUID        uuid.UUID
+	WritingType string
+	Published   bool
+}
+
 type GetWritingParams struct {
 	UUID uuid.UUID
 }

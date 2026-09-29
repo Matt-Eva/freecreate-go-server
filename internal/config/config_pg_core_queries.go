@@ -18,7 +18,7 @@ type PgCoreQueries struct {
 	getMyCreator   string
 	createWriting  string
 	getMyWritings  string
-	getMyWriting string
+	getMyWriting   string
 }
 
 func (q PgCoreQueries) GetUserByEmail() string {
@@ -61,7 +61,7 @@ func (q PgCoreQueries) GetMyWritings() string {
 	return q.getMyWritings
 }
 
-func (q PgCoreQueries) GetMyWriting() string{
+func (q PgCoreQueries) GetMyWriting() string {
 	return q.getMyWriting
 }
 
@@ -144,7 +144,6 @@ func ConfigPgCoreQueries() (PgCoreQueries, error) {
 		return q, getMyWritingError
 	}
 	q.getMyWriting = string(getMyWriting)
-	
 
 	msg := "Pg core queries loaded."
 	fmt.Println(msg)
