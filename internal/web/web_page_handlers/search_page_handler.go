@@ -1,11 +1,13 @@
 package web_page_handlers
 
 import (
+	"fmt"
 	"freecreate/internal/lib/logger"
 	"freecreate/internal/web/web_auth"
 	"html/template"
 	"net/http"
 
+	"github.com/gorilla/csrf"
 	"github.com/gorilla/sessions"
 	"github.com/valkey-io/valkey-go"
 )
@@ -23,17 +25,23 @@ func SearchPageHandler(searchTmpl *template.Template, sessionStore *sessions.Coo
 		}
 
 		query := r.URL.Query()
+		fmt.Println(query)
 		searchParams := query["search"]
+		tags := query["tags"]
+		fmt.Println(tags)
 
 		type PageData struct {
-			Query         string
-			LoggedIn      bool
-			LoggedInClass string
+			Query string
+			UniversalPageData
 		}
 
-		var pageData PageData
-		pageData.LoggedIn = loggedIn
-		pageData.LoggedInClass = loggedInClass
+		pageData := PageData{
+			UniversalPageData: UniversalPageData{
+				LoggedIn:      loggedIn,
+				LoggedInClass: loggedInClass,
+				CsrfToken:     csrf.TemplateField(r),
+			},
+		}
 
 		if len(searchParams) > 0 {
 			pageData.Query = searchParams[0]

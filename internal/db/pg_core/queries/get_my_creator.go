@@ -13,12 +13,12 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-func GetMyCreator(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries, creatorUuid string, userId int64) (pg_core_types.MyCreator, *api_error.Error) {
+func GetMyCreator(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries, params pg_core_types.GetMyCreatorParams) (pg_core_types.MyCreator, *api_error.Error) {
 	query := pgCoreQueries.GetMyCreator()
 
 	namedArgs := pgx.NamedArgs{
-		"user_id": userId,
-		"uuid":    creatorUuid,
+		"user_id": params.UserId,
+		"uuid":    params.CreatorUUID,
 	}
 
 	var myCreator pg_core_types.MyCreator

@@ -15,7 +15,24 @@
         {{ template "sidebar_component" . }}
         <div id="page_content" class="{{ .LoggedInClass }}">
           <p>{{ .MyCreator.Name }}</p>
-          <p>{{ .MyCreator.UUID }}</p>
+          <a href="/my-creator/{{ .MyCreator.UUID }}/edit">edit</a>
+          <div>
+            {{ range .MyCreatorWritings }}
+              <article>
+                <p>{{ .Title }}</p>
+                <p>{{ .WritingType }}</p>
+                <p>
+                  {{ if .Published }}
+                    Published
+                  {{ else }}
+                    Unpublished
+                  {{ end }}
+                </p>
+                <a href="/my-writing/{{ .UUID }}">view</a>
+                <a href="/writing/{{ .UUID }}/edit">edit</a>
+              </article>
+            {{ end }}
+          </div>
         </div>
       </div>
 

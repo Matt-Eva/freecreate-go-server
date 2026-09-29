@@ -13,9 +13,8 @@ import (
 	"github.com/valkey-io/valkey-go"
 )
 
-func EditMyCreatorPageHandler(template *template.Template, sessionStore *sessions.CookieStore, valkeyClient valkey.Client, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries) http.HandlerFunc {
+func EditChapterPageHandler(template *template.Template, sessionStore *sessions.CookieStore, valkeyClient valkey.Client, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries, pgContentPools config.PgContentPools, pgContentQueries config.PgContentQueries) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-
 		ctx := r.Context()
 
 		userId, _ := web_auth.CheckAuthentication(ctx, sessionStore, valkeyClient, w, r)
@@ -36,7 +35,7 @@ func EditMyCreatorPageHandler(template *template.Template, sessionStore *session
 			},
 		}
 
-		err := template.ExecuteTemplate(w, "edit_my_creator_page", pageData)
+		err := template.ExecuteTemplate(w, "edit_chapter_page", pageData)
 		if err != nil {
 			logger.Log(err)
 		}

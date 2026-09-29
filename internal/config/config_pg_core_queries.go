@@ -8,15 +8,18 @@ import (
 )
 
 type PgCoreQueries struct {
-	getUserByEmail string
-	createUser     string
-	getUserInfo    string
-	deleteUser     string
-	updateUserInfo string
-	createCreator  string
-	getMyCreators  string
-	getMyCreator   string
-	createWriting  string
+	getUserByEmail       string
+	createUser           string
+	getUserInfo          string
+	deleteUser           string
+	updateUserInfo       string
+	createCreator        string
+	getMyCreators        string
+	getMyCreator         string
+	getMyCreatorWritings string
+	createWriting        string
+	getMyWritings        string
+	getMyWriting         string
 }
 
 func (q PgCoreQueries) GetUserByEmail() string {
@@ -51,8 +54,20 @@ func (q PgCoreQueries) GetMyCreator() string {
 	return q.getMyCreator
 }
 
+func (q PgCoreQueries) GetMyCreatorWritings() string {
+	return q.getMyCreatorWritings
+}
+
 func (q PgCoreQueries) CreateWriting() string {
 	return q.createWriting
+}
+
+func (q PgCoreQueries) GetMyWritings() string {
+	return q.getMyWritings
+}
+
+func (q PgCoreQueries) GetMyWriting() string {
+	return q.getMyWriting
 }
 
 func ConfigPgCoreQueries() (PgCoreQueries, error) {
@@ -114,12 +129,34 @@ func ConfigPgCoreQueries() (PgCoreQueries, error) {
 	}
 	q.getMyCreator = string(getMyCreator)
 
+	getMyCreatorWritings, getMyCreatorWritingsErr := os.ReadFile(filepath.Join("./internal/db/pg_core/query_files", "get_my_creator_writings.sql"))
+	if getMyCreatorWritingsErr != nil {
+		logger.Log(getMyCreatorWritingsErr)
+		return q, getMyCreatorWritingsErr
+	}
+	q.getMyCreatorWritings = string(getMyCreatorWritings)
+	fmt.Println(q.GetMyCreatorWritings())
+
 	createWriting, createWritingError := os.ReadFile(filepath.Join("./internal/db/pg_core/query_files", "create_writing.sql"))
 	if createWritingError != nil {
 		logger.Log(createWritingError)
 		return q, createWritingError
 	}
 	q.createWriting = string(createWriting)
+
+	getMyWritings, getMyWritingsError := os.ReadFile(filepath.Join("./internal/db/pg_core/query_files", "get_my_writings.sql"))
+	if getMyWritingsError != nil {
+		logger.Log(getMyWritingsError)
+		return q, getMyWritingsError
+	}
+	q.getMyWritings = string(getMyWritings)
+
+	getMyWriting, getMyWritingError := os.ReadFile(filepath.Join("./internal/db/pg_core/query_files", "get_my_writing.sql"))
+	if getMyWritingError != nil {
+		logger.Log(getMyWritingError)
+		return q, getMyWritingError
+	}
+	q.getMyWriting = string(getMyWriting)
 
 	msg := "Pg core queries loaded."
 	fmt.Println(msg)

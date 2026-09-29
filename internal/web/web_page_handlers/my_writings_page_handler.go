@@ -3,6 +3,7 @@ package web_page_handlers
 import (
 	"freecreate/internal/config"
 	"freecreate/internal/lib/logger"
+	"freecreate/internal/query_handlers"
 	"freecreate/internal/web/web_auth"
 	"html/template"
 	"net/http"
@@ -13,9 +14,8 @@ import (
 	"github.com/valkey-io/valkey-go"
 )
 
-func EditMyCreatorPageHandler(template *template.Template, sessionStore *sessions.CookieStore, valkeyClient valkey.Client, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries) http.HandlerFunc {
+func MyWritingsPageHandler(templates *template.Template, sessionStore *sessions.CookieStore, valkeyClient valkey.Client, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-
 		ctx := r.Context()
 
 		userId, _ := web_auth.CheckAuthentication(ctx, sessionStore, valkeyClient, w, r)
@@ -24,8 +24,19 @@ func EditMyCreatorPageHandler(template *template.Template, sessionStore *session
 			return
 		}
 
+		params := query_handlers.GetMyWritingsParams{
+			UserId: userId,
+		}
+
+		myWritings, myWritingsErr := query_handlers.HandleGetMyWritings(ctx, pgCore, pgCoreQueries, params)
+		if myWritingsErr != nil {
+			http.Error(w, myWritingsErr.Message, myWritingsErr.Code)
+			return
+		}
+
 		type PageData struct {
 			UniversalPageData
+			MyWritings []query_handlers.CreatorWritingsGroup
 		}
 
 		pageData := PageData{
@@ -34,9 +45,10 @@ func EditMyCreatorPageHandler(template *template.Template, sessionStore *session
 				LoggedInClass: "logged_in",
 				CsrfToken:     csrf.TemplateField(r),
 			},
+			MyWritings: myWritings,
 		}
 
-		err := template.ExecuteTemplate(w, "edit_my_creator_page", pageData)
+		err := templates.ExecuteTemplate(w, "my_writings_page", pageData)
 		if err != nil {
 			logger.Log(err)
 		}

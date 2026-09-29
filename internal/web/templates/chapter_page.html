@@ -1,4 +1,4 @@
-{{ define "edit_writing_page" }}
+{{ define "chapter_page" }}
   <!doctype html>
   <html lang="en">
     <head>
@@ -6,7 +6,6 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
       {{ template "globals_component" . }}
-      <script defer src="/internal/web/static/js/edit_writing_page.js"></script>
 
       {{ .CsrfToken }}
     </head>
@@ -16,7 +15,7 @@
 
       <div id="page_container">
         {{ template "sidebar_component" . }}
-        <div id="page_content">edit writing</div>
+        <div id="page_content">chapter page</div>
       </div>
 
       {{ template "footer_component" . }}

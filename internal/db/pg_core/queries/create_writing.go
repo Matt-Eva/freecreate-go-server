@@ -40,8 +40,9 @@ func CreateWriting(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries conf
 	var topics []string
 	var tags []string
 	var description string
+	var published bool
 
-	queryErr := pgCore.QueryRow(ctx, query, namedArgs).Scan(&uuid, &user_id, &creator_id, &title, &subtitle, &writing_type, &topics, &tags, &description)
+	queryErr := pgCore.QueryRow(ctx, query, namedArgs).Scan(&uuid, &user_id, &creator_id, &title, &subtitle, &writing_type, &topics, &tags, &description, &published)
 	if queryErr != nil {
 		logger.Log(queryErr)
 		apiErr := &api_error.Error{
@@ -60,6 +61,7 @@ func CreateWriting(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries conf
 	createdWriting.Topics = topics
 	createdWriting.Tags = tags
 	createdWriting.Description = description
+	createdWriting.Published = published
 
 	return createdWriting, nil
 }

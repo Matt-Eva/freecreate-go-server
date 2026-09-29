@@ -1,1 +1,1 @@
-SELECT (name, uuid) FROM creators WHERE creators.user_id = @user_id AND creators.uuid = @uuid;
+SELECT (name, id, uuid) FROM creators WHERE creators.user_id = @user_id AND creators.uuid = @uuid;
