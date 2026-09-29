@@ -8,17 +8,18 @@ import (
 )
 
 type PgCoreQueries struct {
-	getUserByEmail string
-	createUser     string
-	getUserInfo    string
-	deleteUser     string
-	updateUserInfo string
-	createCreator  string
-	getMyCreators  string
-	getMyCreator   string
-	createWriting  string
-	getMyWritings  string
-	getMyWriting   string
+	getUserByEmail       string
+	createUser           string
+	getUserInfo          string
+	deleteUser           string
+	updateUserInfo       string
+	createCreator        string
+	getMyCreators        string
+	getMyCreator         string
+	getMyCreatorWritings string
+	createWriting        string
+	getMyWritings        string
+	getMyWriting         string
 }
 
 func (q PgCoreQueries) GetUserByEmail() string {
@@ -51,6 +52,10 @@ func (q PgCoreQueries) GetMyCreators() string {
 
 func (q PgCoreQueries) GetMyCreator() string {
 	return q.getMyCreator
+}
+
+func (q PgCoreQueries) GetMyCreatorWritings() string {
+	return q.getMyCreatorWritings
 }
 
 func (q PgCoreQueries) CreateWriting() string {
@@ -123,6 +128,14 @@ func ConfigPgCoreQueries() (PgCoreQueries, error) {
 		return q, getMyCreatorsErr
 	}
 	q.getMyCreator = string(getMyCreator)
+
+	getMyCreatorWritings, getMyCreatorWritingsErr := os.ReadFile(filepath.Join("./internal/db/pg_core/query_files", "get_my_creator_writings.sql"))
+	if getMyCreatorWritingsErr != nil {
+		logger.Log(getMyCreatorWritingsErr)
+		return q, getMyCreatorWritingsErr
+	}
+	q.getMyCreatorWritings = string(getMyCreatorWritings)
+	fmt.Println(q.GetMyCreatorWritings())
 
 	createWriting, createWritingError := os.ReadFile(filepath.Join("./internal/db/pg_core/query_files", "create_writing.sql"))
 	if createWritingError != nil {

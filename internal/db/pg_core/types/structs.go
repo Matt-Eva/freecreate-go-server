@@ -57,7 +57,8 @@ type MyCreatorsStruct struct {
 }
 
 type GetMyCreatorParams struct {
-	UserId int64
+	UserId      int64
+	CreatorUUID uuid.UUID
 }
 
 type MyCreator struct {
