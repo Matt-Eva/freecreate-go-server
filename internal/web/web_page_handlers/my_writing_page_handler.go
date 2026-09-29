@@ -1,7 +1,6 @@
 package web_page_handlers
 
 import (
-	"fmt"
 	"freecreate/internal/config"
 	pg_core_types "freecreate/internal/db/pg_core/types"
 	"freecreate/internal/lib/api_error"
@@ -64,8 +63,6 @@ func MyWritingPageHandler(template *template.Template, sessionStore *sessions.Co
 			},
 			MyWriting: myWriting,
 		}
-
-		fmt.Println(pageData.MyWriting)
 
 		err := template.ExecuteTemplate(w, "my_writing_page", pageData)
 		if err != nil {
