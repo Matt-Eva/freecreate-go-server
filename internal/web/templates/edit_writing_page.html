@@ -58,6 +58,13 @@
                 {{ end }}
               {{ end }}
             </select>
+            <p>
+              {{ if .MyWriting.IsAdult }}
+                Adult
+              {{ else }}
+                All Ages
+              {{ end }}
+            </p>
             <input type="submit" disabled />
           </form>
         </div>
