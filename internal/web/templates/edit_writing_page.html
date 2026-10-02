@@ -16,7 +16,16 @@
 
       <div id="page_container">
         {{ template "sidebar_component" . }}
-        <div id="page_content">edit writing</div>
+        <div id="page_content">
+          <form>
+            <select value="{{ .CurrentCreator.ID }}">
+              {{ range .MyCreators }}
+                <option value="{{ .ID }}">{{ .Name }}</option>
+              {{ end }}
+            </select>
+            <input type="submit" />
+          </form>
+        </div>
       </div>
 
       {{ template "footer_component" . }}
