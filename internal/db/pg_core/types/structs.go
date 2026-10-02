@@ -123,6 +123,7 @@ type MyWriting struct {
 	Tags        []string
 	WritingType string
 	Published   bool
+	IsAdult 	bool
 	ListAdds    int64
 	Likes       int64
 	LibAdds     int64

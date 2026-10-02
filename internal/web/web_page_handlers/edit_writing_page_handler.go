@@ -4,12 +4,14 @@ import (
 	"fmt"
 	"freecreate/internal/config"
 	pg_core_types "freecreate/internal/db/pg_core/types"
+	"freecreate/internal/lib"
 	"freecreate/internal/lib/api_error"
 	"freecreate/internal/lib/logger"
 	"freecreate/internal/query_handlers"
 	"freecreate/internal/web/web_auth"
 	"html/template"
 	"net/http"
+	"time"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
@@ -21,7 +23,8 @@ import (
 
 func EditWritingPageHandler(templates template.Template, sessionStore *sessions.CookieStore, valkeyClient valkey.Client, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		// startTime := time.Now()
+		fmt.Println("edit writing page")
+		startTime := time.Now()
 
 		ctx := r.Context()
 
@@ -76,6 +79,7 @@ func EditWritingPageHandler(templates template.Template, sessionStore *sessions.
 			MyWriting pg_core_types.MyWriting
 			MyCreators []pg_core_types.MyCreatorsStruct
 			CurrentCreator pg_core_types.MyCreatorsStruct
+			WritingTypes []string
 		}
 
 		pageData := PageData{
@@ -87,17 +91,16 @@ func EditWritingPageHandler(templates template.Template, sessionStore *sessions.
 			MyWriting: myWriting,
 			MyCreators: myCreators,
 			CurrentCreator: currentCreator,
+			WritingTypes: lib.WritingTypes,
 		}
-
-		fmt.Println(pageData)
 
 		err := templates.ExecuteTemplate(w, "edit_writing_page", pageData)
 		if err != nil {
 			logger.Log(err)
 		}
 
-		// duration := time.Since(startTime)
+		duration := time.Since(startTime)
 
-		// fmt.Println(duration)
+		fmt.Println(duration)
 	}
 }

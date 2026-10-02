@@ -17,13 +17,48 @@
       <div id="page_container">
         {{ template "sidebar_component" . }}
         <div id="page_content">
-          <form>
-            <select value="{{ .CurrentCreator.ID }}">
+          <button id="enable_edit_button">edit</button>
+          <button hidden id="cancel_edit_button">cancel</button>
+          <form id="edit_writing_form">
+            <label for="writing_title_input">Title:</label>
+            <input
+              type="text"
+              id="writing_title_input"
+              value="{{ .MyWriting.Title }}"
+              disabled
+            />
+            <label for="writing_subtitle_input">Subtitle:</label>
+            <input
+              type="text"
+              id="writing_subtitle_input"
+              value="{{ .MyWriting.Subtitle }}"
+              disabled
+            />
+            <select id="creator_select" disabled>
               {{ range .MyCreators }}
-                <option value="{{ .ID }}">{{ .Name }}</option>
+                {{ if eq .ID $.MyWriting.CreatorId }}
+                  <option value="{{ .ID }}">
+                    {{ .Name }}
+                  </option>
+                {{ end }}
+              {{ end }}
+              {{ range .MyCreators }}
+                {{ if ne .ID $.MyWriting.CreatorId }}
+                  <option value="{{ .ID }}">{{ .Name }}</option>
+                {{ end }}
               {{ end }}
             </select>
-            <input type="submit" />
+            <select id="writing_type_select" disabled>
+              <option>
+                {{ .MyWriting.WritingType }}
+              </option>
+              {{ range .WritingTypes }}
+                {{ if ne .  $.MyWriting.WritingType }}
+                  <option>{{ . }}</option>
+                {{ end }}
+              {{ end }}
+            </select>
+            <input type="submit" disabled />
           </form>
         </div>
       </div>
