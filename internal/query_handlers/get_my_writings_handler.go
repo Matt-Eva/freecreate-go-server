@@ -55,7 +55,7 @@ func HandleGetMyWritings(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQuerie
 
 		for i := 0; i < len(myWritings); i++ {
 			writing := myWritings[i]
-			if writing.CreatorId == creator.ID{
+			if writing.CreatorId == creator.ID {
 				creatorGroup.Writing = append(creatorGroup.Writing, writing)
 			}
 		}

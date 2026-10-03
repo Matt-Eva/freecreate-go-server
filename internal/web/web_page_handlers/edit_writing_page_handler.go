@@ -34,7 +34,7 @@ func EditWritingPageHandler(templates template.Template, sessionStore *sessions.
 			return
 		}
 
-		writingUuidParam := chi.URLParam(r,"writing_uuid")
+		writingUuidParam := chi.URLParam(r, "writing_uuid")
 
 		writingUuid, uuidParseErr := uuid.Parse(writingUuidParam)
 		if uuidParseErr != nil {
@@ -44,7 +44,7 @@ func EditWritingPageHandler(templates template.Template, sessionStore *sessions.
 		}
 
 		getMyWritingParams := pg_core_types.GetMyWritingParams{
-			UUID: writingUuid,
+			UUID:   writingUuid,
 			UserId: userId,
 		}
 
@@ -66,9 +66,9 @@ func EditWritingPageHandler(templates template.Template, sessionStore *sessions.
 
 		var currentCreator pg_core_types.MyCreatorsStruct
 
-		for i := 0; i < len(myCreators); i++{
+		for i := 0; i < len(myCreators); i++ {
 			creator := myCreators[i]
-			if creator.ID == myWriting.CreatorId{
+			if creator.ID == myWriting.CreatorId {
 				currentCreator = creator
 				break
 			}
@@ -76,10 +76,14 @@ func EditWritingPageHandler(templates template.Template, sessionStore *sessions.
 
 		type PageData struct {
 			UniversalPageData
-			MyWriting pg_core_types.MyWriting
-			MyCreators []pg_core_types.MyCreatorsStruct
-			CurrentCreator pg_core_types.MyCreatorsStruct
-			WritingTypes []string
+			MyWriting                    pg_core_types.MyWriting
+			MyCreators                   []pg_core_types.MyCreatorsStruct
+			CurrentCreator               pg_core_types.MyCreatorsStruct
+			WritingTypes                 []string
+			FictionTopics                []string
+			EssayAndBlogTopics           []string
+			MemoirAndAutobiographyTopics []string
+			PoetryTopics                 []string
 		}
 
 		pageData := PageData{
@@ -88,10 +92,14 @@ func EditWritingPageHandler(templates template.Template, sessionStore *sessions.
 				LoggedInClass: "logged_in",
 				CsrfToken:     csrf.TemplateField(r),
 			},
-			MyWriting: myWriting,
-			MyCreators: myCreators,
-			CurrentCreator: currentCreator,
-			WritingTypes: lib.WritingTypes,
+			MyWriting:                    myWriting,
+			MyCreators:                   myCreators,
+			CurrentCreator:               currentCreator,
+			WritingTypes:                 lib.WritingTypes,
+			FictionTopics:                lib.WritingTopics.Fiction,
+			EssayAndBlogTopics:           lib.WritingTopics.EssaysAndBlogs,
+			MemoirAndAutobiographyTopics: lib.WritingTopics.MemoirAndAutobiography,
+			PoetryTopics:                 lib.WritingTopics.Poetry,
 		}
 
 		err := templates.ExecuteTemplate(w, "edit_writing_page", pageData)

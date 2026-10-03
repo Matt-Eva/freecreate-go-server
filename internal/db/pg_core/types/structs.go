@@ -128,7 +128,7 @@ type MyWriting struct {
 	LibAdds     int64
 	Donations   int64
 	Flags       int64
-	IsAdult 	bool
+	IsAdult     bool
 	CreatorId   int64
 	CreatorUUID uuid.UUID
 	CreatorName string
@@ -157,6 +157,31 @@ type Writing struct {
 	Description string
 	Topics      []string
 	Tags        []string
+}
+
+type UpdateWritingParams struct {
+	UserId      int64
+	UUID        uuid.UUID
+	Title       string
+	Subtitle    string
+	Description string
+	Topics      []string
+	Tags        []string
+	WritingType string
+	IsAdult     bool
+	CreatorId   int64
+}
+
+type UpdatedWriting struct {
+	UUID        uuid.UUID
+	Title       string
+	Subtitle    string
+	Description string
+	Topics      []string
+	Tags        []string
+	WritingType string
+	IsAdult     bool
+	CreatorId   int64
 }
 
 // ===== Chapter Structs =====

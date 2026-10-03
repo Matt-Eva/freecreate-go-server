@@ -19,7 +19,12 @@
         <div id="page_content">
           <button id="enable_edit_button">edit</button>
           <button hidden id="cancel_edit_button">cancel</button>
-          <form id="edit_writing_form">
+          <div id="edit_writing_div">
+            <input
+              type="hidden"
+              value="{{ .MyWriting.UUID }}"
+              id="writing_uuid"
+            />
             <label for="writing_title_input">Title:</label>
             <input
               type="text"
@@ -58,15 +63,88 @@
                 {{ end }}
               {{ end }}
             </select>
-            <p>
-              {{ if .MyWriting.IsAdult }}
-                Adult
-              {{ else }}
-                All Ages
+            <label>Audience:</label>
+
+            <input
+              type="radio"
+              name="is_adult"
+              value="true"
+              id="is_adult_radio_true"
+              {{ if .MyWriting.IsAdult }}checked="true"{{ end }}
+              disabled
+            />
+            <label for="is_adult_radio_true">Adult</label>
+            <input
+              type="radio"
+              name="is_adult"
+              value="false"
+              id="is_adult_radio_false"
+              {{ if not .MyWriting.IsAdult }}checked="true"{{ end }}
+              disabled
+            />
+            <label for="is_adult_radio_true">All Ages</label>
+            <label for="writing_description_input">Description:</label>
+            <textarea
+              id="writing_description_input"
+              value="{{ .MyWriting.Description }}"
+              disabled
+            ></textarea>
+            <div>
+              {{ if eq .MyWriting.WritingType "Short Story" }}
+                <h4>Genres (Up to Three)</h4>
+                {{ range .FictionTopics }}
+                  {{ $topic := false }}
+                  {{ range $.MyWriting.Topics }}
+                    <p>{{ . }}</p>
+                    {{ if eq $topic . }}
+                      <p>{{ . }}</p>
+                      {{ $topic = true }}
+                    {{ end }}
+                  {{ end }}
+                  {{ if eq . "Erotica" }}
+                    <label for="{{ . }}_checkbox">{{ . }} (Adult Only)</label>
+                  {{ else }}
+                    <label for="{{ . }}_checkbox">{{ . }} </label>
+                  {{ end }}
+
+
+                  <input
+                    class="topic_checkbox"
+                    type="checkbox"
+                    id="{{ . }}_checkbox"
+                    value="{{ . }}"
+                    {{ if $topic }}
+                      checked="true"
+                    {{ end }}
+                    disabled
+                  />
+                {{ end }}
+              {{ else if eq .MyWriting.WritingType "Essay" }}
+                {{ range .EssayAndBlogTopics }}
+                  <label for="{{ . }}_checkbox">{{ . }}</label>
+                  <input
+                    class="topic_checkbox"
+                    type="checkbox"
+                    id="{{ . }}_checkbox"
+                    value="{{ . }}"
+                    disabled
+                  />
+                {{ end }}
+              {{ else if eq .MyWriting.WritingType "Memoir" }}
+              {{ else if eq .MyWriting.WritingType "Poetry" }}
               {{ end }}
-            </p>
-            <input type="submit" disabled />
-          </form>
+            </div>
+            <form id="add_tag_form">
+              <label for="tag_input">Add Tag:</label>
+              <input type="text" id="tag_input" disabled />
+              <input type="submit" disabled />
+            </form>
+            <div id="tag_container">
+              {{ range .MyWriting.Tags }}<span>{{ . }}</span>{{ end }}
+            </div>
+            <button id="submit_update_button" disabled>Update</button>
+            <div id="update_writing_message_block"></div>
+          </div>
         </div>
       </div>
 
