@@ -107,6 +107,8 @@ func ConfigureWebRouter(router chi.Router, sessionStore *sessions.CookieStore, v
 			r.Post("/creator", web_api_handlers.CreateCreatorHandler(sessionStore, valkeyClient, pgCore, pgCoreQueries))
 
 			r.Post("/writing", web_api_handlers.NewWritingHandler(sessionStore, valkeyClient, pgCore, pgCoreQueries))
+
+			r.Patch("/writing/{writing_uuid}", web_api_handlers.UpdateWritingHandler(sessionStore, valkeyClient, pgCore, pgCoreQueries))
 		})
 
 	})
