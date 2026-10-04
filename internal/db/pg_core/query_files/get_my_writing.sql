@@ -13,6 +13,7 @@ SELECT
     lib_adds, 
     writings.donations, 
     writings.flags, 
+    is_adult,
     creators.id, 
     creators.uuid, 
     creators.name)

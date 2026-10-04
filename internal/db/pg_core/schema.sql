@@ -169,6 +169,7 @@ CREATE TABLE public.writings (
     published boolean DEFAULT false NOT NULL,
     published_before boolean DEFAULT false NOT NULL,
     last_published timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    is_adult boolean DEFAULT true,
     CONSTRAINT writings_description_check CHECK ((length(description) < 300)),
     CONSTRAINT writings_subtitle_check CHECK ((length(subtitle) < 100)),
     CONSTRAINT writings_tags_check CHECK ((cardinality(tags) <= 20)),
@@ -473,4 +474,5 @@ INSERT INTO public.schema_migrations (version) VALUES
     ('20260917172923'),
     ('20260917172957'),
     ('20260917234555'),
-    ('20260927195007');
+    ('20260927195007'),
+    ('20261002191400');
