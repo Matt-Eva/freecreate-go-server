@@ -20,6 +20,37 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
+-- Name: chapters; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.chapters (
+    id bigint NOT NULL,
+    uuid uuid DEFAULT uuidv7() NOT NULL,
+    user_id bigint NOT NULL,
+    creator_id bigint NOT NULL,
+    writing_id bigint NOT NULL,
+    title text NOT NULL,
+    chapter_number integer NOT NULL,
+    published boolean DEFAULT false NOT NULL,
+    published_before boolean DEFAULT false NOT NULL
+);
+
+
+--
+-- Name: chapters_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+ALTER TABLE public.chapters ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME public.chapters_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
 -- Name: creators; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -161,6 +192,14 @@ ALTER TABLE public.writings ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
 
 
 --
+-- Name: chapters chapters_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.chapters
+    ADD CONSTRAINT chapters_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: creators creators_creator_handle_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -214,6 +253,20 @@ ALTER TABLE ONLY public.users
 
 ALTER TABLE ONLY public.writings
     ADD CONSTRAINT writings_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: idx_chapters_uuid; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_chapters_uuid ON public.chapters USING btree (uuid);
+
+
+--
+-- Name: idx_chapters_writing_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_chapters_writing_id ON public.chapters USING btree (writing_id);
 
 
 --
@@ -350,6 +403,30 @@ CREATE INDEX idx_writings_uuid ON public.writings USING btree (uuid);
 
 
 --
+-- Name: chapters chapters_creator_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.chapters
+    ADD CONSTRAINT chapters_creator_id_fkey FOREIGN KEY (creator_id) REFERENCES public.creators(id) ON DELETE CASCADE;
+
+
+--
+-- Name: chapters chapters_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.chapters
+    ADD CONSTRAINT chapters_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
+
+
+--
+-- Name: chapters chapters_writing_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.chapters
+    ADD CONSTRAINT chapters_writing_id_fkey FOREIGN KEY (writing_id) REFERENCES public.writings(id) ON DELETE CASCADE;
+
+
+--
 -- Name: creators creators_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -395,4 +472,5 @@ INSERT INTO public.schema_migrations (version) VALUES
     ('20260917172721'),
     ('20260917172923'),
     ('20260917172957'),
-    ('20260917234555');
+    ('20260917234555'),
+    ('20260927195007');

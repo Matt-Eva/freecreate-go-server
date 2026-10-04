@@ -27,13 +27,13 @@ func ProfilePageHandler(sessionStore *sessions.CookieStore, valkeyClient valkey.
 			return
 		}
 
-		getMyCreatorsParams := query_handlers.GetMyCreatorsParams{
-			UserId: userId,
-		}
-
 		userInfo, getUserInfoErr := query_handlers.HandleGetUserInfo(ctx, pgCore, pgCoreQueries, userId)
 		if getUserInfoErr != nil {
 			http.Error(w, getUserInfoErr.Message, getUserInfoErr.Code)
+		}
+
+		getMyCreatorsParams := pg_core_types.GetMyCreatorsParams{
+			UserId: userId,
 		}
 
 		myCreators, getMyCreatorsErr := query_handlers.HandleGetMyCreators(ctx, pgCore, pgCoreQueries, getMyCreatorsParams)
@@ -44,7 +44,7 @@ func ProfilePageHandler(sessionStore *sessions.CookieStore, valkeyClient valkey.
 
 		type PageData struct {
 			UniversalPageData
-			MyCreators []query_handlers.MyCreatorsStruct
+			MyCreators []pg_core_types.MyCreatorsStruct
 			UserInfo   pg_core_types.UserInfo
 		}
 

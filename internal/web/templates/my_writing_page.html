@@ -4,16 +4,41 @@
     <head>
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>Document</title>
-      {{ template "globals_component" }}
+
+      {{ template "globals_component" . }}
+
+      {{ .CsrfToken }}
     </head>
-    <body>
+    <body class="{{ .LoggedInClass }}">
       {{ template "header_component" . }}
 
 
       <div id="page_container">
         {{ template "sidebar_component" . }}
-        <div id="page_content"></div>
+        <div id="page_content">
+          <h2>{{ .MyWriting.Title }}</h2>
+          <h3>{{ .MyWriting.Subtitle }}</h3>
+          <h4>
+            <a href="/my-creator/{{ .MyWriting.CreatorUUID }}"
+              >{{ .MyWriting.CreatorName }}</a
+            >
+          </h4>
+          <a href="/writing/{{ .MyWriting.UUID }}/edit">edit</a>
+          <p>{{ .MyWriting.WritingType }}</p>
+          <p>
+            {{ range .MyWriting.Topics }}
+              <span>{{ . }}</span>
+            {{ end }}
+          </p>
+          <p>{{ .MyWriting.Description }}</p>
+          <p>
+            {{ if .MyWriting.Published }}
+              Published
+            {{ else }}
+              Unpublished
+            {{ end }}
+          </p>
+        </div>
       </div>
 
       {{ template "footer_component" . }}

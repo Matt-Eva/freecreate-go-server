@@ -1,0 +1,52 @@
+{{ define "write_page" }}
+  <!doctype html>
+  <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+      {{ template "globals_component" . }}
+      <script defer src="/internal/web/static/js/write_page.js"></script>
+
+      {{ .CsrfToken }}
+    </head>
+    <body class="{{ .LoggedInClass }}">
+      {{ template "header_component" . }}
+
+
+      <div id="page_container">
+        {{ template "sidebar_component" . }}
+        <div id="page_content">
+          Write page
+          {{ if eq (len .MyCreators) 0 }}
+            <p>You haven't set up any creator profiles yet!</p>
+            <p>
+              To start writing, please
+              <a href="/profile">set up a creator profile.</a>
+            </p>
+          {{ else }}
+            <form id="new_writing_form">
+              <label for="new_writing_title">Title:</label>
+              <input type="text" id="new_writing_title" />
+              <label for="new_writing_creator">Creator:</label>
+              <select id="new_writing_creator">
+                {{ range .MyCreators }}
+                  <option value="{{ .ID }}">{{ .Name }}</option>
+                {{ end }}
+              </select>
+              <select id="new_writing_type">
+                {{ range .WritingTypes }}
+                  <option>{{ . }}</option>
+                {{ end }}
+              </select>
+              <input type="submit" />
+            </form>
+            <p id="new_writing_message_block"></p>
+          {{ end }}
+        </div>
+      </div>
+
+      {{ template "footer_component" . }}
+    </body>
+  </html>
+{{ end }}

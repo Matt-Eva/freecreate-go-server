@@ -24,11 +24,18 @@ document.addEventListener("DOMContentLoaded", (e) => {
   );
   const myCreatorsContainer = document.getElementById("my_creators_container");
 
+  const deleteAccountBtn = document.getElementById("delete_account_button");
+  const deleteAccountMessageBlock = document.getElementById(
+    "delete_account_message_block",
+  );
+
   // ============ Event Listeners ================
 
   logoutButton.addEventListener("click", logout);
 
   newCreatorForm.addEventListener("submit", handleCreateCreator);
+
+  deleteAccountBtn.addEventListener("click", deleteAccount);
 
   // =========== Logout functionality ============
 
@@ -133,5 +140,34 @@ document.addEventListener("DOMContentLoaded", (e) => {
 
   function renderCreateCreatorMessage(message) {
     newCreatorMessageBlock.textContent = message;
+  }
+
+  // =========== Delete Account ================
+
+  async function deleteAccount() {
+    console.log("deleting account");
+    deleteAccountMessageBlock.textContent = "";
+
+    const requestObject = {
+      method: "DELETE",
+      headers: {
+        "X-CSRF-Token": csrfToken,
+      },
+    };
+
+    try {
+      const res = await fetch("/web-api/user", requestObject);
+      if (!res.ok) {
+        const error = await res.text();
+        throw new Error(error);
+      } else if (res.redirected) {
+        window.location.href = res.url;
+      } else {
+        console.error("This request should have redirected.");
+      }
+    } catch (error) {
+      console.error(error);
+      deleteAccountMessageBlock.textContent = error.message;
+    }
   }
 });

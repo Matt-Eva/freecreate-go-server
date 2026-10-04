@@ -1,0 +1,47 @@
+{{ define "my_writings_page" }}
+  <!doctype html>
+  <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+      {{ template "globals_component" . }}
+
+      {{ .CsrfToken }}
+    </head>
+    <body class="{{ .LoggedInClass }}">
+      {{ template "header_component" . }}
+
+
+      <div id="page_container">
+        {{ template "sidebar_component" . }}
+        <div id="page_content">
+          {{ range .MyWritings }}
+            <div>
+              <h3>{{ .CreatorName }}</h3>
+              <a href="/my-creator/{{ .CreatorUUID }}">view</a>
+              <div>
+                {{ range .Writing }}
+                  <article>
+                    <p>{{ .Title }}</p>
+                    <p>
+                      {{ if .Published }}
+                        Published
+                      {{ else }}
+                        Unpublished
+                      {{ end }}
+                    </p>
+                    <a href="/my-writing/{{ .UUID }}">view</a>
+                    <a href="/writing/{{ .UUID }}/edit">edit</a>
+                  </article>
+                {{ end }}
+              </div>
+            </div>
+          {{ end }}
+        </div>
+      </div>
+
+      {{ template "footer_component" . }}
+    </body>
+  </html>
+{{ end }}
