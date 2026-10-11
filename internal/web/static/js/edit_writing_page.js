@@ -80,11 +80,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  console.log(startingState.topics);
-
   // Tag state
 
-  let tags = startingState.tags;
+  let tags = [...startingState.tags];
 
   // Enable Edit
 
@@ -95,7 +93,6 @@ document.addEventListener("DOMContentLoaded", () => {
     for (const child of children) {
       child.disabled = false;
       if (child.children.length > 0) {
-        console.log(child.children);
         for (const chi of child.children) {
           chi.disabled = false;
         }
@@ -125,6 +122,19 @@ document.addEventListener("DOMContentLoaded", () => {
     radioIsAdult.checked = startingState.adult;
     radioAllAges.checked = startingState.allAges;
     descriptionInput.value = startingState.description;
+
+    tagContainer.innerHTML = "";
+    tags = startingState.tags;
+    for (const tag of startingState.tags) {
+      const tagSpan = document.createElement("span");
+      tagSpan.textContent = tag;
+      tagSpan.addEventListener("click", () => {
+        tags = tags.filter((tag) => tag !== tagSpan.textContent);
+        tagSpan.remove();
+      });
+
+      tagContainer.append(tagSpan);
+    }
   }
 
   // Add Tag
