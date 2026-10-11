@@ -57,6 +57,18 @@ document.addEventListener("DOMContentLoaded", () => {
     topics: [],
   };
 
+  function updateStartingState(data) {
+    startingState.title = data.title;
+    startingState.subtitle = data.subtitle;
+    startingState.description = data.description;
+    startingState.topics = data.topics;
+    startingState.tags = data.tags;
+    startingState.adult = data.isAdult;
+    startingState.allAges = !data.isAdult;
+    startingState.writingType = data.writingType;
+    startingState.creator = data.creatorId;
+  }
+
   for (const child of tagContainer.children) {
     const tag = child.textContent;
     startingState.tags.push(tag);
@@ -212,7 +224,8 @@ document.addEventListener("DOMContentLoaded", () => {
         throw new Error(error);
       } else {
         const data = await res.json();
-        console.log(data);
+        updateStartingState(data);
+        console.log(startingState);
       }
     } catch (e) {
       console.error(e);

@@ -84,11 +84,9 @@
             />
             <label for="is_adult_radio_true">All Ages</label>
             <label for="writing_description_input">Description:</label>
-            <textarea
-              id="writing_description_input"
-              value="{{ .MyWriting.Description }}"
-              disabled
-            ></textarea>
+            <textarea id="writing_description_input" disabled>
+{{ .MyWriting.Description }}</textarea
+            >
             <div id="topics_container">
               {{ if or (eq .MyWriting.WritingType "Short Story") (eq .MyWriting.WritingType "Novella") (eq .MyWriting.WritingType "Novelette") (eq .MyWriting.WritingType "Novel") }}
                 <h4>Genres (Up to Three)</h4>
