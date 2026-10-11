@@ -124,7 +124,7 @@ document.addEventListener("DOMContentLoaded", () => {
     descriptionInput.value = startingState.description;
 
     tagContainer.innerHTML = "";
-    tags = startingState.tags;
+    tags = [...startingState.tags];
     for (const tag of startingState.tags) {
       const tagSpan = document.createElement("span");
       tagSpan.textContent = tag;
@@ -235,7 +235,7 @@ document.addEventListener("DOMContentLoaded", () => {
       } else {
         const data = await res.json();
         updateStartingState(data);
-        console.log(startingState);
+        cancelEdit();
       }
     } catch (e) {
       console.error(e);
