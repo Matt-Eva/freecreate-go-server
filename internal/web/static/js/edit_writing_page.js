@@ -25,6 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const radioAllAges = document.getElementById("is_adult_radio_false");
   const descriptionInput = document.getElementById("writing_description_input");
   const writingUuid = document.getElementById("writing_uuid").value;
+  const topicsContainer = document.getElementById("topics_container");
   const tagContainer = document.getElementById("tag_container");
   const addTagForm = document.getElementById("add_tag_form");
   const tagInput = document.getElementById("tag_input");
@@ -53,6 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
     allAges: radioAllAges.checked,
     description: descriptionInput.value,
     tags: [],
+    topics: [],
   };
 
   for (const child of tagContainer.children) {
@@ -60,9 +62,17 @@ document.addEventListener("DOMContentLoaded", () => {
     startingState.tags.push(tag);
   }
 
+  for (const child of topicsContainer.children) {
+    if (child.checked) {
+      startingState.topics.push(child.value);
+    }
+  }
+
+  console.log(startingState.topics);
+
   // Tag state
 
-  let tags = [];
+  let tags = startingState.tags;
 
   // Enable Edit
 

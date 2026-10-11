@@ -89,7 +89,7 @@
               value="{{ .MyWriting.Description }}"
               disabled
             ></textarea>
-            <div>
+            <div id="topics_container">
               {{ if or (eq .MyWriting.WritingType "Short Story") (eq .MyWriting.WritingType "Novella") (eq .MyWriting.WritingType "Novelette") (eq .MyWriting.WritingType "Novel") }}
                 <h4>Genres (Up to Three)</h4>
                 {{ range .FictionTopics }}
@@ -122,6 +122,7 @@
                   />
                 {{ end }}
               {{ else if or ( eq .MyWriting.WritingType "Essay") (eq .MyWriting.WritingType "Blog") }}
+                <h4>Topics (Up to Three)</h4>
                 {{ range .EssayAndBlogTopics }}
                   {{ $is_checked := false }}
                   {{ $topic := . }}
@@ -147,6 +148,7 @@
                 {{ end }}
               {{ else if or (eq .MyWriting.WritingType "Memoir") (eq .MyWriting.WritingType "Autobiography") }}
                 {{ range .MemoirAndAutobiographyTopics }}
+                  <h4>Topics (Up to Three)</h4>
                   {{ $is_checked := false }}
                   {{ $topic := . }}
 
@@ -170,6 +172,7 @@
                   />
                 {{ end }}
               {{ else if eq .MyWriting.WritingType "Poetry" }}
+                <h4>Genres (Up to Three)</h4>
                 {{ range .PoetryTopics }}
                   {{ $is_checked := false }}
                   {{ $topic := . }}
