@@ -54,6 +54,8 @@ func EditWritingPageHandler(templates template.Template, sessionStore *sessions.
 			return
 		}
 
+		fmt.Println(myWriting)
+
 		getMyCreatorsParams := pg_core_types.GetMyCreatorsParams{
 			UserId: userId,
 		}

@@ -90,17 +90,19 @@
               disabled
             ></textarea>
             <div>
-              {{ if eq .MyWriting.WritingType "Short Story" }}
+              {{ if or (eq .MyWriting.WritingType "Short Story") (eq .MyWriting.WritingType "Novella") (eq .MyWriting.WritingType "Novelette") (eq .MyWriting.WritingType "Novel") }}
                 <h4>Genres (Up to Three)</h4>
                 {{ range .FictionTopics }}
-                  {{ $topic := false }}
+
+                  {{ $is_checked := false }}
+                  {{ $topic := . }}
+
                   {{ range $.MyWriting.Topics }}
-                    <p>{{ . }}</p>
                     {{ if eq $topic . }}
-                      <p>{{ . }}</p>
-                      {{ $topic = true }}
+                      {{ $is_checked = true }}
                     {{ end }}
                   {{ end }}
+
                   {{ if eq . "Erotica" }}
                     <label for="{{ . }}_checkbox">{{ . }} (Adult Only)</label>
                   {{ else }}
@@ -113,25 +115,84 @@
                     type="checkbox"
                     id="{{ . }}_checkbox"
                     value="{{ . }}"
-                    {{ if $topic }}
-                      checked="true"
+                    {{ if $is_checked }}
+                      checked
                     {{ end }}
                     disabled
                   />
                 {{ end }}
-              {{ else if eq .MyWriting.WritingType "Essay" }}
+              {{ else if or ( eq .MyWriting.WritingType "Essay") (eq .MyWriting.WritingType "Blog") }}
                 {{ range .EssayAndBlogTopics }}
+                  {{ $is_checked := false }}
+                  {{ $topic := . }}
+
+                  {{ range $.MyWriting.Topics }}
+                    {{ if eq $topic . }}
+                      {{ $is_checked = true }}
+                    {{ end }}
+                  {{ end }}
+
+
                   <label for="{{ . }}_checkbox">{{ . }}</label>
                   <input
                     class="topic_checkbox"
                     type="checkbox"
                     id="{{ . }}_checkbox"
                     value="{{ . }}"
+                    {{ if $is_checked }}
+                      checked
+                    {{ end }}
                     disabled
                   />
                 {{ end }}
-              {{ else if eq .MyWriting.WritingType "Memoir" }}
+              {{ else if or (eq .MyWriting.WritingType "Memoir") (eq .MyWriting.WritingType "Autobiography") }}
+                {{ range .MemoirAndAutobiographyTopics }}
+                  {{ $is_checked := false }}
+                  {{ $topic := . }}
+
+                  {{ range $.MyWriting.Topics }}
+                    {{ if eq $topic . }}
+                      {{ $is_checked = true }}
+                    {{ end }}
+                  {{ end }}
+
+
+                  <label for="{{ . }}_checkbox">{{ . }}</label>
+                  <input
+                    class="topic_checkbox"
+                    type="checkbox"
+                    id="{{ . }}_checkbox"
+                    value="{{ . }}"
+                    {{ if $is_checked }}
+                      checked
+                    {{ end }}
+                    disabled
+                  />
+                {{ end }}
               {{ else if eq .MyWriting.WritingType "Poetry" }}
+                {{ range .PoetryTopics }}
+                  {{ $is_checked := false }}
+                  {{ $topic := . }}
+
+                  {{ range $.MyWriting.Topics }}
+                    {{ if eq $topic . }}
+                      {{ $is_checked = true }}
+                    {{ end }}
+                  {{ end }}
+
+
+                  <label for="{{ . }}_checkbox">{{ . }}</label>
+                  <input
+                    class="topic_checkbox"
+                    type="checkbox"
+                    id="{{ . }}_checkbox"
+                    value="{{ . }}"
+                    {{ if $is_checked }}
+                      checked
+                    {{ end }}
+                    disabled
+                  />
+                {{ end }}
               {{ end }}
             </div>
             <form id="add_tag_form">

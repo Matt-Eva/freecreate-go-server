@@ -135,6 +135,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // UpdateWriting
 
   function handleUpdateWriting(e) {
+    udpateWritingMessageBlock.textContent = "";
+
     const creator = creatorSelect.value;
     const title = writingTitleInput.value;
     const subtitle = writingSubtitleInput.value;
@@ -171,8 +173,10 @@ document.addEventListener("DOMContentLoaded", () => {
     topics,
     tags,
   ) {
+    const creatorId = parseInt(creator);
+
     const requestBody = {
-      creator,
+      creatorId,
       title,
       subtitle,
       writingType,
