@@ -123,6 +123,18 @@ document.addEventListener("DOMContentLoaded", () => {
     radioAllAges.checked = startingState.allAges;
     descriptionInput.value = startingState.description;
 
+    for (const child of topicsContainer.children) {
+      const value = child.value;
+      const inStartingState = startingState.topics.find(
+        (topic) => topic === value,
+      );
+      if (inStartingState) {
+        child.checked = true;
+      } else {
+        child.checked = false;
+      }
+    }
+
     tagContainer.innerHTML = "";
     tags = [...startingState.tags];
     for (const tag of startingState.tags) {
