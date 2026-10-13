@@ -20,10 +20,10 @@
 
       <div id="page_container">
         {{ template "sidebar_component" . }}
-        <div id="page_content">
+        <section id="page_content">
           <button id="enable_edit_button">edit</button>
           <button hidden id="cancel_edit_button">cancel</button>
-          <div id="edit_writing_div">
+          <section id="edit_writing_div">
             <input
               type="hidden"
               value="{{ .MyWriting.UUID }}"
@@ -213,13 +213,21 @@
             </div>
             <button id="submit_update_button" disabled>Update</button>
             <div id="update_writing_message_block"></div>
-          </div>
+          </section>
 
-          <div id="new_chapter_container">
-            <form id="new_chapter_form"></form>
-          </div>
-          <div></div>
-        </div>
+          <section id="new_chapter_container">
+            <h4>Create New Chapter:</h4>
+            <form id="new_chapter_form">
+              <label for="new_chapter_title_input">Title</label>
+              <input type="text" id="new_chapter_title_input" />
+              <label for="new_chapter_number_input">Chapter Number</label>
+              <input type="number" id="new_chapter_number_input" />
+              <input type="submit" />
+            </form>
+            <p id="new_chapter_message_block"></p>
+          </section>
+          <section id="chapter_container"></section>
+        </section>
       </div>
 
       {{ template "footer_component" . }}
