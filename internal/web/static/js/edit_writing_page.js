@@ -25,12 +25,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const radioAllAges = document.getElementById("is_adult_radio_false");
   const descriptionInput = document.getElementById("writing_description_input");
   const writingUuid = document.getElementById("writing_uuid").value;
+  const topicsContainer = document.getElementById("topics_container");
   const tagContainer = document.getElementById("tag_container");
   const addTagForm = document.getElementById("add_tag_form");
   const tagInput = document.getElementById("tag_input");
   const udpateWritingMessageBlock = document.getElementById(
     "update_writing_message_block",
   );
+  const tagSpans = document.getElementsByClassName("tag_span");
 
   // Event Listeners
 
@@ -40,7 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   submitUpdateButton.addEventListener("click", handleUpdateWriting);
 
-  addTagForm.addEventListener("submit", addTag);
+  addTagForm.addEventListener("submit", handleAddTag);
 
   // Starting State
 
@@ -53,16 +55,35 @@ document.addEventListener("DOMContentLoaded", () => {
     allAges: radioAllAges.checked,
     description: descriptionInput.value,
     tags: [],
+    topics: [],
   };
+
+  function updateStartingState(data) {
+    startingState.title = data.title;
+    startingState.subtitle = data.subtitle;
+    startingState.description = data.description;
+    startingState.topics = data.topics;
+    startingState.tags = data.tags;
+    startingState.adult = data.isAdult;
+    startingState.allAges = !data.isAdult;
+    startingState.writingType = data.writingType;
+    startingState.creator = data.creatorId;
+  }
 
   for (const child of tagContainer.children) {
     const tag = child.textContent;
     startingState.tags.push(tag);
   }
 
+  for (const child of topicsContainer.children) {
+    if (child.checked) {
+      startingState.topics.push(child.value);
+    }
+  }
+
   // Tag state
 
-  let tags = [];
+  let tags = [...startingState.tags];
 
   // Enable Edit
 
@@ -73,11 +94,14 @@ document.addEventListener("DOMContentLoaded", () => {
     for (const child of children) {
       child.disabled = false;
       if (child.children.length > 0) {
-        console.log(child.children);
         for (const chi of child.children) {
           chi.disabled = false;
         }
       }
+    }
+
+    for (const element of tagSpans) {
+      element.addEventListener("click", removeTag);
     }
   }
 
@@ -103,12 +127,37 @@ document.addEventListener("DOMContentLoaded", () => {
     radioIsAdult.checked = startingState.adult;
     radioAllAges.checked = startingState.allAges;
     descriptionInput.value = startingState.description;
+    tagInput.value = "";
+
+    for (const child of topicsContainer.children) {
+      const value = child.value;
+      const inStartingState = startingState.topics.find(
+        (topic) => topic === value,
+      );
+      if (inStartingState) {
+        child.checked = true;
+      } else {
+        child.checked = false;
+      }
+    }
+
+    tagContainer.innerHTML = "";
+    tags = [...startingState.tags];
+    for (const tag of tags) {
+      addTag(tag);
+    }
+
+    for (const child of tagContainer.children) {
+      child.removeEventListener("click", removeTag);
+    }
   }
 
   // Add Tag
 
-  function addTag(e) {
+  function handleAddTag(e) {
     e.preventDefault();
+    udpateWritingMessageBlock.textContent = "";
+
     if (tagInput.value === "") return;
     for (const tag of tags) {
       if (tagInput.value === tag) {
@@ -116,25 +165,45 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
     }
-    const rawTag = tagInput.value;
-    const tag = rawTag.replace(" ", "-");
+
+    if (tags.length >= 20) {
+      udpateWritingMessageBlock.textContent = "You already have 20 tags.";
+      tagInput.value = "";
+      return;
+    }
+
+    const tag = addTag(tagInput.value);
+
     tags.push(tag);
+  }
+
+  function addTag(tagValue) {
+    const tag = tagValue.replace(" ", "-");
 
     const tagSpan = document.createElement("span");
     tagSpan.textContent = tag;
-    tagSpan.addEventListener("click", () => {
-      tags = tags.filter((tag) => tag !== tagSpan.textContent);
-      tagSpan.remove();
-    });
+    tagSpan.className = "tag_span";
+    tagSpan.addEventListener("click", removeTag);
 
     tagContainer.append(tagSpan);
 
     tagInput.value = "";
+
+    return tag;
+  }
+
+  // Remove Tag
+
+  function removeTag(e) {
+    tags = tags.filter((tag) => tag !== e.target.textContent);
+    e.target.remove();
   }
 
   // UpdateWriting
 
   function handleUpdateWriting(e) {
+    udpateWritingMessageBlock.textContent = "";
+
     const creator = creatorSelect.value;
     const title = writingTitleInput.value;
     const subtitle = writingSubtitleInput.value;
@@ -171,8 +240,10 @@ document.addEventListener("DOMContentLoaded", () => {
     topics,
     tags,
   ) {
+    const creatorId = parseInt(creator);
+
     const requestBody = {
-      creator,
+      creatorId,
       title,
       subtitle,
       writingType,
@@ -198,7 +269,8 @@ document.addEventListener("DOMContentLoaded", () => {
         throw new Error(error);
       } else {
         const data = await res.json();
-        console.log(data);
+        updateStartingState(data);
+        cancelEdit();
       }
     } catch (e) {
       console.error(e);

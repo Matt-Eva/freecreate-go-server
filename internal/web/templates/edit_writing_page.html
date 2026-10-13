@@ -7,6 +7,10 @@
 
       {{ template "globals_component" . }}
       <script defer src="/internal/web/static/js/edit_writing_page.js"></script>
+      <link
+        rel="stylesheet"
+        href="/internal/web/static/css/edit_writing_page.css"
+      />
 
       {{ .CsrfToken }}
     </head>
@@ -84,23 +88,23 @@
             />
             <label for="is_adult_radio_true">All Ages</label>
             <label for="writing_description_input">Description:</label>
-            <textarea
-              id="writing_description_input"
-              value="{{ .MyWriting.Description }}"
-              disabled
-            ></textarea>
-            <div>
-              {{ if eq .MyWriting.WritingType "Short Story" }}
-                <h4>Genres (Up to Three)</h4>
+            <textarea id="writing_description_input" disabled>
+{{ .MyWriting.Description }}</textarea
+            >
+            <div id="topics_container">
+              {{ if or (eq .MyWriting.WritingType "Short Story") (eq .MyWriting.WritingType "Novella") (eq .MyWriting.WritingType "Novelette") (eq .MyWriting.WritingType "Novel") }}
+                <h4>Genres (up to Three)</h4>
                 {{ range .FictionTopics }}
-                  {{ $topic := false }}
+
+                  {{ $is_checked := false }}
+                  {{ $topic := . }}
+
                   {{ range $.MyWriting.Topics }}
-                    <p>{{ . }}</p>
                     {{ if eq $topic . }}
-                      <p>{{ . }}</p>
-                      {{ $topic = true }}
+                      {{ $is_checked = true }}
                     {{ end }}
                   {{ end }}
+
                   {{ if eq . "Erotica" }}
                     <label for="{{ . }}_checkbox">{{ . }} (Adult Only)</label>
                   {{ else }}
@@ -113,34 +117,98 @@
                     type="checkbox"
                     id="{{ . }}_checkbox"
                     value="{{ . }}"
-                    {{ if $topic }}
-                      checked="true"
+                    {{ if $is_checked }}
+                      checked
                     {{ end }}
                     disabled
                   />
                 {{ end }}
-              {{ else if eq .MyWriting.WritingType "Essay" }}
+              {{ else if or ( eq .MyWriting.WritingType "Essay") (eq .MyWriting.WritingType "Blog") }}
+                <h4>Topics (up to Three)</h4>
                 {{ range .EssayAndBlogTopics }}
+                  {{ $is_checked := false }}
+                  {{ $topic := . }}
+
+                  {{ range $.MyWriting.Topics }}
+                    {{ if eq $topic . }}
+                      {{ $is_checked = true }}
+                    {{ end }}
+                  {{ end }}
+
+
                   <label for="{{ . }}_checkbox">{{ . }}</label>
                   <input
                     class="topic_checkbox"
                     type="checkbox"
                     id="{{ . }}_checkbox"
                     value="{{ . }}"
+                    {{ if $is_checked }}
+                      checked
+                    {{ end }}
                     disabled
                   />
                 {{ end }}
-              {{ else if eq .MyWriting.WritingType "Memoir" }}
+              {{ else if or (eq .MyWriting.WritingType "Memoir") (eq .MyWriting.WritingType "Autobiography") }}
+                {{ range .MemoirAndAutobiographyTopics }}
+                  <h4>Topics (up to Three)</h4>
+                  {{ $is_checked := false }}
+                  {{ $topic := . }}
+
+                  {{ range $.MyWriting.Topics }}
+                    {{ if eq $topic . }}
+                      {{ $is_checked = true }}
+                    {{ end }}
+                  {{ end }}
+
+
+                  <label for="{{ . }}_checkbox">{{ . }}</label>
+                  <input
+                    class="topic_checkbox"
+                    type="checkbox"
+                    id="{{ . }}_checkbox"
+                    value="{{ . }}"
+                    {{ if $is_checked }}
+                      checked
+                    {{ end }}
+                    disabled
+                  />
+                {{ end }}
               {{ else if eq .MyWriting.WritingType "Poetry" }}
+                <h4>Genres (up to Three)</h4>
+                {{ range .PoetryTopics }}
+                  {{ $is_checked := false }}
+                  {{ $topic := . }}
+
+                  {{ range $.MyWriting.Topics }}
+                    {{ if eq $topic . }}
+                      {{ $is_checked = true }}
+                    {{ end }}
+                  {{ end }}
+
+
+                  <label for="{{ . }}_checkbox">{{ . }}</label>
+                  <input
+                    class="topic_checkbox"
+                    type="checkbox"
+                    id="{{ . }}_checkbox"
+                    value="{{ . }}"
+                    {{ if $is_checked }}
+                      checked
+                    {{ end }}
+                    disabled
+                  />
+                {{ end }}
               {{ end }}
             </div>
             <form id="add_tag_form">
-              <label for="tag_input">Add Tag:</label>
+              <label for="tag_input">Add Tag (up to 20):</label>
               <input type="text" id="tag_input" disabled />
               <input type="submit" disabled />
             </form>
             <div id="tag_container">
-              {{ range .MyWriting.Tags }}<span>{{ . }}</span>{{ end }}
+              {{ range .MyWriting.Tags }}
+                <span class="tag_span">{{ . }}</span>
+              {{ end }}
             </div>
             <button id="submit_update_button" disabled>Update</button>
             <div id="update_writing_message_block"></div>

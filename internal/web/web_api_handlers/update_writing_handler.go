@@ -45,10 +45,10 @@ func UpdateWritingHandler(sessionStore *sessions.CookieStore, valkeyClient valke
 			Description string   `json:"description"`
 			Topics      []string `json:"topics"`
 			Tags        []string `json:"tags"`
-			IsAdult		bool	 `json:"isAdult"`
+			IsAdult     bool     `json:"isAdult"`
 		}
 
-		var body Body;
+		var body Body
 
 		decodeErr := json.NewDecoder(r.Body).Decode(&body)
 		if decodeErr != nil {
@@ -58,16 +58,16 @@ func UpdateWritingHandler(sessionStore *sessions.CookieStore, valkeyClient valke
 		}
 
 		params := pg_core_types.UpdateWritingParams{
-			UserId: userId,
-			UUID:   writingUuid,
-			Title: body.Title,
-			Subtitle: body.Subtitle,
+			UserId:      userId,
+			UUID:        writingUuid,
+			Title:       body.Title,
+			Subtitle:    body.Subtitle,
 			Description: body.Description,
-			IsAdult: body.IsAdult,
-			Topics: body.Topics,
-			Tags: body.Tags,
+			IsAdult:     body.IsAdult,
+			Topics:      body.Topics,
+			Tags:        body.Tags,
 			WritingType: body.WritingType,
-			CreatorId: body.CreatorId,
+			CreatorId:   body.CreatorId,
 		}
 
 		updatedWriting, updateWritingErr := query_handlers.HandleUpdateWriting(ctx, pgCore, pgCoreQueries, params)
@@ -76,14 +76,15 @@ func UpdateWritingHandler(sessionStore *sessions.CookieStore, valkeyClient valke
 			return
 		}
 
-		response := Body {
-			Title: updatedWriting.Title,
-			Subtitle: updatedWriting.Subtitle,
+		response := Body{
+			Title:       updatedWriting.Title,
+			Subtitle:    updatedWriting.Subtitle,
 			Description: updatedWriting.Description,
-			Topics: updatedWriting.Topics,
-			Tags: updatedWriting.Tags,
-			IsAdult: updatedWriting.IsAdult,
+			Topics:      updatedWriting.Topics,
+			Tags:        updatedWriting.Tags,
+			IsAdult:     updatedWriting.IsAdult,
 			WritingType: updatedWriting.WritingType,
+			CreatorId:   updatedWriting.CreatorId,
 		}
 
 		jsonRes, marshalErr := json.Marshal(response)
