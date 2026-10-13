@@ -32,7 +32,8 @@ CREATE TABLE public.chapters (
     title text NOT NULL,
     chapter_number integer NOT NULL,
     published boolean DEFAULT false NOT NULL,
-    published_before boolean DEFAULT false NOT NULL
+    published_before boolean DEFAULT false NOT NULL,
+    content_db smallint NOT NULL
 );
 
 
@@ -475,4 +476,5 @@ INSERT INTO public.schema_migrations (version) VALUES
     ('20260917172957'),
     ('20260917234555'),
     ('20260927195007'),
-    ('20261002191400');
+    ('20261002191400'),
+    ('20261013211553');

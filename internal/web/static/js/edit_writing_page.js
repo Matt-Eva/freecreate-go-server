@@ -9,6 +9,12 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
+  // Writing UUID
+
+  const writingUuid = document.getElementById("writing_uuid").value;
+
+  // ========== EDIT WRITING SECTION ===================================
+
   // DOM Elements
 
   const enableEditButton = document.getElementById("enable_edit_button");
@@ -24,7 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const radioIsAdult = document.getElementById("is_adult_radio_true");
   const radioAllAges = document.getElementById("is_adult_radio_false");
   const descriptionInput = document.getElementById("writing_description_input");
-  const writingUuid = document.getElementById("writing_uuid").value;
+
   const topicsContainer = document.getElementById("topics_container");
   const tagContainer = document.getElementById("tag_container");
   const addTagForm = document.getElementById("add_tag_form");
@@ -276,5 +282,92 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error(e);
       udpateWritingMessageBlock.textContent = e.message;
     }
+  }
+
+  // ===================== ADD NEW CHAPTER SECTION =======================
+
+  const newChapterForm = document.getElementById("new_chapter_form");
+  const newChapterTitleInput = document.getElementById(
+    "new_chapter_title_input",
+  );
+  const newChapterNumberInput = document.getElementById(
+    "new_chapter_number_input",
+  );
+  const newChapterMessageBlock = document.getElementById(
+    "new_chapter_message_block",
+  );
+  const chapterContainer = document.getElementById("chapter_container");
+
+  newChapterForm.addEventListener("submit", addNewChapter);
+
+  async function addNewChapter(e) {
+    e.preventDefault();
+
+    newChapterMessageBlock.textContent = "";
+
+    const title = newChapterTitleInput.value;
+    const chapterNumber = parseInt(newChapterNumberInput.value);
+
+    if (title === "") {
+      newChapterMessageBlock.textContent = "Title cannot be empty.";
+    } else if (chapterNumber === "") {
+      newChapterMessageBlock.textContent = "Chapter number cannot be empty.";
+    }
+
+    const requestBody = {
+      title,
+      chapterNumber,
+      writingUuid,
+    };
+
+    const requestObject = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-Token": csrfToken,
+      },
+      body: JSON.stringify(requestBody),
+    };
+
+    try {
+      const res = await fetch("/web-api/chapter", requestObject);
+      if (!res.ok) {
+        const error = await res.text();
+        throw new Error(error);
+      } else if (res.redirected) {
+        window.location.href = res.url;
+      } else {
+        const data = await res.json();
+
+        newChapterTitleInput.value = "";
+        newChapterNumberInput.value = "";
+
+        renderNewChapter(data);
+      }
+    } catch (error) {
+      console.error(error);
+      newChapterMessageBlock.textContent = error.message;
+    }
+  }
+
+  function renderNewChapter(data) {
+    const chapterCard = document.createElement("article");
+
+    const title = document.createElement("p");
+    title.textContent = data.title;
+
+    const number = document.createElement("p");
+    number.textContent = "Chapter Number: " + data.chapterNumber;
+
+    const published = document.createElement("p");
+    if (data.published) {
+      published.textContent = "Published";
+    } else {
+      published.textContent = "Unpublished";
+    }
+
+    chapterCard.append(title, number, published);
+
+    chapterContainer.prepend(chapterCard);
   }
 });
