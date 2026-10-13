@@ -14,16 +14,16 @@ import (
 )
 
 type HandleCreateChapterParams struct {
-	WritingUUID uuid.UUID
-	UserId int64
-	Title string
+	WritingUUID   uuid.UUID
+	UserId        int64
+	Title         string
 	ChapterNumber int
 }
 
-func HandleCreateChapter(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries, pgContentPools config.PgContentPools, pgContentQueries config.PgContentQueries, params HandleCreateChapterParams)(pg_core_types.CreatedChapter, *api_error.Error){
+func HandleCreateChapter(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries, pgContentPools config.PgContentPools, pgContentQueries config.PgContentQueries, params HandleCreateChapterParams) (pg_core_types.CreatedChapter, *api_error.Error) {
 
 	getMyWritingParams := pg_core_types.GetMyWritingParams{
-		UUID: params.WritingUUID,
+		UUID:   params.WritingUUID,
 		UserId: params.UserId,
 	}
 
@@ -33,10 +33,10 @@ func HandleCreateChapter(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQuerie
 	}
 
 	createChapterParams := pg_core_types.CreateChapterParams{
-		UserId: params.UserId,
-		WritingId: myWriting.ID,
-		CreatorId: myWriting.CreatorId,
-		Title: params.Title,
+		UserId:        params.UserId,
+		WritingId:     myWriting.ID,
+		CreatorId:     myWriting.CreatorId,
+		Title:         params.Title,
 		ChapterNumber: params.ChapterNumber,
 	}
 
@@ -53,6 +53,6 @@ func HandleCreateChapter(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQuerie
 	if createChapterContentErr != nil {
 		return createdChapter, createChapterContentErr
 	}
-	
+
 	return createdChapter, createChapterErr
 }

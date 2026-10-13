@@ -21,7 +21,8 @@ type PgCoreQueries struct {
 	getMyWritings        string
 	getMyWriting         string
 	updateWriting        string
-	createChapter 		 string
+	createChapter        string
+	getMyWritingChapters string
 }
 
 func (q PgCoreQueries) GetUserByEmail() string {
@@ -76,8 +77,12 @@ func (q PgCoreQueries) UpdateWriting() string {
 	return q.updateWriting
 }
 
-func (q PgCoreQueries) CreateChapter()string{
+func (q PgCoreQueries) CreateChapter() string {
 	return q.createChapter
+}
+
+func (q PgCoreQueries) GetMyWritingChapters() string {
+	return q.getMyWritingChapters
 }
 
 func ConfigPgCoreQueries() (PgCoreQueries, error) {
@@ -180,7 +185,14 @@ func ConfigPgCoreQueries() (PgCoreQueries, error) {
 		return q, createChapterError
 	}
 	q.createChapter = string(createChapter)
-	fmt.Println(q.CreateChapter())
+
+	getMyWritingChapters, getMyWritingChaptersError := os.ReadFile(filepath.Join("./internal/db/pg_core/query_files", "get_my_writing_chapters.sql"))
+	if getMyWritingChaptersError != nil {
+		logger.Log(getMyWritingChaptersError)
+		return q, getMyWritingChaptersError
+	}
+	q.getMyWritingChapters = string(getMyWritingChapters)
+	fmt.Println(q.GetMyWritingChapters())
 
 	msg := "Pg core queries loaded."
 	fmt.Println(msg)

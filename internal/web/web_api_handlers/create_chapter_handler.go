@@ -15,20 +15,20 @@ import (
 	"github.com/valkey-io/valkey-go"
 )
 
-func CreateChapterHandler(sessionStore *sessions.CookieStore, valkeyClient valkey.Client, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries, pgContentPools config.PgContentPools, pgContentQueries config.PgContentQueries) http.HandlerFunc{
-	return func (w http.ResponseWriter, r *http.Request){
+func CreateChapterHandler(sessionStore *sessions.CookieStore, valkeyClient valkey.Client, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries, pgContentPools config.PgContentPools, pgContentQueries config.PgContentQueries) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
 
 		userId, _ := web_auth.CheckAuthentication(ctx, sessionStore, valkeyClient, w, r)
-		if userId == 0{
+		if userId == 0 {
 			http.Redirect(w, r, "/login", http.StatusSeeOther)
 			return
 		}
 
 		type Body struct {
-			Title string `json:"title"`
-			ChapterNumber int `json:"chapterNumber"`
-			WritingUUID uuid.UUID `json:"writingUuid"`
+			Title         string    `json:"title"`
+			ChapterNumber int       `json:"chapterNumber"`
+			WritingUUID   uuid.UUID `json:"writingUuid"`
 		}
 
 		var body Body
@@ -41,9 +41,9 @@ func CreateChapterHandler(sessionStore *sessions.CookieStore, valkeyClient valke
 		}
 
 		handleCreateChapterParams := query_handlers.HandleCreateChapterParams{
-			UserId: userId,
-			WritingUUID: body.WritingUUID,
-			Title: body.Title,
+			UserId:        userId,
+			WritingUUID:   body.WritingUUID,
+			Title:         body.Title,
 			ChapterNumber: body.ChapterNumber,
 		}
 
@@ -54,17 +54,17 @@ func CreateChapterHandler(sessionStore *sessions.CookieStore, valkeyClient valke
 		}
 
 		type Response struct {
-			UUID uuid.UUID `json:"uuid"`
-			Title string `json:"title"`
-			ChapterNumber int `json:"chapterNumber"`
-			Published bool `json:"published"`
+			UUID          uuid.UUID `json:"uuid"`
+			Title         string    `json:"title"`
+			ChapterNumber int       `json:"chapterNumber"`
+			Published     bool      `json:"published"`
 		}
 
 		response := Response{
-			UUID: createdChapter.UUID,
-			Title: createdChapter.Title,
+			UUID:          createdChapter.UUID,
+			Title:         createdChapter.Title,
 			ChapterNumber: createdChapter.ChapterNumber,
-			Published: createdChapter.Published,
+			Published:     createdChapter.Published,
 		}
 
 		jsonRes, marshalErr := json.Marshal(response)

@@ -226,7 +226,23 @@
             </form>
             <p id="new_chapter_message_block"></p>
           </section>
-          <section id="chapter_container"></section>
+          <section id="chapter_container">
+            {{ range .Chapters }}
+              <article>
+                <p>{{ .Title }}</p>
+                <p>Chapter Number: {{ .ChapterNumber }}</p>
+                <a href="/chapter/{{ .UUID }}/edit">edit</a>
+                <a href="/my-chapter/{{ .UUID }}">view</a>
+                <p>
+                  {{ if .Published }}
+                    Published
+                  {{ else }}
+                    Unpublished
+                  {{ end }}
+                </p>
+              </article>
+            {{ end }}
+          </section>
         </section>
       </div>
 

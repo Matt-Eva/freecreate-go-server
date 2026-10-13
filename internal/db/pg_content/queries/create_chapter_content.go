@@ -13,21 +13,20 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-
-func CreateChapterContent(ctx context.Context, dbNumber int16, pgContentPools config.PgContentPools, pgContentQueries config.PgContentQueries, params pg_content_types.CreateChapterContentParams)*api_error.Error{
+func CreateChapterContent(ctx context.Context, dbNumber int16, pgContentPools config.PgContentPools, pgContentQueries config.PgContentQueries, params pg_content_types.CreateChapterContentParams) *api_error.Error {
 
 	var contentDb *pgxpool.Pool
 
-	switch dbNumber{
+	switch dbNumber {
 	case 1:
 		contentDb = pgContentPools.PgContentOne
 	default:
 		err := errors.New("that is not a valid database number")
 		logger.Log(err)
 		apiErr := &api_error.Error{
-			Code: http.StatusInternalServerError,
+			Code:    http.StatusInternalServerError,
 			Message: api_error.InteralServerErrorMessage,
-			Error: err,
+			Error:   err,
 		}
 		return apiErr
 	}
@@ -43,9 +42,9 @@ func CreateChapterContent(ctx context.Context, dbNumber int16, pgContentPools co
 		logger.Log(err)
 
 		apiErr := &api_error.Error{
-			Code: http.StatusInternalServerError,
+			Code:    http.StatusInternalServerError,
 			Message: api_error.InteralServerErrorMessage,
-			Error: err,
+			Error:   err,
 		}
 
 		return apiErr

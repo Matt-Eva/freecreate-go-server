@@ -12,16 +12,16 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-func CreateChapter(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries, params pg_core_types.CreateChapterParams) (pg_core_types.CreatedChapter, *api_error.Error){
+func CreateChapter(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries, params pg_core_types.CreateChapterParams) (pg_core_types.CreatedChapter, *api_error.Error) {
 	query := pgCoreQueries.CreateChapter()
 
 	namedArgs := pgx.NamedArgs{
-		"user_id": params.UserId,
-		"creator_id": params.CreatorId,
-		"writing_id": params.WritingId,
-		"title": params.Title,
+		"user_id":        params.UserId,
+		"creator_id":     params.CreatorId,
+		"writing_id":     params.WritingId,
+		"title":          params.Title,
 		"chapter_number": params.ChapterNumber,
-		"content_db": 1,
+		"content_db":     1,
 	}
 
 	var createdChapter pg_core_types.CreatedChapter
@@ -29,11 +29,11 @@ func CreateChapter(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries conf
 	queryErr := pgCore.QueryRow(ctx, query, namedArgs).Scan(&createdChapter)
 	if queryErr != nil {
 		logger.Log(queryErr)
-		
+
 		apiErr := &api_error.Error{
-			Code: http.StatusInternalServerError,
+			Code:    http.StatusInternalServerError,
 			Message: api_error.InteralServerErrorMessage,
-			Error: queryErr,
+			Error:   queryErr,
 		}
 
 		return createdChapter, apiErr

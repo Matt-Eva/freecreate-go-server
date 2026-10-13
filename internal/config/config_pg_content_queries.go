@@ -12,7 +12,7 @@ type PgContentQueries struct {
 }
 
 func (q PgContentQueries) CreateChapterContent() string {
-	return 	q.createChapterContent
+	return q.createChapterContent
 }
 
 func ConfigPgContentQueries() (PgContentQueries, error) {

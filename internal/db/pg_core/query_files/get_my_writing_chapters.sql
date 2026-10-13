@@ -1,0 +1,1 @@
+SELECT (title, uuid, chapter_number, published) FROM chapters WHERE writing_id=@writing_id AND user_id=@user_id ORDER BY chapter_number DESC;
