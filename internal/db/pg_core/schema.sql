@@ -33,7 +33,7 @@ CREATE TABLE public.chapters (
     chapter_number integer NOT NULL,
     published boolean DEFAULT false NOT NULL,
     published_before boolean DEFAULT false NOT NULL,
-    content_db text NOT NULL
+    content_db smallint NOT NULL
 );
 
 

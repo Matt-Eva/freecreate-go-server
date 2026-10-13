@@ -1,6 +1,6 @@
 -- migrate:up
 ALTER TABLE chapters
-    ADD COLUMN content_db TEXT NOT NULL;
+    ADD COLUMN content_db smallint NOT NULL;
 
 -- migrate:down
 ALTER TABLE chapters

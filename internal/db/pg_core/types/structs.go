@@ -199,6 +199,7 @@ type CreatedChapter struct {
 	ChapterNumber int
 	Published     bool
 	UUID          uuid.UUID
+	ContentDb 	  int16
 }
 
 type GetMyWritingChapterParams struct {
@@ -220,4 +221,5 @@ type Chapter struct {
 	Title         string
 	ChapterNumber int
 	Published     bool
+
 }
