@@ -122,6 +122,7 @@ document.addEventListener("DOMContentLoaded", () => {
     radioIsAdult.checked = startingState.adult;
     radioAllAges.checked = startingState.allAges;
     descriptionInput.value = startingState.description;
+    tagInput.value = "";
 
     for (const child of topicsContainer.children) {
       const value = child.value;
