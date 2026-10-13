@@ -54,8 +54,6 @@ func EditWritingPageHandler(templates template.Template, sessionStore *sessions.
 			return
 		}
 
-		fmt.Println(myWriting)
-
 		getMyCreatorsParams := pg_core_types.GetMyCreatorsParams{
 			UserId: userId,
 		}
@@ -66,21 +64,22 @@ func EditWritingPageHandler(templates template.Template, sessionStore *sessions.
 			return
 		}
 
-		var currentCreator pg_core_types.MyCreatorsStruct
+		getMyWritingChaptersParams := pg_core_types.GetMyWritingChapterParams{
+			UserId:    userId,
+			WritingId: myWriting.ID,
+		}
 
-		for i := 0; i < len(myCreators); i++ {
-			creator := myCreators[i]
-			if creator.ID == myWriting.CreatorId {
-				currentCreator = creator
-				break
-			}
+		myWritingChapters, getMyWritingChaptersErr := query_handlers.HandleGetMyWritingChapters(ctx, pgCore, pgCoreQueries, getMyWritingChaptersParams)
+		if getMyWritingChaptersErr != nil {
+			http.Error(w, getMyWritingChaptersErr.Message, getMyWritingChaptersErr.Code)
+			return
 		}
 
 		type PageData struct {
 			UniversalPageData
 			MyWriting                    pg_core_types.MyWriting
+			Chapters                     []pg_core_types.Chapter
 			MyCreators                   []pg_core_types.MyCreatorsStruct
-			CurrentCreator               pg_core_types.MyCreatorsStruct
 			WritingTypes                 []string
 			FictionTopics                []string
 			EssayAndBlogTopics           []string
@@ -95,8 +94,8 @@ func EditWritingPageHandler(templates template.Template, sessionStore *sessions.
 				CsrfToken:     csrf.TemplateField(r),
 			},
 			MyWriting:                    myWriting,
+			Chapters:                     myWritingChapters,
 			MyCreators:                   myCreators,
-			CurrentCreator:               currentCreator,
 			WritingTypes:                 lib.WritingTypes,
 			FictionTopics:                lib.WritingTopics.Fiction,
 			EssayAndBlogTopics:           lib.WritingTopics.EssaysAndBlogs,
