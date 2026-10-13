@@ -32,6 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const udpateWritingMessageBlock = document.getElementById(
     "update_writing_message_block",
   );
+  const tagSpans = document.getElementsByClassName("tag_span");
 
   // Event Listeners
 
@@ -41,7 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   submitUpdateButton.addEventListener("click", handleUpdateWriting);
 
-  addTagForm.addEventListener("submit", addTag);
+  addTagForm.addEventListener("submit", handleAddTag);
 
   // Starting State
 
@@ -98,6 +99,10 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }
     }
+
+    for (const element of tagSpans) {
+      element.addEventListener("click", removeTag);
+    }
   }
 
   // CancelEdit
@@ -138,21 +143,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
     tagContainer.innerHTML = "";
     tags = [...startingState.tags];
-    for (const tag of startingState.tags) {
-      const tagSpan = document.createElement("span");
-      tagSpan.textContent = tag;
-      tagSpan.addEventListener("click", () => {
-        tags = tags.filter((tag) => tag !== tagSpan.textContent);
-        tagSpan.remove();
-      });
+    for (const tag of tags) {
+      addTag(tag);
+    }
 
-      tagContainer.append(tagSpan);
+    for (const child of tagContainer.children) {
+      child.removeEventListener("click", removeTag);
     }
   }
 
   // Add Tag
 
-  function addTag(e) {
+  function handleAddTag(e) {
     e.preventDefault();
     if (tagInput.value === "") return;
     for (const tag of tags) {
@@ -161,20 +163,32 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
     }
-    const rawTag = tagInput.value;
-    const tag = rawTag.replace(" ", "-");
+
+    const tag = addTag(tagInput.value);
+
     tags.push(tag);
+  }
+
+  function addTag(tagValue) {
+    const tag = tagValue.replace(" ", "-");
 
     const tagSpan = document.createElement("span");
     tagSpan.textContent = tag;
-    tagSpan.addEventListener("click", () => {
-      tags = tags.filter((tag) => tag !== tagSpan.textContent);
-      tagSpan.remove();
-    });
+    tagSpan.className = "tag_span";
+    tagSpan.addEventListener("click", removeTag);
 
     tagContainer.append(tagSpan);
 
     tagInput.value = "";
+
+    return tag;
+  }
+
+  // Remove Tag
+
+  function removeTag(e) {
+    tags = tags.filter((tag) => tag !== e.target.textContent);
+    e.target.remove();
   }
 
   // UpdateWriting
