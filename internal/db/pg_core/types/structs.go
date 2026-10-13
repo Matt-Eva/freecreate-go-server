@@ -187,6 +187,9 @@ type UpdatedWriting struct {
 // ===== Chapter Structs =====
 
 type CreateChapterParams struct {
+	UserId        int64
+	WritingId     int64
+	CreatorId     int64
 	Title         string
 	ChapterNumber int
 }

@@ -89,7 +89,8 @@
             <label for="is_adult_radio_true">All Ages</label>
             <label for="writing_description_input">Description:</label>
             <textarea id="writing_description_input" disabled>
-{{ .MyWriting.Description }}</textarea
+              {{ .MyWriting.Description }}
+            </textarea
             >
             <div id="topics_container">
               {{ if or (eq .MyWriting.WritingType "Short Story") (eq .MyWriting.WritingType "Novella") (eq .MyWriting.WritingType "Novelette") (eq .MyWriting.WritingType "Novel") }}
@@ -213,6 +214,11 @@
             <button id="submit_update_button" disabled>Update</button>
             <div id="update_writing_message_block"></div>
           </div>
+
+          <div id="new_chapter_container">
+            <form id="new_chapter_form"></form>
+          </div>
+          <div></div>
         </div>
       </div>
 
