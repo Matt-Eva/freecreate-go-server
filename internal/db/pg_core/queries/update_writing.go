@@ -7,6 +7,7 @@ import (
 	"freecreate/internal/lib/api_error"
 	"freecreate/internal/lib/logger"
 	"net/http"
+	"slices"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -17,6 +18,31 @@ func UpdateWriting(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries conf
 
 	query := pgCoreQueries.UpdateWriting()
 
+	sortedTopics := params.Topics
+	slices.Sort(sortedTopics)
+
+	var topics []string
+	for _, val := range sortedTopics {
+		if len(topics) >= 3 {
+			break
+		} else if len(sortedTopics) > 1 && (val == "No Topic" || val == "No Genre") {
+			continue
+		}
+
+		topics = append(topics, val)
+	}
+
+	sortedTags := params.Tags
+	slices.Sort(sortedTags)
+
+	var tags []string
+	for _, val := range params.Tags {
+		if len(tags) >= 20 {
+			break
+		}
+		tags = append(tags, val)
+	}
+
 	namedArgs := pgx.NamedArgs{
 		"user_id":      params.UserId,
 		"uuid":         params.UUID,
@@ -24,9 +50,10 @@ func UpdateWriting(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries conf
 		"subtitle":     params.Subtitle,
 		"writing_type": params.WritingType,
 		"description":  params.Description,
-		"topics":       params.Topics,
-		"tags":         params.Tags,
+		"topics":       topics,
+		"tags":         tags,
 		"is_adult":     params.IsAdult,
+		"creator_id":   params.CreatorId,
 	}
 
 	queryErr := pgCore.QueryRow(ctx, query, namedArgs).Scan(&updatedWriting)

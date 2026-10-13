@@ -1,6 +1,7 @@
 UPDATE writings 
 SET 
     title = @title,
+    creator_id = @creator_id,
     subtitle = @subtitle,
     description = @description,
     writing_type = @writing_type,
@@ -18,7 +19,7 @@ RETURNING
     description,
     topics,
     tags,
-    is_adult,
     writing_type,
+    is_adult,
     creator_id);
     
