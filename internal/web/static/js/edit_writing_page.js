@@ -156,12 +156,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function handleAddTag(e) {
     e.preventDefault();
+    udpateWritingMessageBlock.textContent = "";
+
     if (tagInput.value === "") return;
     for (const tag of tags) {
       if (tagInput.value === tag) {
         tagInput.value = "";
         return;
       }
+    }
+
+    if (tags.length >= 20) {
+      udpateWritingMessageBlock.textContent = "You already have 20 tags.";
+      tagInput.value = "";
+      return;
     }
 
     const tag = addTag(tagInput.value);
