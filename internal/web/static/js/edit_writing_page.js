@@ -370,4 +370,80 @@ document.addEventListener("DOMContentLoaded", () => {
 
     chapterContainer.prepend(chapterCard);
   }
+
+  // ====================== EDIT CHAPTER NUMBER SECTION ==================
+
+  const updateChapterNumberForms = document.getElementsByClassName(
+    "update_chapter_number_form",
+  );
+
+  const revealUpdateChapterNumberFormButtons = document.getElementsByClassName(
+    "reveal_update_chapter_number_form_button",
+  );
+
+  for (const form of updateChapterNumberForms) {
+    form.addEventListener("submit", handleUpdateChapterNumber);
+  }
+
+  for (const button of revealUpdateChapterNumberFormButtons) {
+    button.addEventListener("click", toggleUpdateChapterNumberForm);
+  }
+
+  function toggleUpdateChapterNumberForm(e) {
+    const formId = e.target.name + "_update_chapter_number_form";
+    const updateChapterNumberForm = document.getElementById(formId);
+    if (updateChapterNumberForm.hidden) {
+      updateChapterNumberForm.hidden = false;
+      e.target.textContent = "Cancel";
+    } else {
+      updateChapterNumberForm.hidden = true;
+      updateChapterNumberForm["new_chapter_number_input"].value = "";
+      e.target.textContent = "Edit Chapter Number";
+    }
+  }
+
+  async function handleUpdateChapterNumber(e) {
+    e.preventDefault();
+
+    const chapterNumber = parseInt(e.target["new_chapter_number_input"].value);
+    const chapterUuid = e.target["chapter_uuid_input"].value;
+
+    const requestBody = { chapterNumber };
+
+    const requestObject = {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-Token": csrfToken,
+      },
+      body: JSON.stringify(requestBody),
+    };
+
+    try {
+      const res = await fetch(
+        `/web-api/chapter/${chapterUuid}/number`,
+        requestObject,
+      );
+      if (!res.ok) {
+        const error = await res.text();
+        throw new Error(error);
+      } else if (res.redirected) {
+        window.location.href = res.url;
+      } else {
+        const data = await res.json();
+        const chapterNumber = document.getElementById(
+          `${chapterUuid}_chapter_number`,
+        );
+        chapterNumber.textContent = data.newChapterNumber;
+        e.target.hidden = true;
+        e.target["new_chapter_number_input"].value = "";
+        const revealButton = document.getElementById(
+          `${chapterUuid}_reveal_update_chapter_number_form_button`,
+        );
+        revealButton.textContent = "Edit Chapter Number";
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
 });

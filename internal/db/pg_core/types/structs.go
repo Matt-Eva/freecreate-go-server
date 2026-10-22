@@ -202,6 +202,12 @@ type CreatedChapter struct {
 	ContentDb     int16
 }
 
+type UpdateChapterNumberParams struct {
+	UserId        int64
+	ChapterNumber int
+	UUID          uuid.UUID
+}
+
 type GetMyWritingChapterParams struct {
 	UserId    int64
 	WritingId int64

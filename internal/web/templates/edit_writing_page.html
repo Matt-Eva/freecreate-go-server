@@ -229,10 +229,44 @@
           <section id="chapter_container">
             {{ range .Chapters }}
               <article>
-                <p>{{ .Title }}</p>
-                <p>Chapter Number: {{ .ChapterNumber }}</p>
-                <a href="/chapter/{{ .UUID }}/edit">edit</a>
-                <a href="/my-chapter/{{ .UUID }}">view</a>
+                <p>Chapter Title: {{ .Title }}</p>
+                <section>
+                  <p>
+                    Chapter Number:
+                    <span id="{{ .UUID }}_chapter_number"
+                      >{{ .ChapterNumber }}</span
+                    >
+                  </p>
+                  <form
+                    class="update_chapter_number_form"
+                    id="{{ .UUID }}_update_chapter_number_form"
+                    hidden
+                  >
+                    <label for="{{ .UUID }}_new_chapter_number_input"
+                      >New Chapter Number:</label
+                    >
+                    <input
+                      id="{{ .UUID }}_new_chapter_number_input"
+                      name="new_chapter_number_input"
+                      type="number"
+                    />
+                    <input
+                      name="chapter_uuid_input"
+                      value="{{ .UUID }}"
+                      hidden
+                    />
+                    <input type="submit" />
+                  </form>
+                  <button
+                    class="reveal_update_chapter_number_form_button"
+                    id="{{ .UUID }}_reveal_update_chapter_number_form_button"
+                    name="{{ .UUID }}"
+                  >
+                    Edit Chapter Number
+                  </button>
+                </section>
+                <a href="/chapter/{{ .UUID }}/edit">edit chapter</a>
+                <a href="/my-chapter/{{ .UUID }}">view chapter</a>
                 <p>
                   {{ if .Published }}
                     Published
