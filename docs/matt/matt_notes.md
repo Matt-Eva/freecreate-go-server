@@ -118,7 +118,7 @@ Aka, just default to using JavaScript.
 
 We got there folks!
 
-# Database index + view increment strategy 
+# Database index + view increment strategy
 
 Database rank index update strategy
 
@@ -137,7 +137,6 @@ If the rank change is not significant enough to trigger an update for this item,
 Ensure that this logic runs in the database itself such that the database’s queuing mechanisms work correctly. Running this logic api side will result in multiple attempts at a parallel write, which will cause conflict.
 
 For the view counter, set up Valkey to increment the writes, then use a lua script as a way to check and flush the writes to a postgres instance when they reach a certain threshold.
-
 
 # Social Features (eventuality)
 
@@ -161,7 +160,6 @@ Groups:
 
 - In groups, people CAN comment on and react to posts - this is to replicate the fact that people who are in groups are actually forming some kind of social connection, rather than just garnering attention, or are at least in the group for a concrete reason.
 
-
 ## Forums:
 
 - Are forums basically just groups? I think so - for groups posts, you can basically just start a thread and view it there.
@@ -176,7 +174,7 @@ There are three ways to handle this:
 2. Check against a user's reading list for every item that is loaded in a search.
 3. Just display the "add to reading list" button even if an item is already in a users reading list. Then, upon the query, check if its in the reading list or not. If it already is, just move it to the front of the reading list queue.
 
-Option 3 seems to be the most performant while still accomplishing the desired feature. The downside 
+Option 3 seems to be the most performant while still accomplishing the desired feature. The downside
 would be potentially confusing some users.
 
 For option 2, possible to store a user's reading list ids in valkey and check against the list?
@@ -184,3 +182,7 @@ For option 2, possible to store a user's reading list ids in valkey and check ag
 Problem - running this on each search query could really slow down search queries in general.
 
 Let's try option 2, actually.
+
+# Visual Inspiration
+
+- Humancrafted: https://humancrafted.discourse.group/t/welcome-to-humancrafted/5
