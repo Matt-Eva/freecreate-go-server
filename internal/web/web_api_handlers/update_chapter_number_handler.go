@@ -18,7 +18,7 @@ import (
 	"github.com/valkey-io/valkey-go"
 )
 
-func UpdateChapterNumberHandler(sessionStore *sessions.CookieStore, valkeyClient valkey.Client, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries,) http.HandlerFunc {
+func UpdateChapterNumberHandler(sessionStore *sessions.CookieStore, valkeyClient valkey.Client, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
 
@@ -52,8 +52,8 @@ func UpdateChapterNumberHandler(sessionStore *sessions.CookieStore, valkeyClient
 		}
 
 		params := pg_core_types.UpdateChapterNumberParams{
-			UserId: userId,
-			UUID: chapterUuid,
+			UserId:        userId,
+			UUID:          chapterUuid,
 			ChapterNumber: body.ChapterNumber,
 		}
 
@@ -67,7 +67,7 @@ func UpdateChapterNumberHandler(sessionStore *sessions.CookieStore, valkeyClient
 			NewChapterNumber int `json:"newChapterNumber"`
 		}
 
-		response := Response {
+		response := Response{
 			NewChapterNumber: newChapterNumber,
 		}
 

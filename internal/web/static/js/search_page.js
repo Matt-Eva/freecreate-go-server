@@ -15,6 +15,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // declare dom elements variables
 
+  const searchTypeSelect = document.getElementById("search_type_select");
+  const writingTypeSelect = document.getElementById("writing_type_select");
+  const datePostedSelect = document.getElementById("date_posted_select");
+  const topicCheckboxes = document.getElementsByClassName("topic_checkbox");
   const addTagForm = document.getElementById("add_tag_form");
   const addTagInput = document.getElementById("add_tag_input");
   const addedTagBlock = document.getElementById("added_tag_block");
@@ -57,13 +61,35 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function search(e) {
     e.preventDefault();
-    console.log("searching");
+
+    const searchTypeString = "searchType=" + searchTypeSelect.value;
+
+    const writingTypeString = "writingType=" + writingTypeSelect.value;
+
+    const datePostedString = "datePosted=" + datePostedSelect.value;
+
+    let topicString = "";
+    let topicCounter = 1;
+
+    for (const checkbox of topicCheckboxes) {
+      if (checkbox.checked) {
+        if (topicCounter === 1) {
+          topicString = topicString + "topicOne=" + checkbox.value + "&";
+        } else if (topicCounter === 2) {
+          topicString = topicString + "topicTwo=" + checkbox.value + "&";
+        } else if (topicCounter === 3) {
+          topicString = topicString + "topicThree=" + checkbox.value + "&";
+          break;
+        }
+        topicCounter += 1;
+      }
+    }
 
     let tagString = "tags=";
 
     tags.forEach((tag, index) => {
       if (index < tags.length - 1) {
-        tagString = tagString + tag + ",";
+        tagString = tagString + tag + "&";
       } else {
         tagString = tagString + tag;
       }
@@ -71,6 +97,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     console.log(tagString);
 
-    window.location.href = "/search?" + tagString;
+    window.location.href =
+      "/search?" +
+      searchTypeString +
+      "&" +
+      writingTypeString +
+      "&" +
+      datePostedString +
+      "&" +
+      topicString +
+      "&" +
+      tagString;
   }
 });

@@ -17,8 +17,8 @@ func UpdateChapterNumber(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQuerie
 	query := pgCoreQueries.UpdateChapterNumber()
 
 	namedArgs := pgx.NamedArgs{
-		"user_id": params.UserId,
-		"uuid": params.UUID,
+		"user_id":        params.UserId,
+		"uuid":           params.UUID,
 		"chapter_number": params.ChapterNumber,
 	}
 
@@ -29,9 +29,9 @@ func UpdateChapterNumber(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQuerie
 		logger.Log(queryErr)
 
 		apiErr := &api_error.Error{
-			Code: http.StatusInternalServerError,
+			Code:    http.StatusInternalServerError,
 			Message: api_error.InteralServerErrorMessage,
-			Error: queryErr,
+			Error:   queryErr,
 		}
 
 		return newChapterNumber, apiErr

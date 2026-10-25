@@ -4,9 +4,13 @@
     <head>
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      {{ template "globals_component" }}
+      {{ template "globals_component" . }}
+      <link rel="stylesheet" href="/internal/web/static/css/search_page.css" />
+      <link
+        rel="stylesheet"
+        href="/internal/web/static/css/search_nav_component.css"
+      />
       <script defer src="/internal/web/static/js/search_page.js"></script>
-      <title>Document</title>
 
       {{ .CsrfToken }}
     </head>
@@ -17,17 +21,85 @@
       <div id="page_container" class="{{ .LoggedInClass }}">
         {{ template "sidebar_component" . }}
         <div id="page_content" class="{{ .LoggedInClass }}">
-          <!-- {{ template "category_search_box_component" }} -->
-          <form id="add_tag_form">
-            <label for="add_tag_input">Add Tag (up to five):</label>
-            <input type="text" id="add_tag_input" />
-            <input type="submit" value="add" />
-          </form>
-          <div id="added_tag_block"></div>
-          <form id="search_submit_form">
-            <input type="submit" value="search" />
-          </form>
-          <p>{{ .Query }}</p>
+          {{ template "search_nav_component" }}
+          <section id="search_container">
+            <label for="search_type_select" id="search_type_select_label"
+              >Search Writing or Creators:</label
+            >
+            <select id="search_type_select">
+              <option>Both</option>
+              <option>Writing</option>
+              <option>Creators</option>
+            </select>
+            <label for="writing_type_select" id="writing_type_select_label"
+              >Writing Type</label
+            >
+            <select id="writing_type_select">
+              <option>All</option>
+              <option>Fiction</option>
+              <option>Essays and Blogs</option>
+              <option>Poetry</option>
+              <option>Memoir and Autobiography</option>
+              <option>Short Stories</option>
+              <option>Novelettes</option>
+              <option>Novellas</option>
+              <option>Novels</option>
+            </select>
+            <label for="date_posted_select" id="date_posted_select_label"
+              >Date Posted:</label
+            >
+            <select id="date_posted_select">
+              <option>All Time</option>
+              <option>Past Year</option>
+              <option>Past Month</option>
+              <option>Past Week</option>
+              <option>Past Day</option>
+              <option>Most Recent</option>
+            </select>
+            <section id="topics_container">
+              <div id="all_topics_container">
+                <h3>Topics (up to three):</h3>
+                <div id="all_topics_list">
+                  {{ range .AllWritingTopics }}
+
+                    {{ $is_checked := false }}
+                    {{ $topic := . }}
+
+                    {{ range $.Topics }}
+                      {{ if eq $topic . }}
+                        {{ $is_checked = true }}
+                      {{ end }}
+                    {{ end }}
+
+
+                    <div>
+                      <input
+                        type="checkbox"
+                        id="{{ . }}_checkbox"
+                        class="topic_checkbox"
+                        value="{{ . }}"
+                        {{ if $is_checked }}checked{{ end }}
+                      />
+                      <label for="{{ . }}_checkbox">{{ . }}</label>
+                    </div>
+                  {{ end }}
+                </div>
+              </div>
+              <div id="fiction_topics_container" hidden></div>
+              <div id="essay_and_blog_topics_container" hidden></div>
+              <div id="memoir_and_autobiography_topics_container" hidden></div>
+              <div id="poetry_topics_container" hidden></div>
+            </section>
+            <form id="add_tag_form">
+              <label for="add_tag_input">Add Tag (up to five):</label>
+              <input type="text" id="add_tag_input" />
+              <input type="submit" value="add" />
+            </form>
+            <div id="added_tag_block"></div>
+            <form id="search_submit_form">
+              <input type="submit" value="search" />
+            </form>
+          </section>
         </div>
       </div>
 
