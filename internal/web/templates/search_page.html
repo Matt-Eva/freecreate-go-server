@@ -29,9 +29,16 @@
               >Search Writing or Creators:</label
             >
             <select id="search_type_select" value="{{ .SearchType }}">
-              <option>Both</option>
-              <option>Writing</option>
-              <option>Creators</option>
+              {{ range .SearchTypes }}
+                {{ if eq . $.SearchType }}
+                  <option>{{ $.SearchType }}</option>
+                {{ end }}
+              {{ end }}
+              {{ range .SearchTypes }}
+                {{ if ne . $.SearchType }}
+                  <option>{{ . }}</option>
+                {{ end }}
+              {{ end }}
             </select>
 
             <label for="writing_type_select" id="writing_type_select_label"
@@ -54,12 +61,16 @@
               >Date Posted:</label
             >
             <select id="date_posted_select" value="{{ .DatePosted }}">
-              <option>All Time</option>
-              <option>Past Year</option>
-              <option>Past Month</option>
-              <option>Past Week</option>
-              <option>Past Day</option>
-              <option>Most Recent</option>
+              {{ range .DatePostedSearchTypes }}
+                {{ if eq . $.DatePosted }}
+                  <option>{{ $.DatePosted }}</option>
+                {{ end }}
+              {{ end }}
+              {{ range .DatePostedSearchTypes }}
+                {{ if ne . $.DatePosted }}
+                  <option>{{ . }}</option>
+                {{ end }}
+              {{ end }}
             </select>
 
             <section id="topics_container">
@@ -139,7 +150,9 @@
               <input type="submit" value="add" />
             </form>
 
-            <div id="added_tag_block"></div>
+            <div id="added_tag_block">
+              {{ range .Tags }}<span class="tag_span">{{ . }}</span>{{ end }}
+            </div>
 
             <form id="search_submit_form">
               <input type="submit" value="search" />

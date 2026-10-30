@@ -66,6 +66,16 @@
   flex-wrap: wrap;
 }
 
+.tag_span {
+  margin: 5px;
+  height: 20px;
+  display: flex;
+  padding: 0px 3px;
+  text-align: center;
+  border: solid 1px;
+  border-radius: 4px;
+}
+
 #search_submit_form {
   grid-column: 1 / span 2;
   grid-row: 9;

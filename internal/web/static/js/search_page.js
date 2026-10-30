@@ -38,6 +38,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let tags = [];
 
+  for (const child of addedTagBlock.children) {
+    tags.push(child.textContent);
+    child.addEventListener("click", removeTag);
+  }
+
   let writingType = writingTypeSelect.value;
 
   // event listeners
@@ -118,14 +123,7 @@ document.addEventListener("DOMContentLoaded", () => {
     tags.push(tag);
 
     const span = document.createElement("span");
-    span.textContent = tag;
-    span.style.margin = "5px";
-    span.style.height = "20px";
-    span.style.display = "flex";
-    span.style.padding = "0px 3px";
-    span.style.textAlign = "center";
-    span.style.border = "solid 1px";
-    span.style.borderRadius = "2px";
+    span.className = "tag_span";
 
     span.addEventListener("click", removeTag);
 

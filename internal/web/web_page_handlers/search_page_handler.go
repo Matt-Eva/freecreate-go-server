@@ -28,13 +28,25 @@ func SearchPageHandler(searchTmpl *template.Template, sessionStore *sessions.Coo
 
 		query := r.URL.Query()
 
-		searchType := query["searchType"]
+		searchTypeParams := query["searchType"]
+		searchType := "Both"
+		if len(searchTypeParams) > 0{
+			searchType = searchTypeParams[0]
+		}
 		fmt.Println(searchType)
 
-		writingType := query["writingType"]
+		writingTypeParams := query["writingType"]
+		writingType := "All"
+		if len(writingTypeParams) > 0{
+			writingType = writingTypeParams[0]
+		}
 		fmt.Println(writingType)
 
-		datePosted := query["datePosted"]
+		datePostedParams := query["datePosted"]
+		datePosted := "All Time"
+		if len(datePostedParams) >0{
+			datePosted = datePostedParams[0]
+		}
 		fmt.Println(datePosted)
 
 		topics := query["topic"]
@@ -51,7 +63,9 @@ func SearchPageHandler(searchTmpl *template.Template, sessionStore *sessions.Coo
 			DatePosted                   string
 			Topics                       []string
 			Tags                         []string
+			SearchTypes                  []string
 			WritingSearchTypes           []string
+			DatePostedSearchTypes        []string
 			AllWritingTopics             []string
 			FictionTopics                []string
 			EssayAndBlogTopics           []string
@@ -79,7 +93,7 @@ func SearchPageHandler(searchTmpl *template.Template, sessionStore *sessions.Coo
 
 		slices.Sort(allWritingTopics)
 		allWritingTopics = slices.Compact(allWritingTopics)
-		allWritingTopics = slices.DeleteFunc(allWritingTopics, func(topic string)bool{
+		allWritingTopics = slices.DeleteFunc(allWritingTopics, func(topic string) bool {
 			return topic == "No Genre" || topic == "No Topic"
 		})
 
@@ -90,12 +104,14 @@ func SearchPageHandler(searchTmpl *template.Template, sessionStore *sessions.Coo
 				IsAdult:       true,
 				CsrfToken:     csrf.TemplateField(r),
 			},
-			SearchType:                   searchType[0],
-			WritingType:                  writingType[0],
-			DatePosted:                   datePosted[0],
+			SearchType:                   searchType,
+			WritingType:                  writingType,
+			DatePosted:                   datePosted,
 			Topics:                       topics,
 			Tags:                         tags,
+			SearchTypes:                  lib.SearchTypes,
 			WritingSearchTypes:           lib.WritingSearchTypes,
+			DatePostedSearchTypes:        lib.DatePostedSearchTypes,
 			AllWritingTopics:             allWritingTopics,
 			FictionTopics:                lib.WritingTopics.Fiction,
 			EssayAndBlogTopics:           lib.WritingTopics.EssaysAndBlogs,
