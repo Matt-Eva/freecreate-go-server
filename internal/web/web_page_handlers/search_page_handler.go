@@ -37,23 +37,11 @@ func SearchPageHandler(searchTmpl *template.Template, sessionStore *sessions.Coo
 		datePosted := query["datePosted"]
 		fmt.Println(datePosted)
 
-		var topics []string
+		topics := query["topic"]
 
-		topicOne := query["topicOne"]
-		topicTwo := query["topicTwo"]
-		topicThree := query["topicThree"]
-		
-		topics = append(topics, topicOne...)
-		topics = append(topics, topicTwo...)
-		topics = append(topics, topicThree...)
+		fmt.Println(topics)
 
-
-		// fmt.Println("first element of topics param", topicsParam[0])
-
-
-		
-
-		tags := query["tags"]
+		tags := query["tag"]
 		fmt.Println(tags)
 
 		type PageData struct {
@@ -63,6 +51,7 @@ func SearchPageHandler(searchTmpl *template.Template, sessionStore *sessions.Coo
 			DatePosted                   string
 			Topics                       []string
 			Tags                         []string
+			WritingSearchTypes           []string
 			AllWritingTopics             []string
 			FictionTopics                []string
 			EssayAndBlogTopics           []string
@@ -89,6 +78,10 @@ func SearchPageHandler(searchTmpl *template.Template, sessionStore *sessions.Coo
 		}
 
 		slices.Sort(allWritingTopics)
+		allWritingTopics = slices.Compact(allWritingTopics)
+		allWritingTopics = slices.DeleteFunc(allWritingTopics, func(topic string)bool{
+			return topic == "No Genre" || topic == "No Topic"
+		})
 
 		pageData := PageData{
 			UniversalPageData: UniversalPageData{
@@ -97,11 +90,12 @@ func SearchPageHandler(searchTmpl *template.Template, sessionStore *sessions.Coo
 				IsAdult:       true,
 				CsrfToken:     csrf.TemplateField(r),
 			},
-			SearchType:                   "",
-			WritingType:                  "",
-			DatePosted:                   "",
+			SearchType:                   searchType[0],
+			WritingType:                  writingType[0],
+			DatePosted:                   datePosted[0],
 			Topics:                       topics,
 			Tags:                         tags,
+			WritingSearchTypes:           lib.WritingSearchTypes,
 			AllWritingTopics:             allWritingTopics,
 			FictionTopics:                lib.WritingTopics.Fiction,
 			EssayAndBlogTopics:           lib.WritingTopics.EssaysAndBlogs,

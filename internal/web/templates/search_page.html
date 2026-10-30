@@ -22,33 +22,38 @@
         {{ template "sidebar_component" . }}
         <div id="page_content" class="{{ .LoggedInClass }}">
           {{ template "search_nav_component" }}
+
+
           <section id="search_container">
             <label for="search_type_select" id="search_type_select_label"
               >Search Writing or Creators:</label
             >
-            <select id="search_type_select">
+            <select id="search_type_select" value="{{ .SearchType }}">
               <option>Both</option>
               <option>Writing</option>
               <option>Creators</option>
             </select>
+
             <label for="writing_type_select" id="writing_type_select_label"
               >Writing Type</label
             >
-            <select id="writing_type_select">
-              <option>All</option>
-              <option>Fiction</option>
-              <option>Essays and Blogs</option>
-              <option>Poetry</option>
-              <option>Memoir and Autobiography</option>
-              <option>Short Stories</option>
-              <option>Novelettes</option>
-              <option>Novellas</option>
-              <option>Novels</option>
+            <select id="writing_type_select" value="{{ .WritingType }}">
+              {{ range .WritingSearchTypes }}
+                {{ if eq . $.WritingType }}
+                  <option>{{ $.WritingType }}</option>
+                {{ end }}
+              {{ end }}
+              {{ range .WritingSearchTypes }}
+                {{ if ne . $.WritingType }}
+                  <option>{{ . }}</option>
+                {{ end }}
+              {{ end }}
             </select>
+
             <label for="date_posted_select" id="date_posted_select_label"
               >Date Posted:</label
             >
-            <select id="date_posted_select">
+            <select id="date_posted_select" value="{{ .DatePosted }}">
               <option>All Time</option>
               <option>Past Year</option>
               <option>Past Month</option>
@@ -56,8 +61,12 @@
               <option>Past Day</option>
               <option>Most Recent</option>
             </select>
+
             <section id="topics_container">
-              <div id="all_topics_container">
+              <div
+                id="all_topics_container"
+                {{ if ne .WritingType "All" }}hidden{{ end }}
+              >
                 <h3>Topics (up to three):</h3>
                 <div id="all_topics_list">
                   {{ range .AllWritingTopics }}
@@ -70,8 +79,6 @@
                         {{ $is_checked = true }}
                       {{ end }}
                     {{ end }}
-
-
                     <div>
                       <input
                         type="checkbox"
@@ -85,21 +92,61 @@
                   {{ end }}
                 </div>
               </div>
-              <div id="fiction_topics_container" hidden></div>
+
+              <div
+                id="fiction_topics_container"
+                {{ if or (eq .WritingType "Fiction") (eq .WritingType "Short Stories") (eq .WritingType "Novelettes") (eq .WritingType "Novellas") (eq .WritingType "Novels") }}
+                {{ else }}
+                  hidden
+                {{ end }}
+              >
+                <h3>Genres (up to three):</h3>
+                <div id="fiction_topics_list">
+                  {{ range .FictionTopics }}
+
+                    {{ $is_checked := false }}
+                    {{ $topic := . }}
+
+                    {{ range $.Topics }}
+                      {{ if eq $topic . }}
+                        {{ $is_checked = true }}
+                      {{ end }}
+                    {{ end }}
+                    <div>
+                      <input
+                        type="checkbox"
+                        id="{{ . }}_checkbox"
+                        class="topic_checkbox"
+                        value="{{ . }}"
+                        {{ if $is_checked }}checked{{ end }}
+                      />
+                      <label for="{{ . }}_checkbox">{{ . }}</label>
+                    </div>
+                  {{ end }}
+                </div>
+              </div>
+
               <div id="essay_and_blog_topics_container" hidden></div>
+
               <div id="memoir_and_autobiography_topics_container" hidden></div>
+
               <div id="poetry_topics_container" hidden></div>
             </section>
+
             <form id="add_tag_form">
               <label for="add_tag_input">Add Tag (up to five):</label>
               <input type="text" id="add_tag_input" />
               <input type="submit" value="add" />
             </form>
+
             <div id="added_tag_block"></div>
+
             <form id="search_submit_form">
               <input type="submit" value="search" />
             </form>
           </section>
+
+          <section id="search_results_container"></section>
         </div>
       </div>
 
