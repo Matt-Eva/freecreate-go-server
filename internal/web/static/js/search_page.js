@@ -56,17 +56,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   searchSubmitForm.addEventListener("submit", search);
 
-  // for (const checkbox of topicCheckboxes) {
-  //   checkbox.addEventListener("change", (e) => {
-  //     console.log(e.target);
-  //     console.log(e.target.checked);
-  //     e.target.checked = false;
-  //     for (const checkbox of topicCheckboxes) {
-  //       console.log(checkbox);
-  //     }
-  //   });
-  // }
-
   // populate global search state
 
   function populateSearchState() {}
@@ -171,19 +160,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const datePostedString = "datePosted=" + datePostedSelect.value;
 
-    let topicString = "";
-    let topicCounter = 1;
+    const topics = [];
 
-    for (const checkbox of topicCheckboxes) {
-      if (checkbox.checked === true && topicCounter < 3) {
-        console.log(checkbox);
-        topicString = topicString + "topic=" + checkbox.value;
-        if (topicCounter < 2) {
-          topicString += "&";
-        }
-        topicCounter += 1;
+    for (let i = 0; i < topicCheckboxes.length; i++) {
+      const checkbox = topicCheckboxes[i];
+      if (checkbox.checked === true && topics.length < 3) {
+        topics.push(checkbox.value);
       }
     }
+
+    let topicString = "";
+
+    topics.forEach((topic, index) => {
+      topicString += "topic=" + topic;
+      if (index < topics.length - 1) {
+        topicString += "&";
+      }
+    });
 
     let tagString = "";
 
