@@ -1,3 +1,5 @@
+import checkTagLength from "./lib/check_tag_length.js";
+
 document.addEventListener("DOMContentLoaded", () => {
   console.log("running search page");
 
@@ -30,6 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
   );
   const addTagForm = document.getElementById("add_tag_form");
   const addTagInput = document.getElementById("add_tag_input");
+  const addTagMessageBlock = document.getElementById("add_tag_message_block");
   const addedTagBlock = document.getElementById("added_tag_block");
 
   const searchSubmitForm = document.getElementById("search_submit_form");
@@ -107,6 +110,14 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
 
     let tag = addTagInput.value;
+
+    addTagMessageBlock.textContent = "";
+
+    if (checkTagLength(tag)) {
+      addTagMessageBlock.textContent =
+        "Tag length cannot be longer than 30 charaters.";
+      return;
+    }
 
     tag = tag.replaceAll(" ", "-");
 

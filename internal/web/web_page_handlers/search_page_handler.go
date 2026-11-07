@@ -2,18 +2,21 @@ package web_page_handlers
 
 import (
 	"fmt"
+	"freecreate/internal/config"
 	"freecreate/internal/lib"
 	"freecreate/internal/lib/logger"
+	"freecreate/internal/query_handlers"
 	"freecreate/internal/web/web_auth"
 	"html/template"
 	"net/http"
 
 	"github.com/gorilla/csrf"
 	"github.com/gorilla/sessions"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/valkey-io/valkey-go"
 )
 
-func SearchPageHandler(searchTmpl *template.Template, sessionStore *sessions.CookieStore, valkeyClient valkey.Client) http.HandlerFunc {
+func SearchPageHandler(searchTmpl *template.Template, sessionStore *sessions.CookieStore, valkeyClient valkey.Client, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
 
@@ -55,6 +58,11 @@ func SearchPageHandler(searchTmpl *template.Template, sessionStore *sessions.Coo
 		tags := query["tag"]
 		fmt.Println(tags)
 
+		searchErr := query_handlers.HandleSearch(ctx, valkeyClient, pgCore, pgCoreQueries, searchType, writingType, datePosted, topics, tags)
+		if searchErr != nil {
+			
+		}
+
 		type PageData struct {
 			UniversalPageData
 			SearchType                   string
@@ -71,8 +79,6 @@ func SearchPageHandler(searchTmpl *template.Template, sessionStore *sessions.Coo
 			MemoirAndAutobiographyTopics []string
 			PoetryTopics                 []string
 		}
-
-
 
 		pageData := PageData{
 			UniversalPageData: UniversalPageData{

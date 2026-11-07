@@ -10,7 +10,11 @@
         rel="stylesheet"
         href="/internal/web/static/css/search_nav_component.css"
       />
-      <script defer src="/internal/web/static/js/search_page.js"></script>
+      <script
+        defer
+        type="module"
+        src="/internal/web/static/js/search_page.js"
+      ></script>
 
       {{ .CsrfToken }}
     </head>
@@ -149,6 +153,7 @@
               <input type="text" id="add_tag_input" />
               <input type="submit" value="add" />
             </form>
+            <p id="add_tag_message_block"></p>
 
             <div id="added_tag_block">
               {{ range .Tags }}<span class="tag_span">{{ . }}</span>{{ end }}
