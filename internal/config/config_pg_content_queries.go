@@ -1,7 +1,6 @@
 package config
 
 import (
-	"fmt"
 	"freecreate/internal/lib/logger"
 	"os"
 	"path/filepath"
@@ -24,7 +23,6 @@ func ConfigPgContentQueries() (PgContentQueries, error) {
 		return q, createChapterContentError
 	}
 	q.createChapterContent = string(createChapterContent)
-	fmt.Println(q.CreateChapterContent())
 
 	return q, nil
 }

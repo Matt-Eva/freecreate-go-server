@@ -7,7 +7,6 @@ import (
 	"freecreate/internal/web/web_auth"
 	"html/template"
 	"net/http"
-	"slices"
 
 	"github.com/gorilla/csrf"
 	"github.com/gorilla/sessions"
@@ -73,29 +72,7 @@ func SearchPageHandler(searchTmpl *template.Template, sessionStore *sessions.Coo
 			PoetryTopics                 []string
 		}
 
-		var allWritingTopics []string
 
-		for _, val := range lib.WritingTopics.Fiction {
-			allWritingTopics = append(allWritingTopics, val)
-		}
-
-		for _, val := range lib.WritingTopics.EssaysAndBlogs {
-			allWritingTopics = append(allWritingTopics, val)
-		}
-
-		for _, val := range lib.WritingTopics.MemoirAndAutobiography {
-			allWritingTopics = append(allWritingTopics, val)
-		}
-
-		for _, val := range lib.WritingTopics.Poetry {
-			allWritingTopics = append(allWritingTopics, val)
-		}
-
-		slices.Sort(allWritingTopics)
-		allWritingTopics = slices.Compact(allWritingTopics)
-		allWritingTopics = slices.DeleteFunc(allWritingTopics, func(topic string) bool {
-			return topic == "No Genre" || topic == "No Topic"
-		})
 
 		pageData := PageData{
 			UniversalPageData: UniversalPageData{
@@ -112,7 +89,7 @@ func SearchPageHandler(searchTmpl *template.Template, sessionStore *sessions.Coo
 			SearchTypes:                  lib.SearchTypes,
 			WritingSearchTypes:           lib.WritingSearchTypes,
 			DatePostedSearchTypes:        lib.DatePostedSearchTypes,
-			AllWritingTopics:             allWritingTopics,
+			AllWritingTopics:             lib.AllWritingTopics,
 			FictionTopics:                lib.WritingTopics.Fiction,
 			EssayAndBlogTopics:           lib.WritingTopics.EssaysAndBlogs,
 			MemoirAndAutobiographyTopics: lib.WritingTopics.MemoirAndAutobiography,

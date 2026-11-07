@@ -124,6 +124,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const span = document.createElement("span");
     span.className = "tag_span";
+    span.textContent = tag;
 
     span.addEventListener("click", removeTag);
 
@@ -153,7 +154,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     for (const checkbox of topicCheckboxes) {
       if (checkbox.checked && topicCounter < 3) {
-        topicString = topicString + "topic=" + checkbox.value + "&";
+        topicString = topicString + "topic=" + checkbox.value;
+        if (topicCounter < 2) {
+          topicString += "&";
+        }
         topicCounter += 1;
       }
     }
@@ -161,11 +165,11 @@ document.addEventListener("DOMContentLoaded", () => {
     let tagString = "";
 
     tags.forEach((tag, index) => {
-      tagString = tagString + "tag=" + tag + "&";
-      // if (index < tags.length - 1) {
-      // } else {
-      //   tagString = tagString + tag;
-      // }
+      tagString = tagString + "tag=" + tag;
+
+      if (index < tags.length - 1) {
+        tagString += "&";
+      }
     });
 
     console.log(tagString);
