@@ -58,7 +58,7 @@ func SearchPageHandler(searchTmpl *template.Template, sessionStore *sessions.Coo
 		tags := query["tag"]
 		fmt.Println(tags)
 
-		searchErr := query_handlers.HandleSearch(ctx, valkeyClient, pgCore, pgCoreQueries, searchType, writingType, datePosted, topics, tags)
+		searchResults, searchErr := query_handlers.HandleSearch(ctx, valkeyClient, pgCore, pgCoreQueries, searchType, writingType, datePosted, topics, tags)
 		if searchErr != nil {
 			
 		}
@@ -90,8 +90,8 @@ func SearchPageHandler(searchTmpl *template.Template, sessionStore *sessions.Coo
 			SearchType:                   searchType,
 			WritingType:                  writingType,
 			DatePosted:                   datePosted,
-			Topics:                       topics,
-			Tags:                         tags,
+			Topics:                       searchResults.Topics,
+			Tags:                         searchResults.Tags,
 			SearchTypes:                  lib.SearchTypes,
 			WritingSearchTypes:           lib.WritingSearchTypes,
 			DatePostedSearchTypes:        lib.DatePostedSearchTypes,

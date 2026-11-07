@@ -78,9 +78,14 @@
             </select>
 
             <section id="topics_container">
+              {{ $is_all := false }}
               <div
                 id="all_topics_container"
-                {{ if ne .WritingType "All" }}hidden{{ end }}
+                {{ if ne .WritingType "All" }}
+                  hidden
+                {{ else }}
+                  {{ $is_all = true }}
+                {{ end }}
               >
                 <h3>Topics (up to three):</h3>
                 <div id="all_topics_list">
@@ -90,7 +95,7 @@
                     {{ $topic := . }}
 
                     {{ range $.Topics }}
-                      {{ if eq $topic . }}
+                      {{ if and (eq $topic .) $is_all }}
                         {{ $is_checked = true }}
                       {{ end }}
                     {{ end }}
@@ -108,9 +113,11 @@
                 </div>
               </div>
 
+              {{ $is_fiction := false }}
               <div
                 id="fiction_topics_container"
                 {{ if or (eq .WritingType "Fiction") (eq .WritingType "Short Stories") (eq .WritingType "Novelettes") (eq .WritingType "Novellas") (eq .WritingType "Novels") }}
+                  {{ $is_fiction = true }}
                 {{ else }}
                   hidden
                 {{ end }}
@@ -123,7 +130,7 @@
                     {{ $topic := . }}
 
                     {{ range $.Topics }}
-                      {{ if eq $topic . }}
+                      {{ if and (eq $topic .) $is_fiction }}
                         {{ $is_checked = true }}
                       {{ end }}
                     {{ end }}

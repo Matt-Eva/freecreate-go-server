@@ -43,6 +43,8 @@ func generateAllWritingTopics() []string{
 			return topic == "No Genre" || topic == "No Topic"
 		})
 
+		allWritingTopics = append([]string{"No Topic"}, allWritingTopics...)
+
 		return allWritingTopics
 }
 

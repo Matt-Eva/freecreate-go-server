@@ -56,6 +56,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
   searchSubmitForm.addEventListener("submit", search);
 
+  // for (const checkbox of topicCheckboxes) {
+  //   checkbox.addEventListener("change", (e) => {
+  //     console.log(e.target);
+  //     console.log(e.target.checked);
+  //     e.target.checked = false;
+  //     for (const checkbox of topicCheckboxes) {
+  //       console.log(checkbox);
+  //     }
+  //   });
+  // }
+
   // populate global search state
 
   function populateSearchState() {}
@@ -164,7 +175,8 @@ document.addEventListener("DOMContentLoaded", () => {
     let topicCounter = 1;
 
     for (const checkbox of topicCheckboxes) {
-      if (checkbox.checked && topicCounter < 3) {
+      if (checkbox.checked === true && topicCounter < 3) {
+        console.log(checkbox);
         topicString = topicString + "topic=" + checkbox.value;
         if (topicCounter < 2) {
           topicString += "&";
@@ -183,18 +195,22 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    console.log(tagString);
-
-    window.location.href =
+    let searchString =
       "/search?" +
       searchTypeString +
       "&" +
       writingTypeString +
       "&" +
-      datePostedString +
-      "&" +
-      topicString +
-      "&" +
-      tagString;
+      datePostedString;
+
+    if (topicString.length > 0) {
+      searchString += "&" + topicString;
+    }
+
+    if (tagString.length > 0) {
+      searchString += "&" + tagString;
+    }
+
+    window.location.href = searchString;
   }
 });
