@@ -27,7 +27,8 @@ CREATE TABLE public.chapter_content (
     id bigint NOT NULL,
     chapter_uuid uuid NOT NULL,
     json_content jsonb DEFAULT '{}'::jsonb NOT NULL,
-    html_content text DEFAULT ''::text NOT NULL
+    html_content text DEFAULT ''::text NOT NULL,
+    user_uuid uuid NOT NULL
 );
 
 
@@ -89,4 +90,5 @@ CREATE INDEX idx_chapter_content_chapter_uuid ON public.chapter_content USING bt
 --
 
 INSERT INTO public.schema_migrations (version) VALUES
-    ('20261013211521');
+    ('20261013211521'),
+    ('20261110235208');

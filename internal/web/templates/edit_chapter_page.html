@@ -7,6 +7,14 @@
 
       {{ template "globals_component" . }}
 
+
+      <script defer src="/internal/web/static/js/edit_chapter_page.js"></script>
+
+      <link
+        rel="stylesheet"
+        href="/internal/web/static/css/edit_chapter_page.css"
+      />
+
       {{ .CsrfToken }}
     </head>
     <body class="{{ .LoggedInClass }}">
@@ -15,6 +23,8 @@
 
       <div id="page_container">
         {{ template "sidebar_component" . }}
+
+
         <div id="page_content">Edit chapter page</div>
       </div>
 
