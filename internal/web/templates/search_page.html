@@ -4,9 +4,17 @@
     <head>
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      {{ template "globals_component" }}
-      <script defer src="/internal/web/static/js/search_page.js"></script>
-      <title>Document</title>
+      {{ template "globals_component" . }}
+      <link rel="stylesheet" href="/internal/web/static/css/search_page.css" />
+      <link
+        rel="stylesheet"
+        href="/internal/web/static/css/search_nav_component.css"
+      />
+      <script
+        defer
+        type="module"
+        src="/internal/web/static/js/search_page.js"
+      ></script>
 
       {{ .CsrfToken }}
     </head>
@@ -16,18 +24,273 @@
 
       <div id="page_container" class="{{ .LoggedInClass }}">
         {{ template "sidebar_component" . }}
+
+
         <div id="page_content" class="{{ .LoggedInClass }}">
-          <!-- {{ template "category_search_box_component" }} -->
-          <form id="add_tag_form">
-            <label for="add_tag_input">Add Tag (up to five):</label>
-            <input type="text" id="add_tag_input" />
-            <input type="submit" value="add" />
-          </form>
-          <div id="added_tag_block"></div>
-          <form id="search_submit_form">
-            <input type="submit" value="search" />
-          </form>
-          <p>{{ .Query }}</p>
+          {{ template "search_nav_component" }}
+
+
+          <section id="search_container">
+            <label for="search_type_select" id="search_type_select_label"
+              >Search Writing or Creators:</label
+            >
+            <select id="search_type_select" value="{{ .SearchType }}">
+              {{ range .SearchTypes }}
+                {{ if eq . $.SearchType }}
+                  <option>{{ $.SearchType }}</option>
+                {{ end }}
+              {{ end }}
+
+              {{ range .SearchTypes }}
+                {{ if ne . $.SearchType }}
+                  <option>{{ . }}</option>
+                {{ end }}
+              {{ end }}
+            </select>
+
+            <label for="writing_type_select" id="writing_type_select_label"
+              >Writing Type</label
+            >
+            <select id="writing_type_select" value="{{ .WritingType }}">
+              {{ range .WritingSearchTypes }}
+                {{ if eq . $.WritingType }}
+                  <option>{{ $.WritingType }}</option>
+                {{ end }}
+              {{ end }}
+              {{ range .WritingSearchTypes }}
+                {{ if ne . $.WritingType }}
+                  <option>{{ . }}</option>
+                {{ end }}
+              {{ end }}
+            </select>
+
+            <label for="date_posted_select" id="date_posted_select_label"
+              >Date Posted:</label
+            >
+            <select id="date_posted_select" value="{{ .DatePosted }}">
+              {{ range .DatePostedSearchTypes }}
+                {{ if eq . $.DatePosted }}
+                  <option>{{ $.DatePosted }}</option>
+                {{ end }}
+              {{ end }}
+
+              {{ range .DatePostedSearchTypes }}
+                {{ if ne . $.DatePosted }}
+                  <option>{{ . }}</option>
+                {{ end }}
+              {{ end }}
+            </select>
+
+            <section id="topics_container">
+              {{ $is_all := false }}
+
+
+              <div
+                id="all_topics_container"
+                {{ if ne .WritingType "All" }}
+                  hidden
+                {{ else }}
+                  {{ $is_all = true }}
+                {{ end }}
+              >
+                <h3>Topics (up to three):</h3>
+
+                <div id="all_topics_list">
+                  {{ range .AllWritingTopics }}
+
+                    {{ $is_checked := false }}
+                    {{ $topic := . }}
+
+                    {{ range $.Topics }}
+                      {{ if and (eq $topic .) $is_all }}
+                        {{ $is_checked = true }}
+                      {{ end }}
+                    {{ end }}
+
+
+                    <div>
+                      <input
+                        type="checkbox"
+                        id="{{ . }}_checkbox"
+                        class="topic_checkbox"
+                        value="{{ . }}"
+                        {{ if $is_checked }}checked{{ end }}
+                      />
+                      <label for="{{ . }}_checkbox">{{ . }}</label>
+                    </div>
+                  {{ end }}
+                </div>
+              </div>
+
+              {{ $is_fiction := false }}
+              <div
+                id="fiction_topics_container"
+                {{ if or (eq .WritingType "Fiction") (eq .WritingType "Short Stories") (eq .WritingType "Novelettes") (eq .WritingType "Novellas") (eq .WritingType "Novels") }}
+                  {{ $is_fiction = true }}
+                {{ else }}
+                  hidden
+                {{ end }}
+              >
+                <h3>Genres (up to three):</h3>
+                <div id="fiction_topics_list">
+                  {{ range .FictionTopics }}
+
+                    {{ $is_checked := false }}
+                    {{ $topic := . }}
+
+                    {{ range $.Topics }}
+                      {{ if and (eq $topic .) $is_fiction }}
+                        {{ $is_checked = true }}
+                      {{ end }}
+                    {{ end }}
+
+
+                    <div>
+                      <input
+                        type="checkbox"
+                        id="{{ . }}_checkbox"
+                        class="topic_checkbox"
+                        value="{{ . }}"
+                        {{ if $is_checked }}checked{{ end }}
+                      />
+                      <label for="{{ . }}_checkbox">{{ . }}</label>
+                    </div>
+                  {{ end }}
+                </div>
+              </div>
+
+              {{ $is_essay_or_blog := false }}
+              <div
+                id="essay_and_blog_topics_container"
+                {{ if or ( eq .WritingType "Essay") (eq .WritingType "Blog") }}
+                  {{ $is_essay_or_blog = true }}
+                {{ else }}
+                  hidden
+                {{ end }}
+              >
+                <h3>Topics (up to three)</h3>
+
+                <div id="essay_and_blog_topic_list">
+                  {{ range .EssayAndBlogTopics }}
+
+                    {{ $is_checked := false }}
+                    {{ $topic := . }}
+
+                    {{ range $.Topics }}
+                      {{ if and (eq $topic .) $is_essay_or_blog }}
+                        {{ $is_checked = true }}
+                      {{ end }}
+                    {{ end }}
+
+
+                    <div>
+                      <input
+                        type="checkbox"
+                        id="{{ . }}_checkbox"
+                        class="topic_checkbox"
+                        value="{{ . }}"
+                        {{ if $is_checked }}checked{{ end }}
+                      />
+                      <label for="{{ . }}_checkbox">{{ . }}</label>
+                    </div>
+                  {{ end }}
+                </div>
+              </div>
+
+              {{ $is_memoir_or_autobiograhy := false }}
+              <div
+                id="memoir_and_autobiography_topics_container"
+                {{ if or (eq .WritingType "Memoir") (eq .WritingType "Autobigraphy") }}
+                  {{ $is_memoir_or_autobiography = true }}
+                {{ else }}
+                  hidden
+                {{ end }}
+              >
+                <h3>Topics (up to three)</h3>
+
+                <div id="memoir_and_autobiography_topic_list">
+                  {{ range .MemoirAndAutobiographyTopics }}
+
+                    {{ $is_checked := false }}
+                    {{ $topic := . }}
+
+                    {{ range $.Topics }}
+                      {{ if and (eq $topic .) $is_memoir_or_autobiograhy }}
+                        {{ $is_checked = true }}
+                      {{ end }}
+                    {{ end }}
+
+
+                    <div>
+                      <input
+                        type="checkbox"
+                        id="{{ . }}_checkbox"
+                        class="topic_checkbox"
+                        value="{{ . }}"
+                        {{ if $is_checked }}checked{{ end }}
+                      />
+                      <label for="{{ . }}_checkbox">{{ . }}</label>
+                    </div>
+                  {{ end }}
+                </div>
+              </div>
+
+              {{ $is_poetry := false }}
+              <div
+                id="poetry_topics_container"
+                {{ if eq .WritingType "Poetry" }}
+                  {{ $is_poetry = true }}
+                {{ else }}
+                  hidden
+                {{ end }}
+              >
+                <h3>Topics (up to three)</h3>
+
+                <div id="poetry_topic_list">
+                  {{ range .PoetryTopics }}
+
+                    {{ $is_checked := false }}
+                    {{ $topic := . }}
+
+                    {{ range $.Topics }}
+                      {{ if and (eq $topic .) $is_poetry }}
+                        {{ $is_checked = true }}
+                      {{ end }}
+                    {{ end }}
+
+
+                    <div>
+                      <input
+                        type="checkbox"
+                        id="{{ . }}_checkbox"
+                        class="topic_checkbox"
+                        value="{{ . }}"
+                        {{ if $is_checked }}checked{{ end }}
+                      />
+                      <label for="{{ . }}_checkbox">{{ . }}</label>
+                    </div>
+                  {{ end }}
+                </div>
+              </div>
+            </section>
+
+            <form id="add_tag_form">
+              <label for="add_tag_input">Add Tag (up to five):</label>
+              <input type="text" id="add_tag_input" />
+              <input type="submit" value="add" />
+            </form>
+            <p id="add_tag_message_block"></p>
+
+            <div id="added_tag_block">
+              {{ range .Tags }}<span class="tag_span">{{ . }}</span>{{ end }}
+            </div>
+
+            <form id="search_submit_form">
+              <input type="submit" value="search" />
+            </form>
+          </section>
+
+          <section id="search_results_container"></section>
         </div>
       </div>
 

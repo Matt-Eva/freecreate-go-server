@@ -1,0 +1,84 @@
+#search_container {
+  display: grid;
+  width: 100%;
+  grid-template-columns: 50% 50%;
+  grid-template-rows: 30px 30px 30px 30px 30px 30px 60px 60px 50px;
+  column-gap: 5px;
+}
+
+#search_type_select_label {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+#search_type_select {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+#writing_type_select_label {
+  grid-column: 1;
+  grid-row: 3;
+}
+
+#writing_type_select {
+  grid-column: 1;
+  grid-row: 4;
+}
+
+#date_posted_select_label {
+  grid-column: 1;
+  grid-row: 5;
+}
+
+#date_posted_select {
+  grid-column: 1;
+  grid-row: 6;
+}
+
+#topics_container {
+  grid-column: 2;
+  grid-row: 1 / span 8;
+  height: 100%;
+}
+
+#all_topics_container,
+#fiction_topics_container {
+  height: 100%;
+}
+
+#all_topics_list,
+#fiction_topics_list {
+  height: calc(100% - 23px);
+  overflow: auto;
+}
+
+#add_tag_form {
+  grid-column: 1;
+  grid-row: 7;
+}
+
+#added_tag_block {
+  grid-column: 1;
+  grid-row: 8;
+  border: solid 1px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.tag_span {
+  margin: 5px;
+  height: 20px;
+  display: flex;
+  padding: 0px 3px;
+  text-align: center;
+  border: solid 1px;
+  border-radius: 4px;
+}
+
+#search_submit_form {
+  grid-column: 1 / span 2;
+  grid-row: 9;
+  justify-self: center;
+  align-self: center;
+}

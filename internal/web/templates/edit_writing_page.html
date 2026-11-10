@@ -265,8 +265,14 @@
                     Edit Chapter Number
                   </button>
                 </section>
-                <a href="/chapter/{{ .UUID }}/edit">edit chapter</a>
-                <a href="/my-chapter/{{ .UUID }}">view chapter</a>
+                <a
+                  href="/writing/{{ $.MyWriting.UUID }}/chapter/{{ .UUID }}/edit"
+                  >edit chapter</a
+                >
+                <a
+                  href="/my-writing/{{ $.MyWriting.UUID }}/my-chapter/{{ .UUID }}"
+                  >view chapter</a
+                >
                 <p>
                   {{ if .Published }}
                     Published

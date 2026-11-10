@@ -1,3 +1,5 @@
+import checkTagLength from "./lib/check_tag_length";
+
 document.addEventListener("DOMContentLoaded", () => {
   console.log("running edit writing page");
 
@@ -170,6 +172,11 @@ document.addEventListener("DOMContentLoaded", () => {
         tagInput.value = "";
         return;
       }
+    }
+
+    if (checkTagLength(tagInput.value)) {
+      udpateWritingMessageBlock = "Tag length must be less than 30 characters.";
+      return;
     }
 
     if (tags.length >= 20) {

@@ -47,7 +47,7 @@ func ConfigureWebRouter(router chi.Router, sessionStore *sessions.CookieStore, v
 
 		router.Get("/donate", web_page_handlers.DonatePageHandler(templates, sessionStore, valkeyClient))
 
-		router.Get("/search", web_page_handlers.SearchPageHandler(templates, sessionStore, valkeyClient))
+		router.Get("/search", web_page_handlers.SearchPageHandler(templates, sessionStore, valkeyClient, pgCore, pgCoreQueries))
 
 		router.Get("/search/text", web_page_handlers.TextSearchPageHandler(templates, sessionStore, valkeyClient))
 
