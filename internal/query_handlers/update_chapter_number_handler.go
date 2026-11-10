@@ -10,7 +10,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-func HandleUpdateChapterNumber(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries, params pg_core_types.UpdateChapterNumberParams) (int, *api_error.Error){
+func HandleUpdateChapterNumber(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries, params pg_core_types.UpdateChapterNumberParams) (int, *api_error.Error) {
 
 	newChapterNumber, err := pg_core_queries.UpdateChapterNumber(ctx, pgCore, pgCoreQueries, params)
 

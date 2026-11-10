@@ -197,7 +197,6 @@ func ConfigPgCoreQueries() (PgCoreQueries, error) {
 		return q, updateChapterNumberError
 	}
 	q.updateChapterNumber = string(updateChapterNumber)
-	fmt.Println(q.UpdateChapterNumber())
 
 	getMyWritingChapters, getMyWritingChaptersError := os.ReadFile(filepath.Join("./internal/db/pg_core/query_files", "get_my_writing_chapters.sql"))
 	if getMyWritingChaptersError != nil {

@@ -2,12 +2,15 @@ package pg_core_queries
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"freecreate/internal/config"
 	pg_core_types "freecreate/internal/db/pg_core/types"
 	"freecreate/internal/lib/api_error"
 	"freecreate/internal/lib/logger"
 	"net/http"
 	"slices"
+	"unicode/utf8"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -37,6 +40,20 @@ func UpdateWriting(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries conf
 
 	var tags []string
 	for _, val := range params.Tags {
+
+		if utf8.RuneCountInString(val) > 30 {
+			msg := fmt.Sprintf("Tags cannot exceed 30 characters in length: %s.", val)
+			err := errors.New(msg)
+
+			apiErr := &api_error.Error{
+				Code: http.StatusUnprocessableEntity,
+				Message: msg,
+				Error: err,
+			}
+			
+			return updatedWriting, apiErr
+		}
+
 		if len(tags) >= 20 {
 			break
 		}

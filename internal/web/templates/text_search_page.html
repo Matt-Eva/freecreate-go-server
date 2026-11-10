@@ -6,6 +6,10 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
       {{ template "globals_component" . }}
+      <link
+        rel="stylesheet"
+        href="/internal/web/static/css/search_nav_component.css"
+      />
 
       {{ .CsrfToken }}
     </head>
@@ -16,7 +20,7 @@
       <div id="page_container">
         {{ template "sidebar_component" . }}
         <div id="page_content">
-          text search page
+          {{ template "search_nav_component" }}
           <form>
             <input type="/submit" />
           </form>

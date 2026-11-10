@@ -1,0 +1,5 @@
+@media (min-width: 600px) {
+  #collapsed_search_nav {
+    display: none;
+  }
+}
