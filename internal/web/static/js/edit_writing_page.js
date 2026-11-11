@@ -358,13 +358,24 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function renderNewChapter(data) {
+    console.log(data);
     const chapterCard = document.createElement("article");
 
     const title = document.createElement("p");
     title.textContent = data.title;
 
-    const number = document.createElement("p");
-    number.textContent = "Chapter Number: " + data.chapterNumber;
+    const chapterNumberSection = document.createElement("section");
+
+    const chapterNumber = document.createElement("p");
+    chapterNumber.textContent = "Chapter Number: ";
+
+    const chapterNumberSpan = document.createElement("span");
+    chapterNumberSpan.textContent = data.chapterNumber;
+    chapterNumberSpan.id = `${data.uuid}_chapter_number`;
+
+    chapterNumber.append(chapterNumberSpan);
+
+    chapterNumberSection.append(chapterNumber);
 
     const published = document.createElement("p");
     if (data.published) {
@@ -373,7 +384,7 @@ document.addEventListener("DOMContentLoaded", () => {
       published.textContent = "Unpublished";
     }
 
-    chapterCard.append(title, number, published);
+    chapterCard.append(title, chapterNumberSection, published);
 
     chapterContainer.prepend(chapterCard);
   }
