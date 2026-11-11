@@ -1,0 +1,1 @@
+SELECT uuid FROM users WHERE id = @user_id;

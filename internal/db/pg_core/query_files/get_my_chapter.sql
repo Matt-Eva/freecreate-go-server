@@ -1,0 +1,1 @@
+SELECT title, uuid, chapter_number, published, content_db FROM chapters WHERE user_id = @user_id AND uuid = @chapter_uuid;

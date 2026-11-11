@@ -1,1 +1,1 @@
-SELECT ;
+SELECT json_content FROM chapter_content WHERE chapter_uuid = @chapter_uuid;

@@ -12,6 +12,7 @@ type PgCoreQueries struct {
 	createUser           string
 	getUserInfo          string
 	deleteUser           string
+	getUserUUID string
 	updateUserInfo       string
 	createCreator        string
 	getMyCreators        string
@@ -24,6 +25,7 @@ type PgCoreQueries struct {
 	createChapter        string
 	updateChapterNumber  string
 	getMyWritingChapters string
+	getMyChapter string
 }
 
 func (q PgCoreQueries) GetUserByEmail() string {
@@ -44,6 +46,10 @@ func (q PgCoreQueries) UpdateUserInfo() string {
 
 func (q PgCoreQueries) DeleteUser() string {
 	return q.deleteUser
+}
+
+func (q PgCoreQueries) GetUserUUID() string {
+	return q.getUserUUID
 }
 
 func (q PgCoreQueries) CreateCreator() string {
@@ -90,6 +96,10 @@ func (q PgCoreQueries) GetMyWritingChapters() string {
 	return q.getMyWritingChapters
 }
 
+func (q PgCoreQueries) GetMyChapter() string {
+	return q.getMyChapter
+}
+
 func ConfigPgCoreQueries() (PgCoreQueries, error) {
 	q := PgCoreQueries{}
 
@@ -127,6 +137,13 @@ func ConfigPgCoreQueries() (PgCoreQueries, error) {
 		return q, deleteUserErr
 	}
 	q.deleteUser = string(deleteUser)
+
+	getUserUUID, getUserUUIDErr := os.ReadFile(filepath.Join("./internal/db/pg_core/query_files", "get_user_uuid.sql"))
+	if getUserUUIDErr != nil {
+		logger.Log(getUserUUIDErr)
+		return q, getUserUUIDErr
+	}
+	q.getUserUUID = string(getUserUUID)
 
 	createCreator, createCreatorErr := os.ReadFile(filepath.Join("./internal/db/pg_core/query_files", "create_creator.sql"))
 	if createCreatorErr != nil {
@@ -204,6 +221,13 @@ func ConfigPgCoreQueries() (PgCoreQueries, error) {
 		return q, getMyWritingChaptersError
 	}
 	q.getMyWritingChapters = string(getMyWritingChapters)
+
+	getMyChapter, getMyChapterError := os.ReadFile(filepath.Join("./internal/db/pg_core/query_files", "get_my_chapter.sql"))
+	if getMyChapterError != nil {
+		logger.Log(getMyChapterError)
+		return q, getMyChapterError
+	}
+	q.getMyChapter = string(getMyChapter)
 
 	msg := "Pg core queries loaded."
 	fmt.Println(msg)

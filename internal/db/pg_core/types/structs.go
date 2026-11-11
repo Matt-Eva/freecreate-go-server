@@ -227,4 +227,5 @@ type Chapter struct {
 	UUID          uuid.UUID
 	ChapterNumber int
 	Published     bool
+	ContentDb int16
 }
