@@ -1,4 +1,4 @@
-import checkTagLength from "./lib/check_tag_length";
+import checkTagLength from "./lib/check_tag_length.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   console.log("running edit writing page");
