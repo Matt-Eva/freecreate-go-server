@@ -35,6 +35,7 @@ func CreateChapterContent(ctx context.Context, dbNumber int16, pgContentPools co
 
 	namedArgs := pgx.NamedArgs{
 		"chapter_uuid": params.ChapterUUID,
+		"user_uuid": params.UserUuid,
 	}
 
 	_, err := contentDb.Exec(ctx, query, namedArgs)

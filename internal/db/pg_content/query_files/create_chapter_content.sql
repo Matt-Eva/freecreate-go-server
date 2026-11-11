@@ -1,1 +1,1 @@
-INSERT INTO chapter_content (chapter_uuid) VALUES (@chapter_uuid);
+INSERT INTO chapter_content (chapter_uuid, user_uuid) VALUES (@chapter_uuid, @user_uuid);

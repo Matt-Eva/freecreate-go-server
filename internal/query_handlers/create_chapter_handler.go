@@ -22,6 +22,11 @@ type HandleCreateChapterParams struct {
 
 func HandleCreateChapter(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries, pgContentPools config.PgContentPools, pgContentQueries config.PgContentQueries, params HandleCreateChapterParams) (pg_core_types.CreatedChapter, *api_error.Error) {
 
+	userUuid, getUserUuidErr := pg_core_queries.GetUserUuid(ctx, pgCore, pgCoreQueries, params.UserId)
+	if getUserUuidErr != nil {
+		return pg_core_types.CreatedChapter{}, getUserUuidErr
+	}
+
 	getMyWritingParams := pg_core_types.GetMyWritingParams{
 		UUID:   params.WritingUUID,
 		UserId: params.UserId,
@@ -47,6 +52,7 @@ func HandleCreateChapter(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQuerie
 
 	createChapterContentParams := pg_content_types.CreateChapterContentParams{
 		ChapterUUID: createdChapter.UUID,
+		UserUuid: userUuid,
 	}
 
 	createChapterContentErr := pg_content_queries.CreateChapterContent(ctx, createdChapter.ContentDb, pgContentPools, pgContentQueries, createChapterContentParams)

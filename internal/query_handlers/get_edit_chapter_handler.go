@@ -13,7 +13,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-func HandleGetEditChapter(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries, userId int64, pgContentPools config.PgContentPools, pgContentQueries config.PgContentQueries, writingUuid uuid.UUID, chapterUuid uuid.UUID)(pg_core_types.MyWriting, pg_core_types.Chapter, pg_content_types.JsonChapterContent, *api_error.Error){
+func HandleGetEditChapter(ctx context.Context, pgCore *pgxpool.Pool, pgCoreQueries config.PgCoreQueries, pgContentPools config.PgContentPools, pgContentQueries config.PgContentQueries, userId int64, writingUuid uuid.UUID, chapterUuid uuid.UUID)(pg_core_types.MyWriting, pg_core_types.Chapter, pg_content_types.JsonChapterContent, *api_error.Error){
 	var myWriting pg_core_types.MyWriting
 	var myChapter pg_core_types.Chapter
 	var jsonChapterContent pg_content_types.JsonChapterContent
